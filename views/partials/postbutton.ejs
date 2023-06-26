@@ -1,0 +1,18 @@
+
+<%# Must pass in:
+- formconfig : {url, 
+                buttonText, 
+                (optional) buttonIcon, 
+                (optional) buttonStyle,
+                (optional) sendValue,
+                (optional) inline
+            }
+General purpose button that sends a POST request with an optional value "val"
+%>
+<form method="post" action="<%=formconfig.url%>" <% if(formconfig.inline) {%> class="inlineFormButton" <%}%> >   
+    <button class="<%=formconfig?.buttonStyle%>" type="submit"
+        name="val" value="<%=formconfig?.sendValue%>">
+        <i class="material-icons right"><%=formconfig?.buttonIcon || "send"%> </i>
+        <%= formconfig?.buttonText || "Delete" %> 
+    </button>
+</form>

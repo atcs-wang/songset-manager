@@ -1,0 +1,1 @@
+An inventory-style webapp (Node/Express/EJS/MySQL) for managing songs and setlists.

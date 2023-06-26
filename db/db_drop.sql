@@ -1,0 +1,1 @@
+DROP TABLE IF EXISTS  `song_category_xref`, `category`, `song`, `key`, `user`;

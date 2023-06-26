@@ -1,0 +1,27 @@
+{
+  "name": "songset-manager",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "devstart": "nodemon -e js,ejs,sql,env app.js",
+    "db_create": "node db/db_create.js",
+    "devstart-fresh": "npm-run-all db_create devstart"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "ejs": "^3.1.9",
+    "express": "^4.18.2",
+    "express-openid-connect": "^2.12.0",
+    "morgan": "^1.10.0",
+    "mysql2": "^2.3.3",
+    "npm-run-all": "^4.1.5",
+    "sortable-tablesort": "^2.1.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

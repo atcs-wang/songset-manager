@@ -1,0 +1,42 @@
+<%# Required locals = { 
+  songlist: [{title, artist, categoryId, categoryName, keyId, keyName, lastPlayedDate, lastPlayedDateReadable, notes}]
+  , categorylist: [{categoryId, categoryName}]
+}
+
+A table for displaying a list of songs.
+%>
+
+<table class="sortable">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Artist</th>
+            <th>Category</th>
+            <th>Key</th>
+            <th>Last Played</th>
+            <th class="no-sort"></th>
+        </tr>
+
+    </thead>
+    <tbody>
+        <% for (song of songlist) { %>
+        <tr>
+            <td><%= song.title %></td>
+            <td><%= song.artist %></td>
+            <td><%= song.category%></td>
+            <td><%= song.key %></td>
+            <td data-sort="<%= song.lastPlayedDate %>"><%= song.lastPlayedDateReadable %></td>
+            <td>
+                <a class="btn-small waves-effect waves-light" href="/songs/<%= song.songId %>">
+                    <i class="material-icons right">edit</i>
+                    Info/Edit
+                </a>
+                <a class="btn-small waves-effect waves-light red" href="/songs/<%= song.songId %>/delete">
+                    <i class="material-icons right">delete</i>
+                    Delete
+                </a>
+            </td>
+        </tr>
+        <% } %>
+    </tbody>
+</table>

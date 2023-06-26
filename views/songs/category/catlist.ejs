@@ -1,0 +1,86 @@
+<%# Required locals = {
+    categorylist: [{categoryId, categoryName, songCount}]
+}
+%>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../../partials/stdhead') %>
+
+    <!-- Additional custom CSS -->
+    <link rel="stylesheet" href="/stylesheets/assignmentsStyle.css">
+
+</head>
+
+<body>
+
+    
+    <%- include('../../partials/navbar') %>
+
+    <!-- Actual page content! -->
+    <div class="container">
+        <h1>Your Song Categories:</h1>
+
+        <div class="section" id="controls">
+            <a class="btn-large waves-effect waves-light orange left modal-trigger" href="#add">
+                <i class="material-icons right">add</i>
+                Add a New Category
+            </a>
+
+        </div>
+
+
+        <div class="modal" id="add">
+
+            <div class="modal-content">
+
+                <%-  include('partials/catform', {formconfig : {id:"addCategoryForm", url:'/songs/category', submitButton: false}}) %>
+                <!-- A section for the footer of the modal -->
+                <div class="modal-footer">
+                    <!-- Since the submit button is not within the form, it must have the form attribute specified-->
+                    <button class="btn waves-effect waves-light " type="submit" form="addCategoryForm">
+                        <i class="material-icons right">send</i>
+                        Submit New Category
+                    </button>
+                    <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
+                </div>
+                
+            </div>
+
+        </div>
+
+        <div class="section" id="list">
+            <table class="sortable">
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th>Number of Songs</th>
+                        <th class="no-sort"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for (cat of categorylist) { %>
+                    <tr>
+                        <td><%= cat.categoryName %></td>
+                        <td><%= cat.songCount %></td>
+
+                        <td>
+                            <a class="btn-small waves-effect waves-light red" href="/songs/category/<%= cat.categoryId %>/delete">
+                                <i class="material-icons right">delete</i>
+                                Delete
+                            </a>
+                        </td>
+                    </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <%- include('../../partials/stdfoot') %>
+
+</body>
+
+</html>

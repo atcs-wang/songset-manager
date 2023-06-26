@@ -1,0 +1,91 @@
+<%# Must pass in:
+- categorylist: [{categoryId, categoryName}]
+- keylist: [{keyId, keyName}]
+- song: {title, artist, notes, category, key, lastPlayedDateReadable}
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/stdhead') %>
+
+    <!-- Additional custom CSS -->
+    <!-- <link rel="stylesheet" href="/stylesheets/songsStyle.css"> -->
+
+</head>
+
+<body>
+
+    <%- include('../partials/navbar') %>
+
+    <!-- Actual page content! -->
+    <div class="container">
+        <div class="section flow-text" id="details">
+            <h1><%= song.title %></h1>
+            <table>
+                <tr>
+                    <th>Artist</th>
+                    <td><%= song.artist %></td>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <td><%= song.category %></td>
+                </tr>
+                <tr>
+                    <th>(Typical) Key</th>
+                    <td><%= song.key %></td>
+                </tr>
+                <tr>
+                    <th>Last Played</th>
+                    <td>
+                        <%= song.lastPlayedDateReadable %>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Notes</th>
+                    <td>
+                        <%= song.notes %>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="section" id="controls">
+            <a class="btn-large waves-effect waves-light orange left modal-trigger" href="#edit">
+                <i class="material-icons right">edit</i>
+                Edit
+            </a>
+            <a class="btn-large waves-effect waves-light red right" href="/songs/<%= song.songId %>/delete">
+                <i class="material-icons right">delete</i>
+                Delete
+            </a>
+        </div>
+
+
+        <div class="modal" id="edit">
+
+            <div class="modal-content">
+
+                <%-  include('partials/songform', {formconfig : {id:"editSongForm", url:`/songs/${song.songId}`, submitButton: false, song}, 
+                                                    categorylist, keylist}) %>
+                <!-- A section for the footer of the modal -->
+                <div class="modal-footer">
+                    <!-- Since the submit button is not within the form, it must have the form attribute specified-->
+                    <button class="btn waves-effect waves-light " type="submit" form="editSongForm">
+                        <i class="material-icons right">send</i>
+                        Submit Changes
+                    </button>
+                    <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
+                </div>
+                
+            </div>
+
+        </div>
+    </div>
+
+    <%- include('../partials/stdfoot') %>
+
+</body>
+
+</html>
