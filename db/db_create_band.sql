@@ -7,7 +7,7 @@ CREATE TABLE `band` (
   `name` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`band_id`),
   KEY `creator_id_idx` (`creator_id`),
-  CONSTRAINT `creator_id` FOREIGN KEY (`creator_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_band_creator_id` FOREIGN KEY (`creator_id`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
 
 );
 
@@ -19,11 +19,11 @@ CREATE TABLE `user_band_role` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`band_id`,`user_id`),
   KEY `role_idx` (`role`),
-  CONSTRAINT `role` FOREIGN KEY (`role`) REFERENCES `band_role` (`role`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_ubr_role` FOREIGN KEY (`role`) REFERENCES `band_role` (`role`) ON DELETE SET NULL ON UPDATE CASCADE,
   KEY `band_id_idx` (`band_id`),
-  CONSTRAINT `band_id` FOREIGN KEY (`band_id`) REFERENCES `band` (`band_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_ubr_band_id` FOREIGN KEY (`band_id`) REFERENCES `band` (`band_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   KEY `user_id_idx` (`user_id`),
-  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_ubruser_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE `band_role` (

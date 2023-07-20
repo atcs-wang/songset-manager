@@ -7,7 +7,7 @@ CREATE TABLE `user` (
   `privilege` int(11) NULL,
   PRIMARY KEY (`user_id`) ,
   KEY `privilege_idx` (`privilege`),
-  CONSTRAINT `privilege` FOREIGN KEY (`privilege`) REFERENCES `user_privilege` (`privilege`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_user_privilege` FOREIGN KEY (`privilege`) REFERENCES `user_privilege` (`privilege`) ON DELETE SET NULL ON UPDATE CASCADE
 );
 
 CREATE TABLE `user_privilege` (
