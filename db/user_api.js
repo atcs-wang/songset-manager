@@ -4,29 +4,52 @@
 
 const db = require('./db_pool');
 
+
+const getAllUserPrivilegesSQL = `select privilege from user_privilege`
+
+function getAllUserPrivileges(){
+    return db.execute(getAllUserPrivilegesSQL);
+}
+
 const createUserSQL = `insert into user
-(user_id, nickname, privilege)
+(user_id, username, privilege)
 values (?,?,?);
 `
 
-function createUser(user_id, nickname = null, privilege = null) {
-    return db.execute(createUserSQL, [user_id, nickname, privilege])
+function createUser(user_id, username = null, privilege = null) {
+    return db.execute(createUserSQL, [user_id, username, privilege])
 }
 
-const getUserSQL = `select user_id, nickname, privilege from user
+const getAllUsersSQL = `select user_id, username, privilege from user`
+
+function getAllUsers(){
+    return db.execute(getAllUsersSQL);
+}
+
+const getUsersSearchSQL = `select user_id, username, privilege from user where
+    user_id like concat( '%',?,'%') or username like concat( '%',?,'%') or privilege like concat( '%',?,'%')`
+
+function getUsersSearch(query){
+    if (query)
+        return db.execute(getUsersSearchSQL, [query, query, query]);
+    else 
+        return getAllUsers();
+}
+
+const getUserSQL = `select user_id, username, privilege from user
 where user_id = ?`
 
 function getUser(user_id){
     return db.execute(getUserSQL, [user_id]);
 }
 
-const updateUserNicknameSQL = `update user
-set nickname = ?
+const updateUsernameSQL = `update user
+set username = ?
 where user_id = ? 
 `
 
-function updateUserNickname(user_id, nickname){
-    return db.execute(updateUserNicknameSQL, [nickname, user_id]);
+function updateUsername(user_id, username){
+    return db.execute(updateUsernameSQL, [username, user_id]);
 }
 
 const updateUserPrivilegeSQL = `update user
@@ -41,13 +64,16 @@ function updateUserPrivilege(user_id, privilege){
 const deleteUserSQL = "delete from user where user_id = ?"
 
 function deleteUser(user_id){
-    return db.execute(deleteUserSQL, [user_id, user_id])
+    return db.execute(deleteUserSQL, [user_id])
 }
 
 module.exports = {
+    getAllUserPrivileges,
     createUser,
+    getAllUsers,
+    getUsersSearch,
     getUser,
-    updateUserNickname,
+    updateUsername,
     updateUserPrivilege,
     deleteUser
 }

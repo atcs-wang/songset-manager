@@ -1,0 +1,88 @@
+<%# Must pass in:
+- profile: [{user_id, username, privilege}]
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/stdhead') %>
+
+    <!-- Additional custom CSS -->
+</head>
+
+<body>
+
+    <%- include('../partials/navbar') %>
+
+    <!-- Actual page content! -->
+    <div class="container">
+        
+        <form id="editUserForm" method="post">  
+            <input type="hidden" name="method" value="update">
+
+            <h2>User Info:</h2>
+        
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" name="user_id" value="<%=profile.user_id%>" disabled >
+                    <label for="usernameInput">User Id:</label>
+                </div>
+            </div>
+        
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" id="usernameInput" name="username" class="validate" data-length="40" maxlength="40"
+                        value="<%=profile.username%>">
+                    <label for="usernameInput">Username:</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+        
+                    <% if (privileges) { %>
+                        <select id="privilegeInput" name="privilege" size="4" <% if (user.privilege != "Admin")  { %> disabled <% } %> >
+                            <% for (const p of privileges) { %>
+                                <option value=<%=p.privilege %>
+                                    <% if (p.privilege == profile.privilege) { %> selected <% } %>
+                                    ><%= p.privilege %></option>
+                            <% } %>
+                        </select>
+                    <% } else { %>
+                        <input type="text" id="privilegeInput" name="privilege" class="validate" data-length="32"
+                        value="<%=profile.privilege%>" <% if (user.privilege != "Admin")  { %> disabled <% } %>>
+                    <% } %>
+                    
+                    <label for="privilegeInput">Privilege:</label>
+                </div> 
+            </div>
+        </form>
+
+        <form id="deleteUserForm" class="confirm-submit" method="post" display="none"
+            data-confirm-msg='Confirm that you want to delete this user by retyping "<%=profile.username%>":' 
+            data-require-retype="<%=profile.username%>">
+            
+            <input type="hidden" name="method" value="delete">
+            <!-- <input type="hidden" name="user_id" value="<%=profile.user_id%>"> -->
+
+        </form>
+
+        <!-- Since the submit buttons are not within the forms, they must have the form attribute specified-->
+
+        <button class="btn waves-effect waves-light " type="submit" form="editUserForm">
+            <i class="material-icons right">send</i>
+            Save Changes
+        </button>
+
+        <button class="btn waves-effect waves-light red right" type="submit"  form="deleteUserForm">
+            <i class="material-icons right">delete</i>
+            Delete User
+        </button>
+
+    </div>
+
+    <%- include('../partials/stdfoot') %>
+
+</body>
+
+</html>

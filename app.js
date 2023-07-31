@@ -4,12 +4,12 @@ const DEBUG = true;
 const express = require( "express" );
 const logger = require("morgan");
 const path = require("path");
-const fs = require("fs");
 const { auth } = require('express-openid-connect');
 const { requiresAuth } = require('express-openid-connect');
+const { userRouter, loadUser, fakeLoadUser } = require("./routes/user.js");
 const dotenv = require('dotenv');
 dotenv.config();
-const db = require('./db/db_connection');
+const userApi = require("./db/user_api.js")
 const app = express();
 const port = 3000;
 
@@ -35,39 +35,38 @@ const config = {
     clientID: process.env.AUTH0_CLIENT_ID,
     issuerBaseURL: process.env.AUTH0_ISSUER_BASE_URL
 };
+
 // auth router attaches /login, /logout, and /callback routes to the baseURL
 app.use(auth(config));
 
-// define middleware that appends useful auth-related information to the res object
-// so EJS can easily access it
-app.use((req, res, next) => {
-    res.locals.isLoggedIn = req.oidc.isAuthenticated();
-    res.locals.user = req.oidc.user;
-    next();
-})
+// define middleware that adds useful auth0-sourced information to the res object
+// and references database for user information (nickname, privilege)
+// If user does not yet exist in database, create the user in the database 
+// app.use(loadUser);
 
-// req.isAuthenticated is provided from the auth router
-// app.get('/authtest', (req, res) => {
-//     res.send(req.oidc.isAuthenticated() ? 'Logged in' : 'Logged out');
-// });
 
-// app.get('/profile', requiresAuth(), (req, res) => {
-//     res.send(JSON.stringify(req.oidc.user));
-// });
+//DEBUG test
+app.use(fakeLoadUser(process.env.MOCK_USER_ID));
+
 
 // define a route for the default home page
 app.get( "/", ( req, res ) => {
     res.render('index');
 } );
 
-let songsRouter = require("./routes/songs.js");
-app.use("/songs", requiresAuth(), songsRouter);
+// app.use("/user", requiresAuth(), userRouter);
+app.use("/user", userRouter);
 
-let setsRouter = require("./routes/sets.js");
-app.use("/sets", requiresAuth(), setsRouter);
 
-// let usersRouter = require("./routes/users.js");
-// app.use("/users", requiresAuth(), requiresAdmin(), usersRouter);
+// let bandRouter = require("./routes/band.js");
+// app.use("/band", bandRouter); 
+
+// let songsRouter = require("./routes/songs.js");
+// app.use("/songs", requiresAuth(), songsRouter);
+
+// let setsRouter = require("./routes/sets.js");
+// app.use("/sets", requiresAuth(), setsRouter);
+
 
 // start the server
 app.listen( port, () => {
