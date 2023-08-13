@@ -1,19 +1,20 @@
 <%# Must pass in:
 - profile: [{user_id, username, privilege}]
 %>
+<% var viewDirRoot = '../'; %>
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <%- include('../partials/stdhead') %>
+    <%- include(viewDirRoot + 'partials/stdhead', {title: "User Profile"}) %>
 
     <!-- Additional custom CSS -->
 </head>
 
 <body>
 
-    <%- include('../partials/navbar') %>
+    <%- include(viewDirRoot + 'partials/navbar') %>
 
     <!-- Actual page content! -->
     <div class="container">
@@ -21,12 +22,12 @@
         <form id="editUserForm" method="post">  
             <input type="hidden" name="method" value="update">
 
-            <h2>User Info:</h2>
+            <h2>User Info / Settings:</h2>
         
             <div class="row">
                 <div class="input-field col s12">
-                    <input type="text" name="user_id" value="<%=profile.user_id%>" disabled >
-                    <label for="usernameInput">User Id:</label>
+                    <input type="text" id="useridInput" name="user_id" value="<%=profile.user_id%>" disabled >
+                    <label for="useridInput">User Id:</label>
                 </div>
             </div>
         
@@ -81,7 +82,7 @@
 
     </div>
 
-    <%- include('../partials/stdfoot') %>
+    <%- include(viewDirRoot + 'partials/stdfoot') %>
 
 </body>
 

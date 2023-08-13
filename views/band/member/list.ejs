@@ -1,0 +1,152 @@
+<%# Must pass in: 
+{ memberlist: [{nickname, user_id, username, created_at, role}] , 
+  rolelist: [{role, descr}] ,
+  TODO archive: OPTIONAL boolean } %>
+<% var viewDirRoot = '../../'; %>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include(viewDirRoot + 'partials/stdhead', {title: "Members of " + band.name}) %>
+</head>
+
+<body>
+
+    <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : [{href: `/band/${band.band_id}/`, text: band.name}, 
+                                                      {href: `/band/${band.band_id}/member/list`, text: 'Members'}]}) %>
+
+    <!-- Actual page content! -->
+    <div class="container">
+        
+        <h2>
+            <%=band.name%>: Members
+        </h2>
+
+        <div class="section" id="controls">
+        </div>
+
+        <div class="section" id="memberlist">
+            <table class="sortable">
+                <thead>
+                    <tr>
+                        <th>Nickname</th>
+                        <th>Username</th>
+                        <th>Role</th>
+                        <th>Member since</th>
+                        <th class="no-sort"></th>
+                    </tr>
+
+                </thead>
+                <tbody>
+
+                    <% for (const member of memberlist) { %>
+
+                        <!-- todo - MAKE THESE EDITABLE FORMS -->
+                        <tr>
+                            <td>
+                                <%= member.nickname %>
+                            </td>
+
+                            <td>
+                                <%= member.username %>
+                            </td>
+                            <td>
+                                <%= member.role%>
+                            </td>
+                            <td>
+                                <%= member.created_at %>
+                            </td>
+
+
+                            <td>
+                                <% if (band?.member.role=='owner' ) { %>
+
+                                    <a class="btn-small waves-effect waves-light left"
+                                        href="/band/<%=band.band_id%>/member/<%=member.nickname%>">
+                                        <i class="material-icons right">edit</i>
+                                        Edit
+                                    </a>
+
+                                    <form class="confirm-submit right" method="post" display="inline"
+                                        action="/band/<%=band.band_id%>/member/<%=member.nickname%>"
+                                        data-confirm-msg='Confirm that you want to delete this member by retyping "<%=member.nickname%>":'
+                                        data-require-retype="<%=member.nickname%>">
+
+                                        <input type="hidden" name="method" value="delete">
+
+                                        <button class="btn-small waves-effect waves-light red" type="submit">
+                                            <i class="material-icons right">delete</i>
+                                            Delete Member
+                                        </button>
+                                    </form>
+                                <% } %>
+
+                            </td>
+
+                        </tr>
+
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <% if (band?.member.role=='owner' ) { %>
+
+            <div class="fixed-action-btn">
+                <a class="btn-floating btn-large waves-effect waves-light red modal-trigger"
+                    href="#createmember"><i class="material-icons">add</i></a>
+            </div>
+            <div id="createmember" class="modal">
+                <div class="modal-content">
+                    <h2>Add a new band member:</h2>
+                    <form id="createMemberForm" method="post">
+                        <input type="hidden" name="method" value="create">
+
+                        <div class="input-field">
+                            <input type="text" id="nicknameInput" name="nickname" class="validate"
+                                data-length="40" maxlength="40">
+                            <label for="nicknameInput">Member's Nickname:</label>
+                        </div>
+
+                        <div class="input-field">
+                            <input type="text" id="usernameInput" name="username" class="validate"
+                                data-length="40" maxlength="40">
+                            <label for="usernameInput">Member's Username (optional, can be added later):</label>
+                        </div>
+
+                        <div class="input-field">
+
+                            <select id="roleInput" name="role" size="6" required>
+                                    <% for (const r of rolelist) { %>
+                                        <option value=<%=r.role %> selected>"<%= r.role %>" : <%= r.descr %></option>
+                                        <% } %>
+                            </select>
+
+                            <label for="roleInput">Band Role:</label>
+                        </div>
+
+                    </form>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn waves-effect waves-light " type="submit" form="createMemberForm">
+                        <i class="material-icons right">add</i>
+                        Add member
+                    </button>
+                    <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+                </div>
+            </div>
+        <% } %>
+
+
+    </div>
+
+
+    <%- include(viewDirRoot + 'partials/stdfoot') %>
+
+</body>
+
+</html>

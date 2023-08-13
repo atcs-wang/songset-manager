@@ -1,35 +1,35 @@
 <!DOCTYPE html>
 <html lang="en">
+<% var viewDirRoot = './'; %>
 
 <head>
-    <%- include('partials/stdhead') %>
+    <%- include(viewDirRoot + 'partials/stdhead') %>
 
 
 </head>
 
 <body>
     
-    <%- include('partials/navbar') %>
+    <%- include(viewDirRoot + 'partials/navbar') %>
 
     <!-- Actual page content! -->
     <div class="container">
         <h1>Welcome!</h1>
-        <h2>Let's manage your songs and setlists.</h1>
+        <h2>Let's manage your live music.</h1>
         <div>
-            <a class="green btn" href="/sets">
-                <i class="material-icons left">queue_music</i> See your setlists!
+            <a class="blue btn" href="/song">
+                <i class="material-icons left">library_music</i> Manage your songs!
             </a>
-            <a class="blue btn" href="/songs">
-                <i class="material-icons left">library_music</i> See your songs!
+            <a class="green btn" href="/setlist">
+                <i class="material-icons left">queue_music</i> Manage your setlists!
+            </a>
+            <a class="orange btn" href="/band">
+                <i class="material-icons left">people</i> Manage your bands!
             </a>
         </div>
     </div>
 
-    <!-- Materialize JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
-    <!-- Auto-initialize Materialize elements (Note - more specific initialization may be required for certain elements)-->
-    <script src="/scripts/materializeAutoInit.js"></script>
+    <%- include(viewDirRoot + 'partials/stdfoot') %>
 
 </body>
 

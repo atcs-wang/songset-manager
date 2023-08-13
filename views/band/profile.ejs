@@ -1,0 +1,98 @@
+<%# Must pass in: - band: [{band_id, name}] - sets: [{}]%>
+<% var viewDirRoot = '../'; %>
+
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <%- include(viewDirRoot + 'partials/stdhead', {title: band.name}) %>
+
+            <!-- Additional custom CSS -->
+    </head>
+
+    <body>
+
+        <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : [{href: `/band/${band.band_id}/`, text: band.name}]}) %>
+
+
+
+
+            <!-- Actual page content! -->
+            <div class="container">
+                <h2><%=band.name%> </h2>
+
+                <% if (band.member.role=='owner' ) { %>
+
+                    <a class="waves-effect waves-light btn modal-trigger" href="#manage"> <i
+                        class="material-icons right">settings</i>Edit Band Info</a>
+
+
+                    <a class="waves-effect waves-light btn modal-trigger" href="/band/<%=band.band_id%>/member/list"> <i
+                        class="material-icons right">people</i>Manage Band Members</a>
+
+                <% } %>
+                <div id="manage" class="modal">
+                    <div class="modal-content">
+
+                        <div class="row">
+                            <form id="editBandForm" method="post">
+                                <input type="hidden" name="method" value="update">
+
+                                <div class="input-field col s3">
+                                    <input type="text" id="bandIdInput" name="band_id" value="<%=band.band_id%>"
+                                        disabled>
+                                    <label for="bandIdInput">Band Id:</label>
+                                </div>
+
+                                <div class="input-field col s6">
+                                    <input type="text" id="nameInput" name="name" class="validate" data-length="40"
+                                        maxlength="40" value="<%=band.name%>">
+                                    <label for="nameInput">Band Name:</label>
+                                </div>
+                                <div class="col s3">
+                                    <button class="btn waves-effect waves-light " type="submit" form="editBandForm">
+                                        <i class="material-icons right">send</i>
+                                        Save Name
+                                    </button>
+                                </div>
+                            </form>
+
+                        </div>
+
+                        <!-- TODO : Band Member List -->
+
+                        <!-- TODO : Add Band Member Form -->
+                        
+
+                    </div>
+
+                    <div class="modal-footer">
+
+                        <form id="deleteBandForm" class="confirm-submit" method="post" display="none"
+                            data-confirm-msg='Confirm that you want to delete this band by retyping "<%=band.name%>":'
+                            data-require-retype="<%=band.name%>">
+
+                            <input type="hidden" name="method" value="delete">
+                            <!-- <input type="hidden" name="band_id" value="<%=band.band_id%>"> -->
+
+                        </form>
+
+                        <!-- Since the submit buttons are not within the forms, they must have the form attribute specified-->
+
+
+                        <button class="btn waves-effect waves-light red right" type="submit" form="deleteBandForm">
+                            <i class="material-icons right">delete</i>
+                            Delete Band
+                        </button>
+
+                        <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
+                    </div>
+                </div>
+
+            </div>
+
+            <%- include(viewDirRoot + 'partials/stdfoot') %>
+
+    </body>
+
+    </html>

@@ -16,7 +16,10 @@ const dbConfig = {
 
 const connection = mysql.createConnection(dbConfig);
 //only query allows multiple statements, not execute
-connection.query(fs.readFileSync(__dirname + "/db_create_user.sql", {encoding : "UTF-8"}));
-connection.query(fs.readFileSync(__dirname + "/db_create_band.sql", {encoding : "UTF-8"}));
-connection.query(fs.readFileSync(__dirname + "/db_create_song.sql", {encoding : "UTF-8"}));
+connection.query(fs.readFileSync(__dirname + "/scripts/db_create_user.sql", {encoding : "UTF-8"}));
+connection.query(fs.readFileSync(__dirname + "/scripts/db_create_band.sql", {encoding : "UTF-8"}));
+connection.query(fs.readFileSync(__dirname + "/scripts/db_create_song.sql", {encoding : "UTF-8"}));
+
+connection.query(fs.readFileSync(__dirname + "/scripts/db_create_mock_data.sql", {encoding : "UTF-8"}));
+
 connection.end();

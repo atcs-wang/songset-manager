@@ -12,117 +12,188 @@ function createBand(name, user_id) {
     return db.execute(createBandSQL, [name, user_id]);
 }
 
-const getBand = `select band_id, name from band where band_id = ? `
+const getBandSQL = `select band_id, name from band where band_id = ? limit 1`
 
 function getBand(band_id) {
-    return db.execute(getUserBandRoleSQL, [band_id]);
+    return db.execute(getBandSQL, [band_id]);
 }
 
 //Update band name 
-const updateBandSQL = `update band
+const updateBandNameSQL = `update band
 set name = ?
 where band_id = ?
 `
-function updateBandNickname(user_id, band_id, nickname){
-    return db.execute(updateBandSQL, [nickname, band_id, band_id, user_id]);
+function updateBandName(band_id, name){
+    return db.execute(updateBandNameSQL, [name, band_id]);
 }
 
 // Delete a band
 const deleteBandSQL = `delete from  band
 where band_id = ?`
 
-// TODO AUTH? Only allow owners of band to delete band
 function deleteBand(band_id){
-    return db.execute(deleteBandSQL, [user_id, user_id])
+    return db.execute(deleteBandSQL, [band_id])
 }
 
+//Add member to a band with given nickname and role
+// Note that this creates a member not (yet) associated with any actual user
+const createBandMemberSQL = `insert into band_member
+(nickname, band_id, role) values (?, ?, ?)`
 
-
-//Add user to a band with given role
-const createUserBandRoleSQL = `insert into user_band_role
-(user_id, band_id, role) values (?, ?, ?)`
-
-function createUserBandRole(user_id, band_id, role ) {
-    db.execute(createUserBandRoleSQL, [user_id, band_id, role])
+function createBandMember(nickname, band_id, role ) {
+    console.log([nickname, band_id, role])
+    return db.execute(createBandMemberSQL, [nickname, band_id, role])
 }
 
-//Add user to a band with given role - lookup by nickname
+//Add user to a band with given role - lookup by username, using it as initial nickname 
+const addBandMemberByUsernameSQL = `insert into band_member
+(nickname, band_id, role, user_id) 
+select ?, ?, ?, user_id from user where username = ?`
 
-const createUserBandRoleByNicknameSQL = `insert into user_band_role
-(user_id, band_id, role) values ( (select user_id from user where nickname = ?), ?, ?)`
-
-function createUserBandRoleByNickname(nickname, band_id, role ) {
-    db.execute(createUserBandRoleByNicknameSQL, [nickname, band_id, role])
+function createBandMemberWithUsername(nickname, band_id, role, username ) {
+    console.log([username, band_id, role])
+    return db.execute(addBandMemberByUsernameSQL, [nickname, band_id, role, username])
 }
 
-//Get the role of a user in a band
-//For general auth purposes, mainly
-const getUserBandRoleSQL = `
-select r.role 
-from user_band_role r 
+//Get info about a band member
+const getBandMemberSQL = `
+select m.nickname, m.role, m.user_id, u.username
+from band_member m
+left join user u on u.user_id = m.user_id 
+where band_id = ?
+and nickname = ?
+limit 1
+`
+function getBandMember(nickname, band_id){
+    return db.execute(getBandMemberSQL, [band_id, nickname]);
+}
+
+//Get the membership of a user in a band
+const getBandMemberByUserSQL = `
+select r.role, r.nickname
+from band_member r 
 where band_id = ?
 and user_id = ?
 limit 1
 `
-function getUserBandRole(user_id, band_id){
-    return db.execute(getUserBandRoleSQL, [band_id, user_id]);
+function getBandMemberByUser(user_id, band_id){
+    return db.execute(getBandMemberByUserSQL, [band_id, user_id]);
 }
 
 // Get all bands that a user has a role in (and those roles)
-const getAllUserBandRolesByUserSQL = `
-select b.band_id, b.name, r.role
+const getAllBandsByUserSQL = `
+select b.band_id, b.name, b.created_at, m.role
 from band b
-join user_band_role r on b.band_id = r.band_id 
-where r.user_id = ?
+join band_member m on b.band_id = m.band_id 
+where m.user_id = ?
 `
-function getAllUserBandRolesByUser(user_id) {
-    return db.execute(getAllUserBandRolesByUserSQL, [user_id]);
+function getAllBandsByUser(user_id) {
+    return db.execute(getAllBandsByUserSQL, [user_id]);
 }
 
-// Get all users associated with a band and their roles
-const getAllUserBandRolesByBandSQL = `
-select u.user_id, u.nickname, r.role 
-from user u
-join user_band_role r on u.user_id = r.user_id
-where r.band_id = ? 
+// Get all members associated with a band and their users/roles
+const getAllBandMembersByBandSQL = `
+select m.nickname, m.user_id, u.username, m.role, m.created_at  
+from band_member m
+left join user u on u.user_id = m.user_id
+where m.band_id = ? 
 `
 
-function getAllUserBandRolesByBand(band_id) {
-    return db.execute(getAllUserBandRolesByBandSQL, [user_id]);
+function getAllBandMembersByBand(band_id) {
+    return db.execute(getAllBandMembersByBandSQL, [band_id]);
+}
+
+//Update member in band with new role, member, and/or user
+updateBandMemberSQL = `update band_member
+set role = ?,
+nickname = ?,
+user_id = if( ? != "", 
+    (select case
+        when exists(select 1 from user where username = ?)
+        then (select user_id from user where username = ?)
+        else ?
+        end
+    ),
+null)where band_id = ?
+and nickname = ?
+`
+function updateBandMember(nickname, band_id, role, new_nickname, username) {
+    return db.execute(updateBandMemberSQL, [role, new_nickname, username, username, username, username, band_id, nickname])
 }
 
 
-//Update user in band with new role
-const updateUserBandRoleSQL = `update user_band_role
+//Update member in band with new role
+const updateBandMemberRoleSQL = `update band_member
 set role = ?
 where band_id = ?
-and user_id = ?
+and nickname = ?
 `
-function updateUserBandRole(user_id, band_id, role ) {
-    db.execute(updateUserBandRoleSQL, [role, band_id, user_id])
+function updateBandMemberRole(nickname, band_id, role ) {
+    return db.execute(updateBandMemberRoleSQL, [role, band_id, nickname])
 }
 
-//Delete a user's role in band
-const deleteUserBandRoleSQL = `delete from user_band_role
+
+//Update member in band with new nickname
+const updateBandMemberNicknameSQL = `update band_member
+set nickname = ?
 where band_id = ?
-and user_id = ?
+and nickname = ?
 `
-function deleteUserBandRole(user_id, band_id) {
-    db.execute(deleteUserBandRoleSQL, [band_id, user_id])
+function updateBandMemberNickname(nickname, band_id, new_nickname ) {
+    return db.execute(updateBandMemberNicknameSQL, [new_nickname, band_id, nickname])
 }
+
+//Update member in band to be associated with a (different) user
+const updateBandMemberUserSQL = `update band_member
+set user_id = if( ? != "", 
+    (select case
+        when exists(select 1 from user where username = ?)
+        then (select user_id from user where username = ?)
+        else ?
+        end
+    ),
+null)
+where band_id = ?
+and nickname = ?
+`
+function updateBandMemberUser(nickname, band_id, username ) {
+    return db.execute(updateBandMemberUserSQL, [username, username, username, username, band_id, nickname])
+}
+
+//Delete a member in band
+const deleteBandMemberSQL = `delete from band_member
+where band_id = ?
+and nickname = ?
+`
+function deleteBandMember(nickname, band_id) {
+    return db.execute(deleteBandMemberSQL, [band_id, nickname])
+}
+
+
+// Get all band roles 
+const getAllBandRolesSQL = `select * from band_role `
+function getAllBandRoles() {
+    return db.execute(getAllBandRolesSQL);
+}
+
 
 module.exports = {
     createBand,
     getBand,
-    updateBandNickname,
+    updateBandName,
     deleteBand,
-    createUserBandRole,
-    createUserBandRoleByNickname,
-    getUserBandRole,
-    getAllUserBandRolesByUser,
-    getAllUserBandRolesByBand,
-    updateUserBandRole,
-    deleteUserBandRole
+    createBandMember,
+    createBandMemberWithUsername,
+    getBandMember,
+    getBandMemberByUser,
+    getAllBandsByUser,
+    getAllBandMembersByBand,
+    updateBandMember,
+    updateBandMemberRole,
+    updateBandMemberNickname,
+    updateBandMemberUser,
+    deleteBandMember,
+    getAllBandRoles
 }
 
 
