@@ -1,0 +1,142 @@
+<%# Must pass in:
+{   songlist: [{title, artist, categoryId, categoryName, keyId, keyName, lastPlayedDate, lastPlayedDateReadable, notes}]
+  , listconfig]
+}
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('../partials/stdhead') %>
+    <link rel="stylesheet" href="/stylesheets/tagstyle.css">
+
+</head>
+
+<body>
+
+    <%- include('../partials/navbar') %>
+
+    <!-- Actual page content! -->
+    <div class="container">
+        <h2>Your Songs:</h2>
+
+            <div class="section" id="controls">
+                
+                <a class="btn-large waves-effect waves-light orange left modal-trigger" href="#add">
+                    <i class="material-icons right">add</i>
+                    Add a New Song
+                </a>
+
+                <form action="/song" method="get">
+                    <div class="row center-align">
+                        <div class="input-field col s9">
+                          <i class="material-icons prefix">search</i>
+                          <input id="searchBar" type="text" name="search" class="validate">
+                          <label for="searchBar">Search: (Title, Artist, Tags...)</label>
+                        </div>
+                    </div>
+                </form>
+            </div>
+    
+            <div class="modal" id="add">
+    
+                <div class="modal-content">
+    
+                    <form id="addSongForm" method="post">  
+                        <h2>Add a new song:</h2>
+                                        
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input type="text" id="titleInput" name="title" class="validate" data-length="45" required>
+                                <label for="titleInput">Title:</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input type="text" id="artistInput" name="artist" class="validate" data-length="100">
+                                <label for="artistInput">Artist:</label>
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="input-field col s4">
+                                <input type="text" id="keyInput" name="key" class="autocomplete key validate" data-length="30" >
+                                <label for="keyInput">(Typical) Key:</label>
+                            </div>
+                    
+                            <div class="input-field col s4">
+                                <input type="text" id="tempoInput" name="tempo" class="validate" data-length="15" >
+                                <label for="tempoInput">Tempo:</label>
+
+                            </div>
+
+                                
+                            <div class="input-field col s4 chips tags no-autoinit">
+
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            <div class="input-field col s12">
+                                <textarea class="materialize-textarea" id="notesInput" name="notes"></textarea>
+                                <label for="notesInput">Additional Notes:</label>
+                            </div>
+                        </div>
+                    
+                    </form>                    <!-- A section for the footer of the modal -->
+                    <div class="modal-footer">
+                        <!-- Since the submit button is not within the form, it must have the form attribute specified-->
+                        <button class="btn waves-effect waves-light " type="submit" form="addSongForm">
+                            <i class="material-icons right">send</i>
+                            Submit New Song
+                        </button>
+                        <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
+                    </div>
+                    
+                </div>
+    
+            </div>
+
+            <div class="section" id="songlist">
+
+                <table class="sortable">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Artist</th>
+                            <th>Tags</th>
+                            <th>Key</th>
+                            <th>Tempo</th>
+                            <th>Most Recent Set</th>
+                            <th class="no-sort"></th>
+                        </tr>
+                
+                    </thead>
+                    <tbody>
+                        <% for (song of songlist) { %>
+                        <tr>
+                            <td><%= song.title %></td>
+                            <td><%= song.artist %></td>
+                            <td data-sort="<%=song.tags%>">  <div class="chips tags readonly no-autoinit" data-tags="<%=song.tags%>"></div></td>
+                            <td><%= song.key%></td>
+                            <td><%= song.tempo %></td>
+                            <td data-sort="<%= song.lastPlayedDate %>"><a href="/set/<%= song.set_id %>"><%= song.recent_set %> - <%= song.lastPlayedDateReadable %></a></td>
+                            <td>
+                                <a class="btn-small waves-effect waves-light" href="/song/<%= song.song_id %>">
+                                    <i class="material-icons right">edit</i>
+                                    Edit
+                                </a>
+                            </td>
+                        </tr>
+                        <% } %>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        <script src="/scripts/tagsInit.js"></script>
+        <%- include('../partials/stdfoot') %>
+        <script src="/scripts/keyAutocomplete.js"></script>
+</body>
+
+</html>

@@ -50,28 +50,28 @@ app.use(auth(config));
 // If user does not yet exist in database, create the user in the database 
 app.use(loadUser);
 
-
 //DEBUG test
 // app.use(fakeLoadUser(process.env.MOCK_USER_ID));
-
-
 
 // define a route for the default home page
 app.get( "/", ( req, res ) => {
     res.render('index');
 } );
 
-// app.use("/user", requiresAuth(), userRouter);
+// Everything but the home page requires authentication
+app.use(requiresAuth());
+
 app.use("/user", userRouter);
 
+//Hands anything with 
 let bandRouter = require("./routes/band.js");
 app.use("/band", bandRouter); 
 
-// let songsRouter = require("./routes/songs.js");
-// app.use("/songs", requiresAuth(), songsRouter);
+let songRouter = require("./routes/song.js");
+bandRouter.use(["/:band_id/song", "/:band_id/songs"], songRouter);
 
-// let setsRouter = require("./routes/sets.js");
-// app.use("/sets", requiresAuth(), setsRouter);
+// let setRouter = require("./routes/sets.js");
+// bandRouter.use(["/:band_id/set", "/:band_id/sets"], setRouter);
 
 
 // start the server
