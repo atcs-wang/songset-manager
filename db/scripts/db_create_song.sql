@@ -24,6 +24,7 @@ CREATE TABLE `song` (
   `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `creator_id` varchar(255) NULL,
   `band_id` int NOT NULL,
+  `archived` boolean NOT NULL DEFAULT 0,
   PRIMARY KEY (`song_id`),
   KEY `creator_id_idx` (`creator_id`),
   CONSTRAINT `fk_song_creator_id` FOREIGN KEY (`creator_id`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE,
