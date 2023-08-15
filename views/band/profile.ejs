@@ -23,14 +23,23 @@
 
                 <% if (band.member.role=='owner' ) { %>
 
-                    <a class="waves-effect waves-light btn modal-trigger" href="#manage"> <i
-                        class="material-icons right">settings</i>Edit Band Info</a>
+                    <a class="waves-effect waves-light btn modal-trigger orange" href="#manage"> 
+                        <i class="material-icons right">settings</i>Edit Band Info</a>
 
 
-                    <a class="waves-effect waves-light btn modal-trigger" href="/band/<%=band.band_id%>/member/list"> <i
-                        class="material-icons right">people</i>Manage Band Members</a>
+                    <a class="waves-effect waves-light btn modal-trigger orange darken-3" href="/band/<%=band.band_id%>/member/list"> 
+                        <i class="material-icons right">people</i>Manage Band Members</a>
 
                 <% } %>
+
+               
+                <a class="waves-effect waves-light btn modal-trigger blue" href="/band/<%=band.band_id%>/song/list"> 
+                    <i class="material-icons right">library_music</i>See Songs</a>
+
+
+                <a class="waves-effect waves-light btn modal-trigger grey" href="/band/<%=band.band_id%>/song/archive"> 
+                    <i class="material-icons right">archive</i>See Archived Songs</a>
+    
                 <div id="manage" class="modal">
                     <div class="modal-content">
 

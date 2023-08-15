@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let elems = document.querySelectorAll('.chips.tags');
 
     M.Chips.init(elems, {
-        placeholder: 'Tags:',
-        secondaryPlaceholder: '+Tag'
+        placeholder: "Tags: (Hit 'Enter')",
+        secondaryPlaceholder: "+Tag (Hit 'Enter')"
     });
 
     // Prefill all tags with data-tags
