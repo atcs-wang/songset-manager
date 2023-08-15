@@ -6,7 +6,8 @@ const logger = require("morgan");
 const path = require("path");
 const { auth } = require('express-openid-connect');
 const { requiresAuth } = require('express-openid-connect');
-const { userRouter, loadUser, fakeLoadUser } = require("./routes/user.js");
+const userRouter= require("./routes/user.js");
+const { loadUser, fakeLoadUser } = require('./middleware/user.js');
 const dotenv = require('dotenv');
 dotenv.config();
 const userApi = require("./db/user_api.js")
