@@ -7,7 +7,7 @@ const db = require('./db_pool');
 
 // Get a song's info
 const getSongSQL = `
-select song_id, title, artist, key, tempo, tags, notes, created_at, updated_at, archived 
+select song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at, archived 
 from song s
 where s.song_id = ? and s.band_id = ?
 limit 1
@@ -19,7 +19,7 @@ function getSong(song_id, band_id) {
 
 // Get all (unarchived) songs associated with a band
 const getSongsByBandSQL = `
-select song_id, title, artist, key, tempo, tags, notes, created_at, updated_at
+select song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at
 from song s
 where band_id = ? and archived = 0
 `;
@@ -31,7 +31,7 @@ function getSongsByBand(band_id) {
 
 // Get all ARCHIVED songs associated with a band
 const getArchivedSongsByBandSQL = `
-select song_id, title, artist, key, tempo, tags, notes, created_at, updated_at
+select song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at
 from song s
 where band_id = ? and archived = 1
 `;
@@ -42,7 +42,7 @@ function getArchivedSongsByBand(band_id) {
 
 // Create a new song, associated with a given band by the given user.
 const createSongSQL = `insert into song
-(title,artist,key,tempo,tags,notes,creator_id,band_id)
+(title,artist,\`key\`,tempo,tags,notes,creator_id,band_id)
 values (?,?,?,?,?,?,?,?)
 `;
 
@@ -53,7 +53,7 @@ function createSong(user_id, band_id, title,artist,key,tempo,tags,notes) {
 const updateSongSQL = `update song 
 set title = ?,
 artist = ?,
-key = ?,
+\`key\` = ?,
 tempo = ?,
 tags = ?,
 notes = ?,
@@ -86,8 +86,8 @@ function deleteSong(song_id, band_id){
 }
 
 const copySongToBandSQL = `insert into song
-(title,artist,key,tempo,tags,notes,creator_id, band_id)
-select title,artist,key,tempo,tags,notes, ?, ? from song 
+(title,artist,\`key\`,tempo,tags,notes,creator_id, band_id)
+select title,artist,\`key\`,tempo,tags,notes, ?, ? from song 
 where song_id = ? and band_id = ?`;
 
 function copySongToBand(user_id, song_id, from_band_id, to_band_id) {
