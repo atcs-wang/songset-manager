@@ -1,5 +1,6 @@
 const express = require('express');
-const { requiresUser, requiresUsername, requiresSuperUser } = require('./user.js');
+const { requiresUser, requiresUsername } = require('../middleware/user.js');
+const {loadBand, requiresBandMember, requiresBandOwner}  = require('../middleware/band.js');
 const bandApi = require('../db/band_api.js');
 
 let bandRouter = express.Router();
@@ -10,8 +11,6 @@ bandRouter.route( ['/','/list'])
         res.render("band/list", { bandlist });
     })
     .post(requiresUsername, async (req, res) => { // Handle creating a new band
-
-        console.log(req.body.name, req.user.user_id);
         let [{ insertId }] = await bandApi.createBand(req.body.name, req.user.user_id);
         await bandApi.createBandMemberWithUsername(req.body.nickname, insertId, "owner", req.user.username);
         res.redirect(`./${insertId}`);
@@ -20,55 +19,8 @@ bandRouter.route( ['/','/list'])
 
 // Get band information for any route involving a band_id. 
 // Get the membership of the user in the band.
-// saves band and membership info as req.band and res.locals.band 
-bandRouter.route('/:band_id*')
-    .all( requiresUser )
-    .all( async (req, res, next) => {
-        let [[band]] = await bandApi.getBand(req.params.band_id);
-        if (!band) {
-            return res.status(404).send("Band does not exist");
-        }
-        let [[member]] = await bandApi.getBandMemberByUser(req.user.user_id, req.params.band_id);
-        if (req.user.privilege == 'Admin') {
-            if (member)
-                member.role = 'owner';
-            else 
-                member = {nickname : null, role : 'owner'} 
-        }
-        band.member = member;        
-        req.band = band;
-        res.locals.band = band;
-        console.log(band);
-        next();
-    });
-
-
-// Middleware, requires that the user has some role in the band (or admin)
-function requiresBandMember(req, res, next) {
-    if (req.band?.member) {
-        next();
-    } else {
-        res.status(403).send("User must be member of band.")
-    }
-}
-
-// Middleware, requires that the user is 'owner' of the band (or admin)
-function requiresBandOwner(req, res, next) {
-    if (req.band?.member?.role == 'owner') {
-        next();
-    } else {
-        res.status(403).send("User must have 'owner' role in the band. You can contact the owner of the band to have your role changed.")
-    }
-}
-
-// Middleware, requires that the user is 'core' member or 'owner' of the band (or admin)
-function requiresBandCoreMember(req, res, next) {
-    if (req.band?.member?.role == 'owner' || req.band?.member?.role == 'core') {
-        next();
-    } else {
-        res.status(403).send("User must have 'owner' role in the band. You can contact the owner of the band to have your role changed.")
-    }
-}
+// Saves band and membership info as req.band and res.locals.band 
+bandRouter.route('/:band_id*').all( loadBand('band_id') );
 
 
 bandRouter.route('/:band_id/')
@@ -92,10 +44,8 @@ bandRouter.route('/:band_id/')
 
 let memberRouter = express.Router();
 
-bandRouter.all("/:band_id/members", (req, res) => res.redirect(`/band/${band.band_id}/member/list`));
 
-
-bandRouter.use("/:band_id/member", memberRouter);
+bandRouter.use(["/:band_id/member","/:band_id/members"], memberRouter);
 
 memberRouter.route( ['/','/list'])
     .get(requiresBandMember, async (req, res) => {

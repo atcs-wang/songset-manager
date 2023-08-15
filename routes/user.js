@@ -1,70 +1,7 @@
-const SUPERUSER_PRIVELEGE = 'Admin';
 const express = require('express');
-const userApi = require('../db/user_api.js');
-
+const userApi = require('../db/user_api');
+const { requiresSuperUser } = require('../middleware/user');
 let userRouter = express.Router();
-
-
-// middleware that uses auth0's credentials to reference database for user information (username, privilege)
-// If user does not yet exist in database, create the user in the database.
-// saves user info as req.user and res.locals.user 
-const loadUser = async (req, res, next) => {
-    if (req.oidc.isAuthenticated()) {
-        let user_id = req.oidc.user.sub;
-        let [rows, fields] = await userApi.getUser(user_id);
-        if (rows.length == 0) {
-            await userApi.createUser(user_id, null);
-            [rows, fields] = await userApi.getUser(user_id);
-        }
-        res.locals.user = rows[0];
-        req.user = rows[0];
-    } else {
-        res.locals.user = null;
-        req.user = null;
-    }
-
-    next();
-}
-
-// for debugging purposes:
-// middleware that skips using Auth0, and referencing the database directly for credentials matching user_id. 
-function fakeLoadUser(user_id) {
-    return async  (req, res, next) => {
-        let [rows] = await userApi.getUser(user_id);
-        if (rows.length == 0) {
-            await userApi.createUser(user_id, null);
-            [rows] = await userApi.getUser(user_id);
-        }
-        res.locals.user = rows[0];
-        req.user = rows[0];
-        next();
-    }
-}
-
-function requiresUser(req, res, next) {
-    if (req.user) {
-        next();
-    } else {
-        res.status(403).send("User must be logged in")
-    }
-}
-
-function requiresUsername(req, res, next) {
-    if (req.user?.username) {
-        next();
-    } else {
-        res.status(403).send("User must have a username. Please set one in your profile/settings.")
-    }
-}
-
-function requiresSuperUser(req, res, next) {
-    if (req.user.privilege == SUPERUSER_PRIVELEGE) {
-        next();
-    } else {
-        res.status(403).send("User lacks sufficient privileges")
-    }
-    // next(new Error("User lacks sufficient privileges"));
-}
 
 // View list of all users. This is restricted to admin superusers.
 userRouter.get( ['/', '/list'], requiresSuperUser, async (req, res) => {
@@ -76,7 +13,7 @@ userRouter.get( ['/', '/list'], requiresSuperUser, async (req, res) => {
 //Also allow for superusers with appropriate privilege levesl to also access to any user route
 userRouter.all(`/:user_id*`, (req, res, next) => { 
     //login should match 
-    if (req.user.user_id == req.params.user_id || req.user.privilege == SUPERUSER_PRIVELEGE) {
+    if (req.user.user_id == req.params.user_id || req.user.privilege == 'Admin') {
         next();
     }
     else {
@@ -110,7 +47,7 @@ userRouter.route('/:user_id')
                 }
             } 
             // update privilege. Only allowed by superusers
-            if (req.body.privilege && req.user.privilege == SUPERUSER_PRIVELEGE) {
+            if (req.body.privilege && req.user.privilege == 'Admin') {
                 let results = await userApi.updateUserPrivilege(req.params.user_id, req.body.privilege);
             }
             res.redirect('back');
@@ -127,4 +64,4 @@ userRouter.route('/:user_id')
 
 
 //TODO add route to handle user privelege update
-module.exports = { userRouter , loadUser, fakeLoadUser, requiresUser, requiresUsername, requiresSuperUser};
+module.exports = userRouter;
