@@ -118,6 +118,7 @@ memberRouter.route("/:nickname")
             }
             if (affectedRows == 1) 
                 return res.redirect(`./${req.body.nickname}`) //redirect to (new) URL for nickname
+            res.redirect(`back`); 
         }
         else if (req.body.method == "delete") {
             // TODO handle various kinds of errors.
@@ -129,33 +130,15 @@ memberRouter.route("/:nickname")
             [{ affectedRows }] = await bandApi.deleteBandMember(req.params.nickname, req.band.band_id);
             if (affectedRows == 1)                
                 return res.redirect(`/band/${req.band.band_id}/member/list`);
+            res.redirect(`back`); 
+
+        }  else {
+            res.status(422).send("POST request missing acceptable method")
         }
 
-        res.redirect(`back`); 
     });
 
 
-// // Go to special "confirmation" page about deleting a song
-// bandRouter.get("/:songid/delete", (req, res) => {
-//     res.render("songs/songdelete", { categorylist, keylist, song: songlist[0]});
-// });
-
-
-// // Handle deleting a song
-// bandRouter.post("/:songid/delete", (req, res) => {
-//     res.send(req.body); //TODO
-// });
-
-
-// // Handle deleting a song
-// bandRouter.post("/:songid/archive", (req, res) => {
-//     res.send(req.body); //TODO
-// });
-
-// // Handle updating a song
-// bandRouter.post('/:songid/', (req, res) => {
-//     res.send(req.body); //TODO
-// });
 
 
 

@@ -59,6 +59,8 @@ userRouter.route('/:user_id')
                 res.redirect('/logout');
             else 
                 res.redirect('back');
+        } else {
+            res.status(422).send("POST request missing acceptable method")
         }
     })
 
