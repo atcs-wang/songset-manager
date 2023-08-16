@@ -128,7 +128,7 @@ memberRouter.route("/:nickname")
             }
             [{ affectedRows }] = await bandApi.deleteBandMember(req.params.nickname, req.band.band_id);
             if (affectedRows == 1)                
-                return res.redirect(`/band/${band.band_id}/member/list`);
+                return res.redirect(`/band/${req.band.band_id}/member/list`);
         }
 
         res.redirect(`back`); 

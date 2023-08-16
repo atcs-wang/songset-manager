@@ -76,8 +76,8 @@
                                         <input type="hidden" name="method" value="delete">
 
                                         <button class="btn-small waves-effect waves-light red" type="submit">
-                                            <i class="material-icons right">delete</i>
-                                            Delete Member
+                                            <i class="material-icons right">remove</i>
+                                            Remove
                                         </button>
                                     </form>
                                 <% } %>
@@ -94,7 +94,7 @@
         <% if (band?.member.role=='owner' ) { %>
 
             <div class="fixed-action-btn">
-                <a class="btn-floating btn-large waves-effect waves-light red modal-trigger <%= memberlist.length < 2 ? 'pulse' : '' %>"
+                <a class="btn-floating btn-large waves-effect waves-light orange modal-trigger <%= memberlist.length < 2 ? 'pulse' : '' %>"
                     href="#createmember"><i class="material-icons">group_add</i></a>
             </div>
             <div id="createmember" class="modal">
