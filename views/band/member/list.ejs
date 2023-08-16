@@ -23,18 +23,17 @@
             <%=band.name%>: Members
         </h2>
 
-        <blockquote>
             <% if (band?.member.role=='owner' ) { %>
-
+                <blockquote>
                     Click the <i class="material-icons tiny">group_add</i> in the bottom right to 
                     add more members to your band. 
                     
                     To associate band members with actual users, you'll need to know that user's <strong>username</strong></br>
+                </blockquote>
 
             <% } %>
 
             
-        </blockquote>
 
         <div class="section" id="memberlist">
             <table class="sortable">
