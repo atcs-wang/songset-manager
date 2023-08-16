@@ -19,12 +19,10 @@
             <ul id="desktop-nav" class="right hide-on-med-and-down">
                 
                 <li><a href="/"><i class="material-icons left">home</i> Home</a></li>
-                <li><a href="/set/list"><i class="material-icons left">queue_music</i> Sets</a></li>
-                <li><a href="/song/list"><i class="material-icons left">library_music</i> Songs</a></li>
                 
                 <% if (locals.user) { %>
-                    <li><a href="/band/list"><i class="material-icons left">group</i> Bands </a> </li>
-                    <li><a href="/user/<%=user.user_id%>"><i class="material-icons left">person</i> <%=user?.username || "New User (Click to set name)" %></a> </li>
+                    <li><a href="/band/list"><i class="material-icons left">group</i> Your Bands </a> </li>
+                    <li><a href="/user/<%=user.user_id%>"><i class="material-icons left">account_circle</i> <%=user?.username || "New User (Click to set name)" %></a> </li>
                     <% if (user.privilege == "Admin") { %>
                         <li><a href="/user/list"><i class="material-icons left">view_list</i>  Manage Users</a></li>
                     <% } %>
@@ -39,11 +37,9 @@
 
 <ul id="mobile-nav" class="sidenav">
         <li><a href="/"><i class="material-icons left">home</i> Home</a></li>
-        <li><a href="/set/list"><i class="material-icons left">queue_music</i> Sets</a></li>
-        <li><a href="/song/list"><i class="material-icons left">library_music</i> Songs</a></li>
         <% if (user) { %>
-            <li><a href="/band/list"><i class="material-icons left">group</i> Bands </a> </li>
-            <li><a href="/user/<%=user.user_id%>"><i class="material-icons left">person</i> <%=user?.username || "New User (Click to set name)" %></a> </li>
+            <li><a href="/band/list"><i class="material-icons left">group</i> Your Bands </a> </li>
+            <li><a href="/user/<%=user.user_id%>"><i class="material-icons left">account_circle</i> <%=user?.username || "New User (Click to set name)" %></a> </li>
             <% if (user.privilege == "Admin") { %>
                 <li><a href="/user/list"><i class="material-icons left">view_list</i> Manage Users</a></li>
             <% } %>
