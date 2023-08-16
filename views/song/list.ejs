@@ -6,7 +6,8 @@
 %>
 <% var viewDirRoot = '../'; %>
 <% var titleLabel = archive ? 'Archived Songs' : 'Songs'; %>
-
+<% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
+<% var promptSongCreation = !archive && (songlist.length == 0) && !locals?.search; %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,22 +26,33 @@
 
     <!-- Actual page content! -->
     <div class="container">
-        <div class="section row valign-wrapper" id="title">
+        <div class="section" id="title">
+            <div class="row valign-wrapper">
+                <h2 class="col s8"><%=titleLabel %>:</h2>
 
-        <h2 class="col s8"><%=titleLabel %>:</h2>
+                <% if (archive) { %>
 
-        <% if (archive) { %>
+                    <a class="col s4 waves-effect waves-light btn-small modal-trigger blue right" href="/band/<%=band.band_id%>/song/list"> 
+                        <i class="material-icons right">library_music</i>Unarchived Songs</a>
+                
+                <% } else { %>
 
-            <a class="col s4 waves-effect waves-light btn-small modal-trigger blue right" href="/band/<%=band.band_id%>/song/list"> 
-                <i class="material-icons right">library_music</i>Unarchived Songs</a>
-        
-        <% } else { %>
+                    <a class="col s4 waves-effect waves-light btn-small modal-trigger grey right" href="/band/<%=band.band_id%>/song/archive"> 
+                        <i class="material-icons right">archive</i>Archived Songs</a>
 
-            <a class="col s4 waves-effect waves-light btn-small modal-trigger grey right" href="/band/<%=band.band_id%>/song/archive"> 
-                <i class="material-icons right">archive</i>Archived Songs</a>
-
-        <% } %>
+                <% } %>
             </div>
+
+                    <% if (promptSongCreation) { %>
+                        <blockquote >
+                            Looks like your band doesn't have any songs (yet). 
+                            Click the <i class="material-icons">add_circle</i> in the bottom right to 
+                            create a song. </br>
+                        </blockquote>
+
+                    <% } %>
+
+        </div>
                 
     
             <div class="section" id="songlist">
@@ -65,7 +77,7 @@
                             <th>Key</th>
                             <th>Tempo</th>
                             <th>Most Recent Set</th>
-                            <% if (band.member.role=='owner' || band.member.role=='core' ) { %>
+                            <% if (isCoreMember) { %>
                                 <th class="no-sort">                    
                                 </th>
                             <% } %>
@@ -85,7 +97,7 @@
                             <td><%= song.key%></td>
                             <td><%= song.tempo %></td>
                             <td data-sort="<%= song.lastPlayedDate %>"><a href="/set/<%= song.set_id %>"><%= song.recent_set %> - <%= song.lastPlayedDateReadable %></a></td>
-                            <% if (band.member.role=='owner' || band.member.role=='core' ) { %>
+                            <% if (isCoreMember) { %>
 
 
                             <td>
@@ -139,10 +151,10 @@
                 </table>
             </div>
 
-            <% if (!archive && (band.member.role=='owner' || band.member.role=='core' )) { %>
+            <% if (!archive && isCoreMember) { %>
 
             <div class="fixed-action-btn">
-                <a class="btn-floating btn-large waves-effect waves-light orange modal-trigger <%= songlist.length < 2 ? 'pulse' : '' %>" 
+                <a class="btn-floating btn-large waves-effect waves-light orange modal-trigger <%= promptSongCreation ? 'pulse' : '' %>" 
                 href="#createsong"><i class="material-icons">add</i></a>
             </div>
 
