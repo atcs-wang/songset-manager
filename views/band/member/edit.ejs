@@ -23,9 +23,10 @@
         <div class="container">
             <h2>Edit "<%=member.nickname%>":</h2>
             <% if (member.user_id == user.user_id) { %> 
-                <blockquote>It seems you're editing your own membership! You can change your nickanme, but if you want to remove yourself, change your role, or change the username, 
-                    you'll need another band member with 'owner' status to make those changes for you. 
-                    If you're the only owner, promote another member to 'owner' status first.
+                <blockquote>It seems you're editing your own membership! <br> You can change your nickname, 
+                    but you can't remove yourself, change your username to someone else's, or change your role. <br> 
+                    To do any of that, you'll need another band member with <strong>owner</strong> status to make those changes for you. <br>
+                    If you're the only owner, promote another member to <strong>owner</strong> status first.
                 </blockquote>
             <% } %>
             <form id="updateMemberForm" method="post">

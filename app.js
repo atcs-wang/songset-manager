@@ -58,7 +58,11 @@ app.use(loadUser);
 
 // define a route for the default home page
 app.get( "/", ( req, res ) => {
-    res.render('index');
+    if (!req.user) {
+        res.render('index');
+    } else {
+        res.redirect('/band/list');
+    }
 } );
 
 // app.use("/user", requiresAuth(), userRouter);
