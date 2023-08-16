@@ -1,5 +1,6 @@
 <%# Must pass in:
 - (optional) user : {name, }
+- (optional) breadcrumbs : [{href, text}]
 %>
 
 <!-- Nav bar -->
@@ -7,19 +8,17 @@
     <nav>
         <div class="nav-wrapper">
             <% if (locals.breadcrumbs) { %>
-                <% for ( {href, text} of breadcrumbs) { %>
-                    <a href="<%=href%>" class="breadcrumb"><%=text%></a>
+                <% for ( bc of breadcrumbs) { %>
+                    <a href="<%=bc.href%>" class="breadcrumb"><%=bc.text%></a>
                 <% } %>
             <% } else { %>
-                <a href="/" class="brand-logo">Song Set Manager</a>
+                <a href="/" class="brand-logo"> <i class="material-icons left">queue_music</i> SongSets</a>
             <% }  %>
             
             <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
 
             <ul id="desktop-nav" class="right hide-on-med-and-down">
-                
-                <li><a href="/"><i class="material-icons left">home</i> Home</a></li>
-                
+               
                 <% if (locals.user) { %>
                     <li><a href="/band/list"><i class="material-icons left">group</i> Your Bands </a> </li>
                     <li><a href="/user/<%=user.user_id%>"><i class="material-icons left">account_circle</i> <%=user?.username || "New User (Click to set name)" %></a> </li>
@@ -36,8 +35,8 @@
     </nav>
 
 <ul id="mobile-nav" class="sidenav">
-        <li><a href="/"><i class="material-icons left">home</i> Home</a></li>
-        <% if (user) { %>
+
+    <% if (user) { %>
             <li><a href="/band/list"><i class="material-icons left">group</i> Your Bands </a> </li>
             <li><a href="/user/<%=user.user_id%>"><i class="material-icons left">account_circle</i> <%=user?.username || "New User (Click to set name)" %></a> </li>
             <% if (user.privilege == "Admin") { %>

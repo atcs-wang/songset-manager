@@ -16,10 +16,27 @@
         <div class="container">
             <h2>Your Bands:</h2>
 
-            <div class="section" id="controls">
-            </div>
-
             <div class="section" id="bandlist">
+                    <blockquote>
+                        <% if (!locals.user.username) { %>
+                            Before you can create or join any bands, you need to set a username first. </br>
+                            Click on the <i class="material-icons">account_circle</i> above to do so. </br>
+                        <% } else { %>
+
+                            <% if (bandlist.length == 0) { %>
+
+                                Looks like you're not part of any bands (yet). 
+                                Click the <i class="material-icons">add_circle</i> in the bottom right to 
+                                create a band. </br>
+
+                            <% } %>
+
+                            If you want to join an existing band, tell an <strong>owner</strong> of the band to add you using your username "<strong><%=user.username%></strong>"  
+
+                        <% } %>
+                        
+                    </blockquote>
+
                 <table class="sortable">
                     <thead>
                         <tr>
@@ -31,6 +48,7 @@
 
                     </thead>
                     <tbody>
+                        
                         <% for (const band of bandlist) { %>
                             <tr>
                                 <td> <a href="/band/<%= band.band_id %>/">
@@ -63,6 +81,7 @@
                             <% } %>
                     </tbody>
                 </table>
+
             </div>
 
             <div class="fixed-action-btn">
@@ -73,6 +92,7 @@
             <div id="createband" class="modal">
                 <div class="modal-content">
                     <h2>Create a new Band</h2>
+                    <blockquote> You will have the role of <strong>owner</strong> in this band. You can add more members with various roles afterwards.</blockquote>
                     
                     <form id="createBandForm" method="post">
                         <input type="hidden" name="method" value="create">
@@ -80,14 +100,13 @@
                         <div class="input-field">
                             <input type="text" id="nameInput" name="name" class="validate" data-length="40"
                                 maxlength="40">
-                            <label for="nameInput">Band Name:</label>
+                            <label for="nameInput">Band Name: (can be changed later)</label>
                         </div>
 
-                        <blockquote> You will be the "creator" and first "member" of this band, with the role of "owner". You can add more members with various roles afterwards.</blockquote>
                         <div class="input-field">
                             <input type="text" id="nicknameInput" name="nickname" class="validate" data-length="40"
                                 maxlength="40">
-                            <label for="nicknameInput">Your nickname in this band:</label>
+                            <label for="nicknameInput">Your nickname in this band: (can be changed later)</label>
                         </div>
                     </form>
 
