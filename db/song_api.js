@@ -80,7 +80,7 @@ artist = ?,
 \`key\` = ?,
 tempo = ?,
 tags = ?,
-notes = ?,
+notes = ?
 where song_id = ? and band_id = ?`;
 
 function updateSong(song_id, band_id, title,artist,key,tempo,tags,notes,){
