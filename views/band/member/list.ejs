@@ -94,8 +94,8 @@
         <% if (band?.member.role=='owner' ) { %>
 
             <div class="fixed-action-btn">
-                <a class="btn-floating btn-large waves-effect waves-light red modal-trigger"
-                    href="#createmember"><i class="material-icons">add</i></a>
+                <a class="btn-floating btn-large waves-effect waves-light red modal-trigger <%= memberlist.length < 2 ? 'pulse' : '' %>"
+                    href="#createmember"><i class="material-icons">group_add</i></a>
             </div>
             <div id="createmember" class="modal">
                 <div class="modal-content">

@@ -66,7 +66,8 @@
             </div>
 
             <div class="fixed-action-btn">
-                <a class="btn-floating btn-large waves-effect waves-light orange modal-trigger" href="#createband"><i class="material-icons">add</i></a>
+                <a class="btn-floating btn-large waves-effect waves-light orange modal-trigger <%= bandlist.length == 0 ? 'pulse' : '' %>" 
+                    href="#createband"><i class="material-icons">add</i></a>
             </div>
 
             <div id="createband" class="modal">
@@ -82,7 +83,7 @@
                             <label for="nameInput">Band Name:</label>
                         </div>
 
-                        <p> You will be the "creator" and first "member" of this band, with the role of "owner". You can add more members with various roles afterwards.</p>
+                        <blockquote> You will be the "creator" and first "member" of this band, with the role of "owner". You can add more members with various roles afterwards.</blockquote>
                         <div class="input-field">
                             <input type="text" id="nicknameInput" name="nickname" class="validate" data-length="40"
                                 maxlength="40">

@@ -35,9 +35,14 @@ songRouter.route(['/','/archive'])
     });
 
 songRouter.route('/:song_id/')
-    // Show information about a song
-    .get(requiresBandMember, (req, res) => {
-        res.render("song/detail");
+    .get(requiresBandMember, async (req, res) => {    // Show information about a song
+        let [rows] = await songApi.getSong(req.params.song_id, req.band.band_id)
+        if (rows.length == 1) {
+            res.render("song/detail", {song : rows[0]});
+        }
+        else {
+            res.status(404).send("No such song exists for this band. It may have been deleted or never created.");
+        }
     })
     .post(requiresBandCoreMember, async (req, res) => {
         if (req.body.method == "update") {             // update song details.
