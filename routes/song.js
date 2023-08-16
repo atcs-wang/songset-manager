@@ -62,9 +62,10 @@ songRouter.route('/:song_id/')
         else if (req.body.method == "unarchive") {
             await songApi.unarchiveSong(req.params.song_id, req.band.band_id);
             res.redirect('back');
+        }  else {
+            res.status(422).send("POST request missing acceptable method")
         }
 
     })
-
 
 module.exports = songRouter;

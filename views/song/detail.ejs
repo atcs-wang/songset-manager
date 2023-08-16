@@ -1,0 +1,147 @@
+<%# Must pass in:
+- song: {title, artist, categoryId, categoryName, keyId, keyName, lastPlayedDate, lastPlayedDateReadable, notes, archived}
+- setlist: ???
+%>
+
+<!DOCTYPE html>
+<html lang="en">
+<% var viewDirRoot = '../'; %>
+
+<head>
+    <%- include('../partials/stdhead') %>
+
+    <%- include(viewDirRoot + 'partials/stdhead', {title: `${song.title} : ${band.name} `}) %>
+    <%- include('./partials/songhead') %>
+
+</head>
+
+<body>
+
+    <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : [{href: `/band/${band.band_id}/`, text: band.name}, 
+                                                      {href: `/band/${band.band_id}/song/${song.archived ? "archive" : "list"}`, text: song.archived ? "Archive" : "Songs"},
+                                                      {href:  `/band/${band.band_id}/song/${song.song_id}`, text: song.title } 
+                                                      ]}) %>
+
+    <!-- Actual page content! -->
+    <div class="container">
+        <h2><%=song.title%></h2>
+                
+        <div class="section" id="details">
+
+            <form id="editSongForm" method="post">  
+                <input type="hidden" name="method" value="update">
+
+                <div class="row">
+                    <div class="input-field col s6">
+                        <input type="text" id="titleInput" name="title" class="validate" data-length="45" required
+                            value="<%=song.title%>">
+                        <label for="titleInput">Title:</label>
+                    </div>
+                    <div class="input-field col s6">
+                        <input type="text" id="artistInput" name="artist" class="validate" data-length="100"
+                            value="<%=song.artist%>">
+                        <label for="artistInput">Artist:</label>
+                    </div>
+                </div>
+            
+                <div class="row">
+                    <div class="input-field col s4">
+                        <input type="text" id="keyInput" name="key" class="autocomplete key validate" data-length="30" 
+                            value="<%=song.key%>">
+                        <label for="keyInput">(Typical) Key:</label>
+                    </div>
+            
+                    <div class="input-field col s4">
+                        <input type="text" id="tempoInput" name="tempo" class="validate" data-length="15" 
+                            value="<%=song.tempo%>">
+                        <label for="tempoInput">Tempo:</label>
+
+                    </div>
+                    <div class="input-field col s4 chips tags no-autoinit" 
+                        data-tags="<%=song.tags%>">
+                    </div>
+                </div>
+            
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea class="materialize-textarea" id="notesInput" name="notes"
+                        ><%=song.notes%></textarea>
+                        <label for="notesInput">Additional Notes:</label>
+                    </div>
+                </div>
+            
+            </form>
+            <div> 
+                <button class="btn waves-effect waves-light left" type="submit" form="editSongForm"
+                    action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
+                >
+                    <i class="material-icons right">save</i>
+                    Save Changes
+                </button>
+
+                <span class="right"> 
+
+                
+                <% if (song.archived) { %>
+        
+                    <form class="left" method="post" display="inline"
+                        action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
+                    >
+    
+                        <input type="hidden" name="method" value="unarchive">
+    
+                        <button class="btn waves-effect waves-light green" type="submit">
+                            <i class="material-icons right">unarchive</i>
+                            Unarchive
+                        </button>
+                    </form>
+    
+                    <% } else { %>
+    
+                        <form class="left" method="post" display="inline"
+                        action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
+                    >
+    
+                        <input type="hidden" name="method" value="archive">
+    
+                        <button class="btn waves-effect waves-light grey" type="submit">
+                            <i class="material-icons right">archive</i>
+                            Archive
+                        </button>
+                    </form>
+                    <% } %>
+                    
+                    <form class="confirm-submit right" method="post" display="inline"
+                    action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
+                    data-confirm-msg='Confirm that you want to delete this song by retyping "<%=song.title%>":'
+                    data-require-retype="<%=song.title%>">
+
+                    <input type="hidden" name="method" value="delete">
+
+                    <button class="btn waves-effect waves-light red" type="submit">
+                        <i class="material-icons right">delete</i>
+                        Delete
+                    </button>
+                </form>
+                </span>
+                    
+            </div>
+
+        </div>
+
+        <div class="section" id="controls">
+            
+        </div>
+
+        <div class="section" id="sets">
+            
+        </div>
+
+    </div>
+
+    <%- include('../partials/stdfoot') %>
+    <%- include('./partials/songfoot') %>
+
+</body>
+
+</html>
