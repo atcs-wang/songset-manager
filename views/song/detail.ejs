@@ -17,10 +17,18 @@
 
 <body>
 
-    <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : [{href: `/band/${band.band_id}/`, text: band.name}, 
-                                                      {href: `/band/${band.band_id}/song/${song.archived ? "archive" : "list"}`, text: song.archived ? "Archive" : "Songs"},
-                                                      {href:  `/band/${band.band_id}/song/${song.song_id}`, text: song.title } 
-                                                      ]}) %>
+    <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : 
+        song.archived ? 
+            [{href: `/band/${band.band_id}/`, text: band.name}, 
+                {href: `/band/${band.band_id}/song/list`, text: "Songs"},
+                {href: `/band/${band.band_id}/song/archive`, text: "Archive"},
+                {href:  `/band/${band.band_id}/song/${song.song_id}`, text: song.title }]
+            :
+            [{href: `/band/${band.band_id}/`, text: band.name}, 
+                {href: `/band/${band.band_id}/song/list`, text: "Songs"},
+                {href:  `/band/${band.band_id}/song/${song.song_id}`, text: song.title }]
+    }) %>
+
 
     <!-- Actual page content! -->
     <div class="container">

@@ -5,40 +5,42 @@
 }
 %>
 <% var viewDirRoot = '../'; %>
-<% var titleLabel = archive ? 'Archived Songs' : 'Songs'; %>
 <% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
 <% var promptSongCreation = !archive && (songlist.length == 0) && !locals?.search; %>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <%- include(viewDirRoot + 'partials/stdhead', {title: `${titleLabel} : ${band.name} `}) %>
+    <%- include(viewDirRoot + 'partials/stdhead', {title: `${archive ? "Archived Songs" : "Songs"} : ${band.name} `}) %>
     <%- include('./partials/songhead') %>
-
-
 </head>
 
 <body>
+        <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : 
+            archive ? 
+                [{href: `/band/${band.band_id}/`, text: band.name}, 
+                    {href: `/band/${band.band_id}/song/list`, text: "Songs"},
+                    {href: `/band/${band.band_id}/song/archive`, text: "Archive"}]
+                :
+                [{href: `/band/${band.band_id}/`, text: band.name}, 
+                    {href: `/band/${band.band_id}/song/list`, text: "Songs"}]
+        }) %>
 
-    <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : [{href: `/band/${band.band_id}/`, text: band.name}, 
-                                                      {href: `/band/${band.band_id}/song/${archive ? "archive" : "list"}`, text: titleLabel}
-                                                      ]}) %>
 
     <!-- Actual page content! -->
     <div class="container">
         <div class="section" id="title">
             <div class="row valign-wrapper">
-                <h2 class="col s8"><%=titleLabel %>:</h2>
-
+                <h2 class="col s8 left"><%=archive ? 'Archived Songs:' : 'Songs:'; %></h2>
                 <% if (archive) { %>
 
-                    <a class="col s4 waves-effect waves-light btn-small modal-trigger blue right" href="/band/<%=band.band_id%>/song/list"> 
-                        <i class="material-icons right">library_music</i>Unarchived Songs</a>
+                    <a class="col s4 waves-effect waves-light btn-large modal-trigger blue right" href="/band/<%=band.band_id%>/song/list"> 
+                        <i class="material-icons right">library_music</i>Unarchived</a>
                 
                 <% } else { %>
 
-                    <a class="col s4 waves-effect waves-light btn-small modal-trigger grey right" href="/band/<%=band.band_id%>/song/archive"> 
-                        <i class="material-icons right">archive</i>Archived Songs</a>
+                    <a class="col s4 waves-effect waves-light btn-large modal-trigger grey right" href="/band/<%=band.band_id%>/song/archive"> 
+                        <i class="material-icons right">archive</i>Archive</a>
 
                 <% } %>
             </div>
@@ -56,53 +58,63 @@
                 
     
             <div class="section" id="songlist">
-                <form  method="get">
-                    <div class="row center-align">
+                 
+                    <div class="row">
                         <div class="input-field">
                           <i class="material-icons prefix">search</i>
-                          <input id="searchBar" type="text" name="search" class="validate" value="<%=locals.search%>">
-                          <label for="searchBar">Search <%= band.name %>'s <%=titleLabel %>: (By Title, Artist, and Tags)</label>
+                          <input id="searchBar" type="text" class="search">
+                          <label for="searchBar">Search by Title, Artist, Tags, Key, Tempo, or Recent Set</label>
                         </div>
-
                     </div>
-    
-                </form>
+                    <div class="row">
+                        <!-- <button class="btn-small sort waves-light waves-effect" data-sort="title">Sort by Title</button> -->
+                        <button class="btn-flat sort waves-light waves-effect" data-sort="title">Sort by Title</button>
+                        <button class="btn-flat sort waves-light waves-effect" data-sort="artist">Sort by Artist</button>
+                        <button class="btn-flat sort waves-light waves-effect" data-sort="key">Sort by Key</button>
+                        <button class="btn-flat sort waves-light waves-effect" data-sort="tempo">Sort by Tempo</button>
+                        <button class="btn-flat sort waves-light waves-effect" data-sort="last-played">Sort by Last Played</button>
+                        <ul class="pagination paginationTop right"></ul>
+                    </div>
 
-                <table class="sortable">
+                <table>
                     <thead>
                         <tr>
-                            <th>Title</th>
-                            <th>Artist</th>
+                            <th><span class="sort" data-sort="title">Title</span></th>
+                            <th><span class="sort" data-sort="artist">Artist</span></th>
                             <th>Tags</th>
-                            <th>Key</th>
-                            <th>Tempo</th>
-                            <th>Most Recent Set</th>
-                            <% if (isCoreMember) { %>
-                                <th class="no-sort">                    
+                            <th><span class="sort" data-sort="key">Key</span></th>
+                            <th><span class="sort" data-sort="tempo">Tempo</span></th>
+                            <th><span class="sort" data-sort="last-played">Most Recent Set</span></th>
+                            <% if (isCoreMember && archive) { %>
+                                <th>                    
                                 </th>
                             <% } %>
                         </tr>
                 
                     </thead>
-                    <tbody>
+                    <tbody  class="list">
                         <% for (song of songlist) { %>
                         <tr>
                             <td> 
-                                <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>">
+                                <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>" class="title">
                                     <%= song.title %> 
-                                </a> 
+                                </a>
                             </td>
-                            <td><%= song.artist %></td>
-                            <td data-sort="<%=song.tags%>">  <div class="chips tags readonly no-autoinit" data-tags="<%=song.tags%>"></div></td>
-                            <td><%= song.key%></td>
-                            <td><%= song.tempo %></td>
-                            <td data-sort="<%= song.lastPlayedDate %>"><a href="/set/<%= song.set_id %>"><%= song.recent_set %> - <%= song.lastPlayedDateReadable %></a></td>
-                            <% if (isCoreMember) { %>
-
+                            <td class="artist"><%= song.artist %></td>
+                            <td class="tags" data-tags="<%=song.tags%>" >
+                                <div class="chips tags readonly no-autoinit">
+                                    <% for (tag of song.tags.split(",")) {
+                                        if (tag != '') {%>
+                                            <div class="chip"><%=tag%></div>
+                                    <%}}%>
+                                </div>
+                            </td>
+                            <td class="key"><%= song.key%></td>
+                            <td class="tempo"><%= song.tempo %></td>
+                            <td class="last-played" data-last-played="<%= song.lastPlayedDate %>"><a href="/set/<%= song.set_id %>" class="recent-set" data-recent-set="<%= song.recent_set %>"><%= song.recent_set %> - <%= song.lastPlayedDateReadable %></a></td>
+                            <% if (isCoreMember && archive) { %>
 
                             <td>
-                                <% if (archive) { %>
-    
                                 <form class="right" method="post" display="inline"
                                     action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
                                 >
@@ -127,21 +139,6 @@
                                         Delete
                                     </button>
                                 </form>
-                                <% } else { %>
-
-                                    <form class="right" method="post" display="inline"
-                                    action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
-                                >
-
-                                    <input type="hidden" name="method" value="archive">
-
-                                    <button class="btn-small waves-effect waves-light grey" type="submit">
-                                        <i class="material-icons right">archive</i>
-                                        Archive
-                                    </button>
-                                </form>
-                                <% } %>
-
                             </td>
                             <% } %>
 
@@ -149,6 +146,8 @@
                         <% } %>
                     </tbody>
                 </table>
+                <ul class="pagination paginationBottom right"></ul>
+
             </div>
 
             <% if (!archive && isCoreMember) { %>

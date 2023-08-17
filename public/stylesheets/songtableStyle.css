@@ -1,0 +1,14 @@
+.sort {
+    /* transition: all .2s ease-in-out;  */
+}
+.sort.asc, .sort.desc {
+    /* transform: scale(1.2);  */
+    text-decoration: underline;
+    text-underline-position: under;
+}
+.sort.asc::after {
+content: "🞁";
+}
+.sort.desc::after {
+content: "🞃";
+}
