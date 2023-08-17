@@ -1,22 +1,17 @@
-CREATE TABLE `songsets`.`setlist` (
-  `setlist_id` INT NOT NULL AUTO_INCREMENT,
-  `setname` VARCHAR(45) NULL,
-  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `creator_id` VARCHAR(255) NULL,
-  `band_id` INT NOT NULL, 
-  `archived` TINYINT NOT NULL DEFAULT 0,
+CREATE TABLE `setlist` (
+  `setlist_id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `creator_id` varchar(255) DEFAULT NULL,
+  `band_id` int NOT NULL,
+  `archived` tinyint NOT NULL DEFAULT '0',
+  `date` date DEFAULT NULL,
+  `descr` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`setlist_id`),
-  INDEX `creator_id_idx` (`creator_id`),
-  CONSTRAINT `fk_setlist_creator_id`
-    FOREIGN KEY (`creator_id`)
-    REFERENCES `songsets`.`user` (`user_id`)
-    ON DELETE SET NULL
-    ON UPDATE CASCADE,
-  INDEX `band_id_idx` (`band_id`) ,
-  CONSTRAINT `fk_setlist_band_id`
-    FOREIGN KEY (`band_id`)
-    REFERENCES `songsets`.`band` (`band_id`)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE);
-
+  KEY `creator_id_idx` (`creator_id`),
+  KEY `band_id_idx` (`band_id`),
+  KEY `date_idx` (`date`),
+  CONSTRAINT `fk_setlist_band_id` FOREIGN KEY (`band_id`) REFERENCES `band` (`band_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_setlist_creator_id` FOREIGN KEY (`creator_id`) REFERENCES `user` (`user_id`) ON DELETE SET NULL ON UPDATE CASCADE
+);
