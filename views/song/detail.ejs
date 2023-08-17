@@ -1,4 +1,5 @@
 <%# Must pass in:
+- band { name, member : {role}}
 - song: {title, artist, categoryId, categoryName, keyId, keyName, lastPlayedDate, lastPlayedDateReadable, notes, archived}
 - setlist: ???
 %>
@@ -6,6 +7,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <% var viewDirRoot = '../'; %>
+<% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
 
 <head>
     <%- include('../partials/stdhead') %>
@@ -41,45 +43,61 @@
 
                 <div class="row">
                     <div class="input-field col s6">
-                        <input type="text" id="titleInput" name="title" class="validate" data-length="45" required
+                        <input type="text" id="titleInput" name="title" class="validate" data-length="45" required <%if (!isCoreMember) { %> readonly <%}%>
                             value="<%=song.title%>">
                         <label for="titleInput">Title:</label>
                     </div>
                     <div class="input-field col s6">
-                        <input type="text" id="artistInput" name="artist" class="validate" data-length="100"
+                        <input type="text" id="artistInput" name="artist" class="validate" data-length="100" <%if (!isCoreMember) { %> readonly <%}%>
                             value="<%=song.artist%>">
                         <label for="artistInput">Artist:</label>
                     </div>
                 </div>
-            
                 <div class="row">
-                    <div class="input-field col s4">
-                        <input type="text" id="keyInput" name="key" class="autocomplete key validate" data-length="30" 
-                            value="<%=song.key%>">
-                        <label for="keyInput">(Typical) Key:</label>
-                    </div>
-            
-                    <div class="input-field col s4">
-                        <input type="text" id="tempoInput" name="tempo" class="validate" data-length="15" 
-                            value="<%=song.tempo%>">
-                        <label for="tempoInput">Tempo:</label>
+                   
+                    <div class="col s9 ">
 
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input type="text" id="keyInput" name="key" class="<%if (isCoreMember) { %>autocomplete <%}%>key validate" data-length="30" <%if (!isCoreMember) { %> readonly <%}%>
+                                    value="<%=song.key%>">
+                                <label for="keyInput">(Typical) Key:</label>
+                            </div>
+                    
+                            <div class="input-field col s6">
+                                <input type="text" id="tempoInput" name="tempo" class="validate" data-length="15" <%if (!isCoreMember) { %> readonly <%}%>
+                                    value="<%=song.tempo%>">
+                                <label for="tempoInput">Tempo:</label>
+        
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                            
+                            <div class="input-field col s12"> 
+                                <textarea class="materialize-textarea" id="notesInput" name="notes" <%if (!isCoreMember) { %> readonly <%}%>
+                                ><%=song.notes%></textarea>
+                                <label for="notesInput">Additional Notes:</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="input-field col s4 chips tags no-autoinit" 
-                        data-tags="<%=song.tags%>">
+                    <div class="col s3 ">
+                        <blockquote>
+                            <div id="tagsInput" class="chips tags no-autoinit <%if (!isCoreMember) { %> readonly <%}%>" 
+                                data-tags="<%=song.tags%>">
+                            </div>
+                        </blockquote>
+                        
                     </div>
+
                 </div>
-            
-                <div class="row">
-                    <div class="input-field col s12">
-                        <textarea class="materialize-textarea" id="notesInput" name="notes"
-                        ><%=song.notes%></textarea>
-                        <label for="notesInput">Additional Notes:</label>
-                    </div>
-                </div>
+                
             
             </form>
-            <div> 
+            <% if (isCoreMember) { %>
+
+            <div id="controls"> 
+
                 <button class="btn waves-effect waves-light left" type="submit" form="editSongForm"
                     action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
                 >
@@ -90,7 +108,7 @@
                 <span class="right"> 
 
                 
-                <% if (song.archived) { %>
+                    <% if (song.archived) { %>
         
                     <form class="left" method="post" display="inline"
                         action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
@@ -131,14 +149,13 @@
                         Delete
                     </button>
                 </form>
+                    
+                    
                 </span>
                     
             </div>
+            <% } %>
 
-        </div>
-
-        <div class="section" id="controls">
-            
         </div>
 
         <div class="section" id="sets">
