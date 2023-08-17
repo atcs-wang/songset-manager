@@ -176,33 +176,41 @@
                         </div>
                     
                         <div class="row">
-                            <div class="input-field col s4">
-                                <input type="text" id="keyInput" name="key" class="autocomplete key validate" data-length="30" >
-                                <label for="keyInput">(Typical) Key:</label>
+                   
+                            <div class="col s9 ">
+
+                                <div class="row">
+                                    <div class="input-field col s6">
+                                        <input type="text" id="keyInput" name="key" class="autocomplete key validate" data-length="30" >
+                                        <label for="keyInput">(Typical) Key:</label>
+                                    </div>
+                            
+                                    <div class="input-field col s6">
+                                        <input type="text" id="tempoInput" name="tempo" class="validate" data-length="15" >
+                                        <label for="tempoInput">Tempo:</label>
+
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="input-field col s12">
+                                        <textarea class="materialize-textarea" id="notesInput" name="notes"></textarea>
+                                        <label for="notesInput">Additional Notes:</label>
+                                    </div>
+                                </div>
                             </div>
-                    
-                            <div class="input-field col s4">
-                                <input type="text" id="tempoInput" name="tempo" class="validate" data-length="15" >
-                                <label for="tempoInput">Tempo:</label>
-
-                            </div>
-
-                                
-                            <div class="input-field col s4 chips tags no-autoinit">
-
+                        
+                            
+                            <div class="col s3 ">
+                                <blockquote>
+                                    <div id="tagsInput" class="chips tags no-autoinit">
+                                </blockquote>
                             </div>
                         </div>
-                    
-                        <div class="row">
-                            <div class="input-field col s12">
-                                <textarea class="materialize-textarea" id="notesInput" name="notes"></textarea>
-                                <label for="notesInput">Additional Notes:</label>
-                            </div>
-                        </div>
-                    
-                    </form>                    <!-- A section for the footer of the modal -->
+
+                    </form>                    
+
                     <div class="modal-footer">
-                        <!-- Since the submit button is not within the form, it must have the form attribute specified-->
                         <button class="btn waves-effect waves-light " type="submit" form="addSongForm">
                             <i class="material-icons right">send</i>
                             Submit New Song
