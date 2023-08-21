@@ -32,6 +32,6 @@ for (let i =0; i < songCount; i++) {
 
 Promise.all(promises).then( () => {
     console.log("Done, you can stop the process now.");
-}).catch( () => {
-    console.log("Whoops something went wrong.");
+}).catch( (error) => {
+    console.error(error);
 });
