@@ -49,12 +49,16 @@ songRouter.route('/:song_id/')
             await songApi.updateSong(req.params.song_id, req.band.band_id, 
                 req.body.title, req.body.artist, req.body.key, 
                 req.body.tempo, req.body.tags, req.body.notes);
+            if (req.body.archive) {
+                if (req.body.archive == "archive") {
+                    await songApi.archiveSong(req.params.song_id, req.band.band_id);
+                }
+                else if (req.body.archive == "unarchive") {
+                    await songApi.unarchiveSong(req.params.song_id, req.band.band_id);
+                } 
+            }
             res.redirect('back');
         }
-        else if (req.body.method == "delete") {
-            await songApi.deleteSong(req.params.song_id, req.band.band_id);
-            res.redirect('back');
-        } 
         else if (req.body.method == "archive") {
             await songApi.archiveSong(req.params.song_id, req.band.band_id);
             res.redirect('back');
@@ -62,7 +66,15 @@ songRouter.route('/:song_id/')
         else if (req.body.method == "unarchive") {
             await songApi.unarchiveSong(req.params.song_id, req.band.band_id);
             res.redirect('back');
-        }  else {
+        }
+        else if (req.body.method == "delete") {
+            await songApi.deleteSong(req.params.song_id, req.band.band_id);
+            if (req.body.redirect == 'archive') {
+                res.redirect(`/band/${req.band.band_id}/song/archive`);
+            }
+            else res.redirect(`/band/${req.band.band_id}/song/list`);
+        } 
+         else {
             res.status(422).send("POST request missing acceptable method")
         }
 

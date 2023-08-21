@@ -43,12 +43,16 @@ setlistRouter.route('/:setlist_id/')
 
             await setlistApi.updateSetlist(req.params.setlist_id, req.band.band_id, 
                 req.body.name, req.body.date, req.body.descr, req.body.song_id, req.body.note);
+            if (req.body.archive) {
+                if (req.body.archive == "archive") {
+                    await setlistApi.archiveSetlist(req.params.setlist_id, req.band.band_id);
+                }
+                else if (req.body.archive == "unarchive") {
+                    await setlistApi.unarchiveSetlist(req.params.setlist_id, req.band.band_id);
+                }  
+            }
             res.redirect('back');
         }
-        else if (req.body.method == "delete") {
-            await setlistApi.deleteSetlist(req.params.setlist_id, req.band.band_id);
-            res.redirect('back');
-        } 
         else if (req.body.method == "archive") {
             await setlistApi.archiveSetlist(req.params.setlist_id, req.band.band_id);
             res.redirect('back');
@@ -56,7 +60,15 @@ setlistRouter.route('/:setlist_id/')
         else if (req.body.method == "unarchive") {
             await setlistApi.unarchiveSetlist(req.params.setlist_id, req.band.band_id);
             res.redirect('back');
-        }  else {
+        } 
+        else if (req.body.method == "delete") {
+            await setlistApi.deleteSetlist(req.params.setlist_id, req.band.band_id);
+            if (req.body.redirect == 'archive') {
+                res.redirect(`/band/${req.band.band_id}/setlist/archive`);
+            }
+            else res.redirect(`/band/${req.band.band_id}/setlist/all`);
+        } 
+        else {
             res.status(422).send("POST request missing acceptable method")
         }
 
