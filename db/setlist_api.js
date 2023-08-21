@@ -58,7 +58,7 @@ values (?,?,?,?,?)
 `;
 
 function createSetlist(user_id, band_id, name, date, descr) {
-    return db.execute(createSetlistSQL, [name,date,descr,user_id,band_id])
+    return db.execute(createSetlistSQL, [name,date || null,descr,user_id,band_id])
 }
 
 
@@ -94,7 +94,7 @@ async function updateSetlist(setlist_id, band_id, name, date, descr, song_id_lis
                 connection.execute(insertUpdateSetlistSongSQL, [setlist_id, i, song_id, note_list[i]])
             );
         
-        queryPromises.push(connection.execute(updateSetlistSQL, [name, date, descr, setlist_id, band_id]),
+        queryPromises.push(connection.execute(updateSetlistSQL, [name, date  || null, descr, setlist_id, band_id]),
         connection.execute(deleteSetlistSongsSQL, [setlist_id, queryPromises.length]));
         
         let results = await Promise.all(queryPromises);
