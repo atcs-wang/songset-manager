@@ -48,7 +48,7 @@ function getSetlistsByBand(band_id) {
 }
 // Get all archived setlists associated with a band
 function getArchivedSetlistsByBand(band_id) {
-    return db.execute(getSetlistsByBandSQL, [band_i, 1]);
+    return db.execute(getSetlistsByBandSQL, [band_id, 1]);
 }
 
 // Create a new setlist, associated with a given band by the given user.
