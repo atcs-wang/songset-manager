@@ -36,29 +36,25 @@
     <!-- Actual page content! -->
     <div class="container">
         <div id="title">
-            <div class="row valign-wrapper">
-                <h3 class="col s8 left"><%=archive ? 'Setlist Archive:' : 'Setlists:'; %></h3>
-                <% if (archive) { %>
+            <h3><%=archive ? 'Setlist Archive:' : 'Setlists:'; %>
+            <% if (archive) { %>
 
-                    <a class="col s4 waves-effect waves-light btn-large modal-trigger blue right" href="/band/<%=band.band_id%>/setlist/all"> 
-                        <i class="material-icons right">queue_music</i>Unarchived</a>
-                
-                <% } else { %>
+                    <a class="btn-flat" href="/band/<%=band.band_id%>/setlist/all"> 
+                    View Un-Archived Setlists</a>
+            
+            <% } else { %>
+                    <a class="btn-flat" href="/band/<%=band.band_id%>/setlist/archive"> 
+                    View Archived Setlists</a>
+            <% } %>
+             </h3>
+            <% if (promptSetlistCreation) { %>
+                <blockquote >
+                    Looks like your band doesn't have any setlists (yet). 
+                    Click the <i class="material-icons">add_circle</i> in the bottom right to 
+                    create a setlist. </br>
+                </blockquote>
 
-                    <a class="col s4 waves-effect waves-light btn-large modal-trigger grey right" href="/band/<%=band.band_id%>/setlist/archive"> 
-                        <i class="material-icons right">archive</i>Archive</a>
-
-                <% } %>
-            </div>
-
-                    <% if (promptSetlistCreation) { %>
-                        <blockquote >
-                            Looks like your band doesn't have any setlists (yet). 
-                            Click the <i class="material-icons">add_circle</i> in the bottom right to 
-                            create a setlist. </br>
-                        </blockquote>
-
-                    <% } %>
+            <% } %>
 
         </div>
                 

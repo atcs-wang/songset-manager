@@ -34,20 +34,18 @@
     <!-- Actual page content! -->
     <div class="container">
         <div id="title">
-            <div class="row valign-wrapper">
-                <h3 class="col s8 left"><%=archive ? 'Song Archive:' : 'Songs:'; %></h3>
-                <% if (archive) { %>
+                <h3><%=archive ? 'Song Archive:' : 'Songs:'; %>
+                    <% if (archive) { %>
 
-                    <a class="col s4 waves-effect waves-light btn-large modal-trigger blue right" href="/band/<%=band.band_id%>/song/list"> 
-                        <i class="material-icons right">library_music</i>Unarchived</a>
+                        <a class="btn-flat" href="/band/<%=band.band_id%>/song/list"> 
+                        View Un-Archived Songs</a>
+                    
+                    <% } else { %>
+                            <a class="btn-flat" href="/band/<%=band.band_id%>/song/archive"> 
+                            View Archived Songs</a>
+                    <% } %>
+                </h3>
                 
-                <% } else { %>
-
-                    <a class="col s4 waves-effect waves-light btn-large modal-trigger grey right" href="/band/<%=band.band_id%>/song/archive"> 
-                        <i class="material-icons right">archive</i>Archive</a>
-
-                <% } %>
-            </div>
 
                     <% if (promptSongCreation) { %>
                         <blockquote >
