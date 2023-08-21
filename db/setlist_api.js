@@ -124,21 +124,41 @@ function unarchiveSetlist(setlist_id, band_id){
     return db.execute(unarchiveSetlistSQL, [setlist_id, band_id]);
 }
 
+const archiveSetlistsBeforeDateSQL = `update setlist 
+set archived = 1
+where setlist_id = ? and band_id = ? and date < ? and date != NULL`;
+
+function archiveSetlistsBeforeDate(setlist_id, band_id, before_date){
+    return db.execute(archiveSetlistsBeforeDateSQL, [setlist_id, band_id, before_date]);
+}
+
 const deleteSetlistSQL = "delete from setlist where setlist_id = ? and band_id = ?";
 
 function deleteSetlist(setlist_id, band_id){
     return db.execute(deleteSetlistSQL, [setlist_id, band_id])
 }
 
-
-const archiveSetlistsBeforeDateSQL = `update setlist 
-set archived = 1
-where setlist_id = ? and band_id = ? and date < ?`;
-
-function archiveSetlistsBeforeDate(setlist_id, band_id, before_date){
-    return db.execute(archiveSetlistsBeforeDateSQL, [setlist_id, band_id, before_date]);
+const getSetlistsBySongSQL = `
+select s.setlist_id, s.name, s.date, DATE_FORMAT(s.date, "%a, %b %D '%y") as date_pretty, 
+DATE_FORMAT(s.date, "%Y-%m-%d") as date_yyyymmdd, s.descr, 
+DATE_FORMAT(s.updated_at, "%a, %b %D '%y, %h:%i %p") as updated_at_pretty,
+DATE_FORMAT(s.updated_at, "%Y-%m-%d %H:%i:%s") as updated_at_yyyymmdd,
+group_concat(song.title order by x.setlist_order asc separator ',') as songs,
+count(song.song_id) as song_count,
+s.archived
+from 
+(select distinct setlist_id from setlist_song where song_id = ?) x2
+join setlist s on s.setlist_id = x2.setlist_id
+left join setlist_song x on s.setlist_id = x.setlist_id
+left join song on x.song_id = song.song_id
+where s.band_id = ?
+group by s.setlist_id, s.name, date_pretty, date_yyyymmdd, s.descr, s.created_at, s.updated_at, s.archived
+order by s.date desc
+`;
+// Get all (unarchived) setlists associated with a band
+function getSetlistsBySong(song_id, band_id) {
+    return db.execute(getSetlistsBySongSQL, [song_id, band_id]);
 }
-
 
 module.exports = {
     getSetlist,
@@ -149,5 +169,6 @@ module.exports = {
     archiveSetlist,
     unarchiveSetlist,
     archiveSetlistsBeforeDate,
-    deleteSetlist
+    deleteSetlist,
+    getSetlistsBySong,
 }
