@@ -41,26 +41,35 @@
                 {href:  `/band/${band.band_id}/setlist/${setlist.setlist_id}`, text: setlist.name }]
     }) %>
 
-
-
-    <div>
-        <ul class="tabs row">
-            <li class="tab col s6 "><a href="#setlist">View / Edit Setlist</a></li>
-            <li class="tab col s6 <% if (!allowEdit) { %> disabled <%}%>"><a href="#songlist">Add Songs</a></li>
-        </ul>
-    </div>
+    <ul class="tabs tabs-fixed-width">
+        <li class="tab col s6 m6"><a href="#setlist">View / Edit Setlist</a></li>
+        <li class="tab col s6 m6 <% if (!allowEdit) { %> disabled <%}%>"><a href="#songlist">Add Songs</a></li>
+    </ul>
 
     <!-- Actual page content! -->
 
+
+    <form id="deleteSetlistForm" class="confirm-submit right" method="post" display="hidden"
+        action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>"
+        data-confirm-msg='Confirm that you want to delete this setlist by retyping "<%=setlist.name%>":'
+        data-require-retype="<%=setlist.name%>">
+        <input type="hidden" name="method" value="delete">
+        <% if (setlist.archived) { %>
+        <input type="hidden" name="redirect" value="archive">
+        <% } %>
+    </form>
+
     <div class="container">
         
-        <% if (allowEdit) { %>
+        <% if (isCoreMember) { %>
 
         <div class="modal" id="editsetlistdetails">
 
+
             <div class="modal-content">
 
-                    <h2>Edit Setlist details:</h2>
+                    <h4>Edit setlist details:</h4>
+
                                     
                     <div class="row">
                         <div class="input-field col s6">
@@ -86,10 +95,10 @@
 
             <div class="modal-footer">
                 <button class="btn waves-effect waves-light " type="submit" form="editSetlistForm">
-                    <i class="material-icons right">send</i>
-                    Update Setlist details
+                    <i class="material-icons right">save</i>
+                    Save
                 </button>
-                <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
+                <button class="modal-close waves-effect waves-green btn-flat" >Close</button>
             </div>
 
         </div>
@@ -99,75 +108,51 @@
         <div id="setlist">
             <div class="section">
             <h4><%=setlist.name%>
-                <% if (allowEdit) { %>
-                    <a class="btn-floating btn-small waves-effect waves-light orange modal-trigger " 
+                <% if (isCoreMember) { %>
+                    <a class="btn-floating btn-small waves-effect waves-light orange modal-trigger tooltipped" 
+                    data-tooltip="Edit Title / Date / Description" data-position="right"
                     href="#editsetlistdetails"><i class="material-icons">edit</i></a>
-                <% } %>
-                <span class="right  right-align ">
-                <% if (setlist.archived) { %>
-                    <form method="post" display="inline"  method="post" 
-                        action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>"
-                    >
-    
-                        <input type="hidden" name="method" value="unarchive">
-    
-                        <button class="btn-small waves-effect waves-light green" type="submit">
-                            <i class="material-icons right">unarchive</i>
-                            Unarchive
-                        </button>
-                    </form>
-    
-                    <% } else { %>
-    
-                        <form method="post" display="inline"  method="post" 
-                        action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>"
-                    >
-    
-                        <input type="hidden" name="method" value="archive">
-    
-                        <button class="btn-small waves-effect waves-light grey" type="submit">
-                            <i class="material-icons right">archive</i>
-                            Archive
-                        </button>
-                    </form>
-                <% } %>
-                    <form class="confirm-submit" method="post" display="inline"
-                        action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>"
-                        data-confirm-msg='Confirm that you want to delete this setlist by retyping "<%=setlist.name%>":'
-                        data-require-retype="<%=setlist.name%>">
-    
-                        <input type="hidden" name="method" value="delete">
-    
-                        <button class="btn waves-effect waves-light red" type="submit">
-                            <i class="material-icons right">delete</i>
-                            Delete
-                        </button>
-                    </form>
-                    <% if (allowEdit) { %>
-                        <div class="section">
-
-                            <button class="btn-large waves-effect waves-light" type="submit" form="editSetlistForm"
-                                action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>"
-                            >
-                                <i class="material-icons right">save</i>
-                                Save Changes
+                    <span class="right">
+                        <% if (setlist.archived) { %>
+                            
+                            <button class="confirm-submit btn-floating btn-large waves-effect waves-light green tooltipped" type="submit"
+                                name="archive" value="unarchive" form="editSetlistForm"
+                                data-confirm-msg='Confirm that you want to UN-archive the setlist "<%=setlist.name%>":'
+                                data-tooltip="Unarchive" data-position="top">
+                                <i class="material-icons right">unarchive</i>
                             </button>
-                        </div>
-
+                        
+                            <% } else { %>
+        
+                            <button class="confirm-submit btn-floating btn-large waves-effect waves-light grey tooltipped" type="submit"
+                                name="archive" value="archive" form="editSetlistForm"
+                                data-confirm-msg='Confirm that you want to archive the setlist "<%=setlist.name%>":'
+                                data-tooltip="Archive" data-position="top">
+                                <i class="material-icons right">archive</i>
+                            </button>
+                        <% } %>
+                        
+                        
+                            <button class="btn-floating btn-large waves-effect waves-light red tooltipped" type="submit"
+                                form="deleteSetlistForm" data-tooltip="Delete" data-position="top">
+                            <i class="material-icons right">delete</i>
+                            </button>
+                    </span>
                 <% } %>
-                </span>
+                
             </h4>
             <h5><%=setlist.date_pretty%></h5>
                     <h6><%=setlist.descr%></h6>
                     <label>Last updated: <%= setlist.updated_at_pretty%></label>
-           
+            <% if (setlist.archived && isCoreMember) { %>
+                <blockquote>This setlist is archived, which means songs can't be added, removed, or changed until un-archived. 
+                    <br>Click the green button above to un-archive.</blockquote>
+            <% } %>
             </div>
-            <form id="editSetlistForm" method="post">  
+            <form id="editSetlistForm" method="post" action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>">  
                 <input type="hidden" name="method" value="update">
                 
-        
-                <ul  id="setlist-songs" class="collapsible expandable popout tooltipped" 
-                data-position="top" data-tooltip="Click to expand details. Drag the music notes to rearrange.">
+                <ul  id="setlist-songs" class="collapsible expandable popout">
                         <li id="empty-message">
                             <blockquote>
                                 This set doesn't have any songs. 
@@ -185,25 +170,31 @@
                             <input type="hidden" form="editSetlistForm" name="song_id" value="<%= song.song_id %>">
                             
                             <div class="collapsible-header valign-wrapper">
-                                <i class="material-icons handle">music_note</i>
-                                <div>
-                                    <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>" target="_blank">
+                                <i class="material-icons handle tooltipped" 
+                                    data-tooltip="Drag to rearrange" data-position="right">music_note</i>
+                                <div class="tooltipped" data-tooltip="Click to expand details" data-position="top">
+                                    <strong class="blue-text text-darken-3">
                                         <%= song.title %>
-                                    </a>
+                                    </strong>
                                     <span><em><%=song.note%></em></span>
                                 </div>
-                                <span class="badge"><i class="material-icons red-text remove-song" data-title="<%= song.title %>">delete</i>
+                                <span class="badge tooltipped" data-tooltip="Remove" data-position="top">
+                                    <i class="material-icons red-text remove-song" data-title="<%= song.title %>">delete</i>
                                 </span>
                                 
                             </div>
                             <div class="collapsible-body">
-                                <div class="input-field">
-                                    <label>Performance Notes:</label>
-                                    <input type="text" form="editSetlistForm" name="note" value="<%=song.note%>">
-                                </div>
-                            
+                                
+                                Title: <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>" target="_blank"
+                                    class="tooltipped" data-tooltip="Edit song details" data-position="top">
+                                    <%= song.title %>
+                                </a>
                                 <br>
                                 Artist: <strong><%= song.artist%></strong>
+                                <br>
+                                (Typical) Key: <strong><%=song.key%></strong> 
+                                <br>
+                                Tempo: <strong><%=song.tempo%></strong>
                                 <br>
                                 Tags: <div class="chips tags readonly no-autoinit">
                                     <% for (tag of song.tags.split(",")) {
@@ -212,27 +203,19 @@
                                     <%}}%>
                                 </div>
                                 <br>
-                                (Typical) Key: <strong><%=song.key%></strong> 
-                                <br>
-                                Tempo: <strong><%=song.tempo%></strong>
-                                <br>
-                                Most Recent Set: <strong><a href="/set/<%=song.recent_set_id %>"><%= song.recent_set_name %></a> - <span><%= song.last_played_pretty %></span> </strong>
-                            
+                                Most Recent Set: <strong>
+                                    <a href="/set/<%=song.recent_set_id %>"><%= song.recent_set_name %></a> - <span><%= song.last_played_pretty %></span> 
+                                </strong>
+                                <div class="input-field">
+                                    <label>Add a Performance Note:</label>
+                                    <input type="text" form="editSetlistForm" name="note" value="<%=song.note%>">
+                                </div>
+
                             </div>
                             
                         </li>
                     <% } %>
-                </ul>
-                <ul id="setlist-songs-trash" >
-                    <li>
-                        <div class="fixed-action-btn" >
-                        <a class="btn-floating btn-large red">
-                            <i class="large material-icons handle">delete</i>
-                        </a>
-                        </div>
-                    </li>
-                </ul>
-                                                
+                </ul>             
             </form>
         </div>      
 
@@ -272,7 +255,9 @@
                     <% for (song of songlist) { %>
                     <tr data-song-id="<%= song.song_id %>">
                         <td> 
-                            <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>" class="title"><%= song.title %></a>
+                            <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>" target="_blank"
+                                class="title tooltipped" data-tooltip="Edit song details" data-position="top"
+                            ><%= song.title %></a>
                         </td>
                         <td class="artist"><%= song.artist %></td>
                         <td class="tags" data-tags="<%=song.tags%>" >
@@ -290,8 +275,9 @@
                             <span class="last-played-pretty"><%= song.last_played_pretty %></span>
                         </td>
                         <td>
-                            <button class="btn waves-effect waves-light add-song" data-song-id="<%= song.song_id %>">
-                            <i class="material-icons right">send</i> Add Song To Setlist
+                            <button class="btn btn-floating waves-effect waves-light add-song tooltipped" data-song-id="<%= song.song_id %>"
+                                data-tooltip="Add Song To Setlist" data-position="top">
+                            <i class="material-icons right">add</i>
                             </button>
                         </td>
                     </tr>
@@ -304,16 +290,27 @@
 
         <% } %>
 
+        <% if (allowEdit) { %>
+                <div class="fixed-action-btn">
+
+                    <button class="btn-floating btn-large waves-effect waves-light pulse tooltipped" type="submit" 
+                        form="editSetlistForm"  data-tooltip="Save Changes" data-position="left">
+                        <i class="material-icons right">save</i>
+                    </button>
+                </div>
+
+        <% } %>
 
 
     </div>
+    
 
     <%- include('../partials/stdfoot') %>
     <script src="/scripts/songListInit.js"></script>
     <script src="/scripts/collapsibleInit.js"></script>
-    <script src="/scripts/setlist.js"></script>
-    <script src="/scripts/setlistSongSortableAddDelete.js"></script>
-
+    <% if (allowEdit) {%>
+        <script src="/scripts/setlistSongSortableAddDelete.js"></script>
+    <% } %>
 
 </body>
 

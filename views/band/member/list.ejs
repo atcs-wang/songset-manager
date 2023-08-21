@@ -71,22 +71,22 @@
                             <td>
                                 <% if (band?.member.role=='owner' ) { %>
 
-                                    <a class="btn-small waves-effect waves-light left"
-                                        href="/band/<%=band.band_id%>/member/<%=member.nickname%>">
+                                    <a class="btn-small btn-floating waves-effect waves-light left tooltipped"
+                                        href="/band/<%=band.band_id%>/member/<%=member.nickname%>"
+                                        data-position="top" data-tooltip="Edit">
                                         <i class="material-icons right">edit</i>
-                                        Edit
                                     </a>
 
                                     <form class="confirm-submit right" method="post" display="inline"
                                         action="/band/<%=band.band_id%>/member/<%=member.nickname%>"
-                                        data-confirm-msg='Confirm that you want to delete this member by retyping "<%=member.nickname%>":'
+                                        data-confirm-msg='Confirm that you want to remove this band member by retyping "<%=member.nickname%>":'
                                         data-require-retype="<%=member.nickname%>">
 
                                         <input type="hidden" name="method" value="delete">
 
-                                        <button class="btn-small waves-effect waves-light red" type="submit">
+                                        <button class="btn-small btn-floating waves-effect waves-light red tooltipped" type="submit"
+                                        data-position="top" data-tooltip="Remove">
                                             <i class="material-icons right">remove</i>
-                                            Remove
                                         </button>
                                     </form>
                                 <% } %>

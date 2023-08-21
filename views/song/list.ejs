@@ -35,7 +35,7 @@
     <div class="container">
         <div id="title">
             <div class="row valign-wrapper">
-                <h2 class="col s8 left"><%=archive ? 'Archived Songs:' : 'Songs:'; %></h2>
+                <h3 class="col s8 left"><%=archive ? 'Song Archive:' : 'Songs:'; %></h3>
                 <% if (archive) { %>
 
                     <a class="col s4 waves-effect waves-light btn-large modal-trigger blue right" href="/band/<%=band.band_id%>/song/list"> 
@@ -88,7 +88,7 @@
                             <th><span class="sort" data-sort="key">Key</span></th>
                             <th><span class="sort" data-sort="tempo">Tempo</span></th>
                             <th><span class="sort" data-sort="last-played">Most Recent Set</span></th>
-                            <% if (isCoreMember && archive) { %>
+                            <% if (isCoreMember) { %>
                                 <th>                    
                                 </th>
                             <% } %>
@@ -115,18 +115,20 @@
                             <td class="key"><%= song.key%></td>
                             <td class="tempo"><%= song.tempo %></td>
                             <td class="last-played" data-last-played="<%= song.lastPlayedDate %>"><a href="/set/<%= song.set_id %>" class="recent-set" data-recent-set="<%= song.recent_set %>"><%= song.recent_set %> - <%= song.lastPlayedDateReadable %></a></td>
-                            <% if (isCoreMember && archive) { %>
+                            <% if (isCoreMember) { %>
 
                             <td>
-                                <form class="right" method="post" display="inline"
+                                <% if (archive) { %>
+                                <form class="right confirm-submit" method="post" display="inline"
                                     action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
+                                    data-confirm-msg='Confirm that you want to UN-archive the song "<%=song.title%>":'
                                 >
 
                                     <input type="hidden" name="method" value="unarchive">
 
-                                    <button class="btn-small waves-effect waves-light green" type="submit">
+                                    <button class="btn-small btn-floating waves-effect waves-light green tooltipped" type="submit"
+                                    data-tooltip="Unarchive" data-position="top">
                                         <i class="material-icons right">unarchive</i>
-                                        Unarchive
                                     </button>
                                 </form>
 
@@ -136,12 +138,32 @@
                                     data-require-retype="<%=song.title%>">
 
                                     <input type="hidden" name="method" value="delete">
+                                    <% if (archive) { %>
+                                        <input type="hidden" name="redirect" value="archive">
+                                    <% } %>
 
-                                    <button class="btn-small waves-effect waves-light red" type="submit">
+                                    <button class="btn-small btn-floating waves-effect waves-light red tooltipped" type="submit"
+                                        data-tooltip="Delete" data-position="top">
+
                                         <i class="material-icons right">delete</i>
                                         Delete
                                     </button>
                                 </form>
+                                <% } else { %>
+                                    <form class="right confirm-submit" method="post" display="inline"
+                                        action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
+                                        data-confirm-msg='Confirm that you want to archive the song "<%=song.title%>":'
+                                    >
+
+                                        <input type="hidden" name="method" value="archive">
+
+                                        <button class="btn-small btn-floating waves-effect waves-light grey tooltipped" type="submit"
+                                            data-tooltip="Archive" data-position="top">
+                                            <i class="material-icons right">archive</i>
+                                        </button>
+                                    </form>
+                                <% } %>
+
                             </td>
                             <% } %>
 
@@ -220,7 +242,7 @@
                 <div class="modal-footer">
                         <button class="btn waves-effect waves-light " type="submit" form="addSongForm">
                             <i class="material-icons right">send</i>
-                            Submit New Song
+                            Add Song
                         </button>
                         <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
                 </div>

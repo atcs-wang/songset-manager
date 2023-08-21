@@ -14,25 +14,32 @@ const newSongTemplate = `
 <input type="hidden" form="editSetlistForm" name="song_id" value="<%= song['song-id'] %>">
 
 <div class="collapsible-header valign-wrapper">
-    <i class="material-icons handle">music_note</i>
-    <div>
-        <a href="<%= song['song-link'] %>" target="_blank">
+    <i class="material-icons handle tooltipped" 
+        data-tooltip="Drag to rearrange" data-position="right">music_note</i>
+    <div class="tooltipped" data-tooltip="Click to expand details" data-position="top">
+        <strong class="blue-text text-darken-3">    
             <%= song['title'] %>
-        </a>
+        </strong>
         <span>
         </span>
     </div>
-    <span class="badge right"><i class="material-icons red-text remove-song" data-title="<%= song['title'] %>">delete</i>
+    <span class="badge tooltipped" data-tooltip="Remove" data-position="top">
+        <i class="material-icons red-text remove-song" data-title="<%= song['title'] %>">delete</i>
     </span>
 </div>
 <div class="collapsible-body">
-    <div class="input-field">
-        <label>Performance Notes:</label>
-        <input type="text" form="editSetlistForm" name="note" value="">
-    </div>
 
+
+    Title: <a href="<%= song['song-link'] %>" target="_blank"
+                class="tooltipped" data-tooltip="Edit song details" data-position="top">
+                <%= song.title %>
+            </a>
     <br>
     Artist: <strong><%= song['artist']%></strong>
+    <br>
+    (Typical) Key: <strong><%=song['key']%></strong> 
+    <br>
+    Tempo: <strong><%=song['tempo']%></strong>
     <br>
     Tags: <div class="chips tags readonly no-autoinit">
         <% for (tag of song['tags'].split(",")) {
@@ -41,12 +48,13 @@ const newSongTemplate = `
         <%}}%>
     </div>
     <br>
-    (Typical) Key: <strong><%=song['key']%></strong> 
-    <br>
-    Tempo: <strong><%=song['tempo']%></strong>
-    <br>
-    Most Recent Set: <strong><a href="/set/<%=song['recent-set-id'] %>"><%= song['recent-set-name'] %></a> - <span><%= song['last-played-pretty'] %></span> </strong>
-
+    Most Recent Set: <strong>
+        <a href="/set/<%=song['recent-set-id'] %>"><%= song['recent-set-name'] %></a> - <span><%= song['last-played-pretty'] %></span>
+    </strong>
+    <div class="input-field">
+        <label>Add a Performance Note:</label>
+        <input type="text" form="editSetlistForm" name="note" value="">
+    </div>
 </div>
 
 </li>
@@ -58,6 +66,7 @@ document.querySelectorAll(".add-song").forEach((elm) => {
         let [song] = songList.get("song-id", elm.dataset.songId);
         let html = ejs.render(newSongTemplate, {song: song._values})
         document.querySelector("#setlist-songs").innerHTML += html;
+        M.Tooltip.init(document.querySelectorAll('.tooltipped'), {});
         listenForSongDelete();
         M.toast({html: `Added ${song._values.title}`});
     })
