@@ -74,8 +74,8 @@ app.use("/band", bandRouter);
 let songRouter = require("./routes/song.js");
 bandRouter.use(["/:band_id/song", "/:band_id/songs"], songRouter);
 
-// let setRouter = require("./routes/sets.js");
-// bandRouter.use(["/:band_id/set", "/:band_id/sets"], setRouter);
+let setlistRouter = require("./routes/setlist.js");
+bandRouter.use(["/:band_id/setlist", "/:band_id/setlists"], setlistRouter);
 
 
 // start the server
