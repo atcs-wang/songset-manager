@@ -13,7 +13,7 @@
     <%- include('../partials/stdhead') %>
 
     <%- include(viewDirRoot + 'partials/stdhead', {title: `${song.title} : ${band.name} `}) %>
-    <%- include('./partials/songhead') %>
+    <link rel="stylesheet" href="/stylesheets/tagStyle.css">
 
 </head>
 
@@ -55,7 +55,7 @@
                 </div>
                 <div class="row">
                    
-                    <div class="col s9 ">
+                    <div class="col l8 m8 s12 ">
 
                         <div class="row">
                             <div class="input-field col s6">
@@ -81,7 +81,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col s3">
+                    <div class="col l4 m4 s12">
                         <blockquote>
                             <div id="tagsInput" class="chips tags no-autoinit <%if (!isCoreMember) { %> readonly <%}%>" 
                                 data-tags="<%=song.tags%>">
@@ -165,7 +165,8 @@
     </div>
 
     <%- include('../partials/stdfoot') %>
-    <%- include('./partials/songfoot') %>
+    <script src="/scripts/tagsInit.js"></script>
+    <script src="/scripts/keyAutocomplete.js"></script>
 
 </body>
 

@@ -1,3 +1,4 @@
+// Dependency: Materializes, which initailizes M
 document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('.autocomplete.key');
     var instances = M.Autocomplete.init(elems, {

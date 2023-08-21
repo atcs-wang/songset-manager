@@ -1,0 +1,207 @@
+<%# Must pass in:
+{   setlists: [{name, date, descr}]
+    search: string,
+    archive: boolean,
+}
+%>
+<% var viewDirRoot = '../'; %>
+<% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
+<% var promptSetlistCreation = !archive && (setlists.length == 0) && !locals?.search; %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include(viewDirRoot + 'partials/stdhead', {title: `${archive ? "Archived Setlists" : "Setlists"} : ${band.name} `}) %>
+
+    <!-- For the list of setlists -->
+    <link rel="stylesheet" href="/stylesheets/listSortStyle.css">
+    <link rel="stylesheet" href="/stylesheets/tagStyle.css">
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+
+</head>
+
+<body>
+        <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : 
+            archive ? 
+                [{href: `/band/${band.band_id}/`, text: band.name}, 
+                    {href: `/band/${band.band_id}/setlist/all`, text: "Setlists"},
+                    {href: `/band/${band.band_id}/setlist/archive`, text: "Archive"}]
+                :
+                [{href: `/band/${band.band_id}/`, text: band.name}, 
+                    {href: `/band/${band.band_id}/setlist/all`, text: "Setlists"}]
+        }) %>
+
+
+    <!-- Actual page content! -->
+    <div class="container">
+        <div id="title">
+            <div class="row valign-wrapper">
+                <h2 class="col s8 left"><%=archive ? 'Archived Setlists:' : 'Setlists:'; %></h2>
+                <% if (archive) { %>
+
+                    <a class="col s4 waves-effect waves-light btn-large modal-trigger blue right" href="/band/<%=band.band_id%>/setlist/all"> 
+                        <i class="material-icons right">queue_music</i>Unarchived</a>
+                
+                <% } else { %>
+
+                    <a class="col s4 waves-effect waves-light btn-large modal-trigger grey right" href="/band/<%=band.band_id%>/setlist/archive"> 
+                        <i class="material-icons right">archive</i>Archive</a>
+
+                <% } %>
+            </div>
+
+                    <% if (promptSetlistCreation) { %>
+                        <blockquote >
+                            Looks like your band doesn't have any setlists (yet). 
+                            Click the <i class="material-icons">add_circle</i> in the bottom right to 
+                            create a setlist. </br>
+                        </blockquote>
+
+                    <% } %>
+
+        </div>
+                
+    
+            <div id="setlists">
+                 
+                    <div class="row">
+                        <div class="input-field">
+                          <i class="material-icons prefix">search</i>
+                          <input id="searchBar" type="text" class="search">
+                          <label for="searchBar">Search by Setlist Name, Date, Description, or Songs</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <button class="btn-flat sort waves-light waves-effect" data-sort="name">Sort by Name</button>
+                        <button class="btn-flat sort waves-light waves-effect" data-sort="date-yyyymmdd" data-default-order="desc">Sort by Date</button>
+                        <button class="btn-flat sort waves-light waves-effect" data-sort="updated-at-yyyymmdd" data-default-order="desc">Sort by Last Updated</button>
+                        <ul class="pagination paginationTop right"></ul>
+                    </div>
+
+                    <ul class="collapsible expandable popout list tooltipped" data-position="top" data-tooltip="Click row to preview setlist; click set icon or name to edit setlist.">
+                        <% for (setlist of setlists) { %>
+                        <li>
+                            <div class="collapsible-header valign-wrapper">
+                                <a href="/band/<%= band.band_id %>/setlist/<%= setlist.setlist_id %>">
+                                    <i class="material-icons">queue_music</i>
+                                </a>
+                                <div>
+                                    <a class="name" href="/band/<%= band.band_id %>/setlist/<%= setlist.setlist_id %>">
+                                        <%= setlist.name %>
+                                    </a>
+                                    <br>
+                                    <span class="date-pretty date-yyyymmdd" data-date="<%= setlist.date_yyyymmdd%>"> <%= setlist.date_pretty%> </span>
+                                </div>
+                                
+                                 <span class="new badge <% if (setlist.song_count == 0) { %> red <% } %>" data-badge-caption="🎵"><%= setlist.song_count%></span>
+                               
+                            </div>
+                            <div class="collapsible-body">
+                                <div class="descr"><%= setlist.descr %></div>
+                                <%if (setlist.songs) {%>
+                                <div class="songs" data-tags="<%=setlist.songs%>" >
+                                    <div class="chips tags readonly no-autoinit">
+                                        <% for (tag of setlist.songs.split(",")) {
+                                            if (tag != '') {%>
+                                                <div class="chip">🎵<%=tag%></div>
+                                        <%}}%>
+                                    </div>
+                                </div>
+                                <%} %>
+                                <div class="updated-at" data-updated-at="<%= setlist.updated_at_yyyymmdd%>">Last updated: <%= setlist.updated_at_pretty%></div>
+
+                                <% if (isCoreMember && archive) { %>
+
+                                    <form class="right" method="post" display="inline"
+                                        action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>"
+                                    >
+
+                                        <input type="hidden" name="method" value="unarchive">
+
+                                        <button class="btn-small waves-effect waves-light green" type="submit">
+                                            <i class="material-icons right">unarchive</i>
+                                            Unarchive
+                                        </button>
+                                    </form>
+
+                                    <form class="confirm-submit right" method="post" display="inline"
+                                        action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>"
+                                        data-confirm-msg='Confirm that you want to delete this setlist by retyping "<%=setlist.name%>":'
+                                        data-require-retype="<%=setlist.name%>">
+
+                                        <input type="hidden" name="method" value="delete">
+
+                                        <button class="btn-small waves-effect waves-light red" type="submit">
+                                            <i class="material-icons right">delete</i>
+                                            Delete
+                                        </button>
+                                    </form>
+                                <% } %>
+
+                            </div>
+                        </li>
+
+                        <% } %>
+                    </ul>
+                <ul class="pagination paginationBottom right"></ul>
+
+            </div>
+
+            <% if (!archive && isCoreMember) { %>
+
+            <div class="fixed-action-btn">
+                <a class="btn-floating btn-large waves-effect waves-light orange modal-trigger <%= promptSetlistCreation ? 'pulse' : '' %>" 
+                href="#createsetlist"><i class="material-icons">add</i></a>
+            </div>
+
+            <div class="modal" id="createsetlist">
+    
+                <div class="modal-content">
+    
+                    <form id="addSetlistForm" method="post">  
+                        <h2>Add a new setlist:</h2>
+                                        
+                        <div class="row">
+                            <div class="input-field col s6">
+                                <input type="text" id="nameInput" name="name" class="validate" data-length="45" required>
+                                <label for="nameInput">Name:</label>
+                            </div>
+                            <div class="input-field col s6">
+                                <input type="date" id="dateInput" name="date" class="validate">
+                                <label for="artistInput">Date:</label>
+                            </div>
+                        </div>
+                    
+                        <div class="row">
+                           <div class="input-field col s12">
+                                        <textarea class="materialize-textarea" id="descrInput" name="descr"></textarea>
+                                        <label for="descrInput">Description:</label>
+                            </div>
+                        </div>
+                        
+                    </form>                    
+
+                    <div class="modal-footer">
+                        <button class="btn waves-effect waves-light " type="submit" form="addSetlistForm">
+                            <i class="material-icons right">send</i>
+                            Create New Setlist
+                        </button>
+                        <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
+                    </div>
+                    
+                </div>
+    
+            </div>
+
+            <% } %>
+        </div>
+
+        <%- include(viewDirRoot + 'partials/stdfoot') %>
+        <script src="/scripts/tagsInit.js"></script>
+        <script src="/scripts/setlistListInit.js"></script>
+        <script src="/scripts/collapsibleInit.js"></script>
+
+</body>
+
+</html>

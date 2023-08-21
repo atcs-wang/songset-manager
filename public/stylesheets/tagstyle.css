@@ -2,5 +2,8 @@
     border-bottom: none;
     margin: 0;
     min-height: 0;
-    max-width: 10vw;
+}
+
+tbody .chips.tags {
+    max-width: 15vw;
 }

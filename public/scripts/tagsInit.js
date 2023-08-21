@@ -1,3 +1,5 @@
+// Dependency: MaterializeCSS, which initailizes M
+
 //Initializes any .chips elements also with the .tags or .tags-readonlyclass
 
 //Any .chips.tags elements will be assumed part of a form, and given a hidden input

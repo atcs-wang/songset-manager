@@ -1,0 +1,6 @@
+li#empty-message {
+    display: none;
+}
+li#empty-message:only-child {
+    display: inline;
+}
