@@ -19,9 +19,15 @@ function getSong(song_id, band_id) {
 
 // Get all (unarchived) songs associated with a band
 const getSongsByBandSQL = `
-select song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at
+select s.song_id, title, artist, \`key\`, tempo, tags, notes, s.created_at, s.updated_at, MAX(setlist.date) as last_played, 
+DATE_FORMAT(MAX(setlist.date), "%a, %b %D '%y") as last_played_pretty, 
+DATE_FORMAT(MAX(setlist.date), "%Y-%m-%d") as last_played_yyyymmdd 
 from song s
-where band_id = ? and archived = 0
+left join setlist_song x on s.song_id = x.song_id
+left join setlist on setlist.setlist_id = x.setlist_id and setlist.date < CURRENT_TIMESTAMP
+where s.band_id = ? and s.archived = 0
+group by song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at
+order by updated_at desc
 `;
 
 function getSongsByBand(band_id) {

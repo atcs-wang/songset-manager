@@ -1,0 +1,78 @@
+<%# Must pass in:
+{   songlist: [{title, artist, categoryId, categoryName, keyId, keyName, lastPlayedDate, lastPlayedDateReadable, notes}]
+    archive: boolean,
+}
+%>
+<% var viewDirRoot = '../'; %>
+<% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
+<% var promptSongCreation = !archive && (songlist.length == 0); %>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include(viewDirRoot + 'partials/stdhead', {title: `${archive ? "Archived Songs" : "Songs"} : ${band.name} `}) %>
+
+    <link rel="stylesheet" href="/stylesheets/tagStyle.css">
+
+    <!-- For the list of songs -->
+    <link rel="stylesheet" href="/stylesheets/listSortStyle.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
+</head>
+
+<body>
+        <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : 
+            archive ? 
+                [{href: `/band/${band.band_id}/`, text: band.name}, 
+                    {href: `/band/${band.band_id}/song/all`, text: "Songs"},
+                    {href: `/band/${band.band_id}/song/archive`, text: "Archive"}]
+                :
+                [{href: `/band/${band.band_id}/`, text: band.name}, 
+                    {href: `/band/${band.band_id}/song/all`, text: "Songs"}]
+        }) %>
+
+
+    <!-- Actual page content! -->
+    <div class="container">
+        <div id="title">
+                <h3><%=archive ? 'Song Archive:' : 'Songs:'; %>
+                    <% if (archive) { %>
+
+                        <a class="btn-flat" href="/band/<%=band.band_id%>/song/all"> 
+                        View Un-Archived Songs</a>
+                    
+                    <% } else { %>
+                            <a class="btn-flat" href="/band/<%=band.band_id%>/song/archive"> 
+                            View Archived Songs</a>
+                    <% } %>
+                </h3>
+            
+
+                <% if (promptSongCreation) { %>
+                    <blockquote >
+                        Looks like your band doesn't have any songs (yet). 
+                        Click the <i class="material-icons">add_circle</i> in the bottom right to 
+                        create a song. </br>
+                    </blockquote>
+
+                <% } %>
+
+        </div>
+            
+            <%-include(viewDirRoot + 'song/partials/list.ejs', {allowEdit: isCoreMember, addToSetlist: false}) %>
+
+            <% if (!archive && isCoreMember) { %>
+
+                <%-include('./partials/createsong.ejs', {promptSongCreation}) %>
+
+            <% } %>
+        </div>
+
+        <%- include(viewDirRoot + 'partials/stdfoot') %>
+        <script src="/scripts/tagsInit.js"></script>
+        <script src="/scripts/keyAutocomplete.js"></script>
+        <script src="/scripts/songListInit.js"></script>
+
+
+</body>
+
+</html>

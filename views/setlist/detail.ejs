@@ -43,7 +43,7 @@
 
     <ul class="tabs tabs-fixed-width">
         <li class="tab col s6 m6"><a href="#setlist">View / Edit Setlist</a></li>
-        <li class="tab col s6 m6 <% if (!allowEdit) { %> disabled <%}%>"><a href="#songlist">Add Songs</a></li>
+        <li class="tab col s6 m6 <% if (!allowEdit) { %> disabled <%}%>"><a href="#songlistContainer">Add Songs</a></li>
     </ul>
 
     <!-- Actual page content! -->
@@ -226,82 +226,21 @@
             </form>
         </div>      
 
-
         <% if (allowEdit) { %>
-        
-        <div id="songlist">
-            <div class="row">
-                <div class="input-field">
-                <i class="material-icons prefix">search</i>
-                <input id="searchBar" type="text" class="search">
-                <label for="searchBar">Search by Title, Artist, Tags, Key, Tempo, or Recent Set</label>
-                </div>
-            </div>
-            <div class="row">
-                <button class="btn-flat sort waves-light waves-effect" data-sort="title">Sort by Title</button>
-                <button class="btn-flat sort waves-light waves-effect" data-sort="artist">Sort by Artist</button>
-                <button class="btn-flat sort waves-light waves-effect" data-sort="key">Sort by Key</button>
-                <button class="btn-flat sort waves-light waves-effect" data-sort="tempo">Sort by Tempo</button>
-                <button class="btn-flat sort waves-light waves-effect" data-sort="last-played">Sort by Last Played</button>
-                <ul class="pagination paginationTop right"></ul>
-            </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th><span class="sort" data-sort="title">Title</span></th>
-                        <th><span class="sort" data-sort="artist">Artist</span></th>
-                        <th>Tags</th>
-                        <th><span class="sort" data-sort="key">Key</span></th>
-                        <th><span class="sort" data-sort="tempo">Tempo</span></th>
-                        <th><span class="sort" data-sort="last-played">Most Recent Set</span></th>
-                        <th></th>
-                    </tr>
-            
-                </thead>
-                <tbody class="list">
-                    <% for (song of songlist) { %>
-                    <tr data-song-id="<%= song.song_id %>">
-                        <td> 
-                            <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>" target="_blank"
-                                class="title tooltipped" data-tooltip="Edit song details" data-position="top"
-                            ><%= song.title %></a>
-                        </td>
-                        <td class="artist"><%= song.artist %></td>
-                        <td class="tags" data-tags="<%=song.tags%>" >
-                            <div class="chips tags readonly no-autoinit">
-                                <% for (tag of song.tags.split(",")) {
-                                    if (tag != '') {%>
-                                        <div class="chip"><%=tag%></div>
-                                <%}}%>
-                            </div>
-                        </td>
-                        <td class="key"><%= song.key%></td>
-                        <td class="tempo"><%= song.tempo %></td>
-                        <td class="last-played-yyyymmdd recent-set-id" data-last-played-yyyymmdd="<%= song.last_played_yyyymmdd %>" data-recent-set="<%= song.recent_set_id %>">
-                            <a href="/set/<%= song.set_id %>" class="recent-set-name"><%= song.recent_set_name %></a> - 
-                            <span class="last-played-pretty"><%= song.last_played_pretty %></span>
-                        </td>
-                        <td>
-                            <button class="btn btn-floating waves-effect waves-light add-song tooltipped" data-song-id="<%= song.song_id %>"
-                                data-tooltip="Add Song To Setlist" data-position="top">
-                            <i class="material-icons right">add</i>
-                            </button>
-                        </td>
-                    </tr>
-                    <% } %>
-                </tbody>
-            </table>
-            <ul class="pagination paginationBottom right"></ul>
 
-        </div>
-
+            <div id="songlistContainer">
+                    <%-include(viewDirRoot + 'song/partials/list.ejs', {allowEdit: false, addToSetlist: true}) %>
+                    <%-include(viewDirRoot + 'song//partials/createsong.ejs', {promptSongCreation : songlist.length == 0}) %>
+            </div>
         <% } %>
 
+        
 
     </div>
     
 
     <%- include('../partials/stdfoot') %>
+    <script src="/scripts/tagsInit.js"></script>
     <script src="/scripts/songListInit.js"></script>
     <script src="/scripts/collapsibleInit.js"></script>
     <% if (allowEdit) {%>

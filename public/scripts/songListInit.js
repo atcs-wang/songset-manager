@@ -10,11 +10,9 @@ var options = {
         'key', 
         'tempo', 
         { name: 'last-played-yyyymmdd', attr: "data-last-played"},
-        'last-played-pretty',
-        { name: 'recent-set-id', attr: "data-recent-set-id"},
-        'recent-set-name'
+        'last-played-pretty'
     ],
-    searchColumns: ['title', 'artist', 'tags', 'key', 'tempo','last-played', 'recent-set'],
+    searchColumns: ['title', 'artist', 'tags', 'key', 'tempo','last-played-yyyymmdd', 'last-played-pretty', 'recent-set'],
     page: 10,
     pagination: [{
         name: "paginationTop",

@@ -6,23 +6,24 @@ const {getSetlistsBySong} = require('../db/setlist_api');
 
 let songRouter = express.Router();
 
-songRouter.route(['/','/list'])
+songRouter.route(['/','/all'])
     .get( requiresBandMember, async (req, res) => { //Show all songs
         let [songlist] = await songApi.getSongsByBand(req.band.band_id);
-        res.render("song/list", { songlist , archive : false});
+        res.render("song/all", { songlist , archive : false});
     })
     .post(requiresBandCoreMember, async (req, res) => { // Handle creating a new song
         let [{ insertId }] = await songApi.createSong(req.user.user_id, req.band.band_id, 
                 req.body.title, req.body.artist, req.body.key, 
                 req.body.tempo, req.body.tags, req.body.notes);
         
-        res.redirect(`./${insertId}`);
+        // res.redirect(`./${insertId}`);
+        res.redirect('back');
     });
 
 songRouter.route(['/','/archive'])
     .get( requiresBandMember, async (req, res) => { //Show all songs
         let [songlist] = await songApi.getArchivedSongsByBand(req.band.band_id);
-        res.render("song/list", { songlist , archive : true}); 
+        res.render("song/all", { songlist , archive : true}); 
     });
 
 songRouter.route('/:song_id/')
@@ -65,7 +66,7 @@ songRouter.route('/:song_id/')
             if (req.body.redirect == 'archive') {
                 res.redirect(`/band/${req.band.band_id}/song/archive`);
             }
-            else res.redirect(`/band/${req.band.band_id}/song/list`);
+            else res.redirect(`/band/${req.band.band_id}/song/all`);
         } 
          else {
             res.status(422).send("POST request missing acceptable method")

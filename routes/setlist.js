@@ -52,7 +52,21 @@ setlistRouter.route('/:setlist_id/')
                 console.log(e);
                 res.json({error: e});
             }
-        } else if (req.body.method == "archive") {
+        } else if (req.body.method == 'new-song') { 
+            try {
+                let [{ insertId }] = await songApi.createSong(req.user.user_id, req.band.band_id, 
+                    req.body.title, req.body.artist, req.body.key, 
+                    req.body.tempo, req.body.tags, req.body.notes);
+            
+                await setlistApi.addSetlistSong(req.params.setlist_id, req.band.band_id, 
+                    insertId, null);    
+                res.redirect('back');
+            } catch (e) {
+                console.log(e);
+                res.json({error: e});
+            }
+        }
+        else if (req.body.method == "archive") {
             await setlistApi.archiveSetlist(req.params.setlist_id, req.band.band_id);
             res.redirect('back');
         }

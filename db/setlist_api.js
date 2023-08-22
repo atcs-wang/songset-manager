@@ -99,28 +99,28 @@ updated_at = CURRENT_TIMESTAMP
 where setlist_id = ? and band_id = ?`;
 
 // // Adds a song to the end of a setlist
-// const addSetlistSongSQL = `
-// insert into setlist_song 
-// (setlist_id, setlist_order, song_id)
-// select ?, COUNT(*), ? from setlist_song where setlist_id = ?
-// `
-// async function addSetlistSong(setlist_id, band_id, song_id){
-//     let connection = await db.getConnection();
-//     try {
-//         await connection.beginTransaction();    
-//         let results = await Promise.all([
-//             connection.execute(addSetlistSongSQL, [setlist_id, song_id, setlist_id]),
-//             connection.execute(updateSetlistUpdatedAtSQL, [setlist_id, band_id])
-//         ]);
-//         await connection.commit();
-//         return results;
-//     } catch (error) {
-//         await connection.rollback();
-//         throw error;
-//     } finally {
-//         connection.release();
-//     }
-// }
+const addSetlistSongSQL = `
+insert into setlist_song 
+(setlist_id, setlist_order, song_id)
+select ?, COUNT(*), ? from setlist_song where setlist_id = ?
+`
+async function addSetlistSong(setlist_id, band_id, song_id){
+    let connection = await db.getConnection();
+    try {
+        await connection.beginTransaction();    
+        let results = await Promise.all([
+            connection.execute(addSetlistSongSQL, [setlist_id, song_id, setlist_id]),
+            connection.execute(updateSetlistUpdatedAtSQL, [setlist_id, band_id])
+        ]);
+        await connection.commit();
+        return results;
+    } catch (error) {
+        await connection.rollback();
+        throw error;
+    } finally {
+        connection.release();
+    }
+}
 
 const insertUpdateSetlistSongSQL = `insert into setlist_song 
 (setlist_id, setlist_order, song_id, note)
@@ -224,6 +224,7 @@ module.exports = {
     getUpcomingSetlistsByBand,
     createSetlist,
     updateSetlistDetails,
+    addSetlistSong,
     updateSetlistSongs,
     archiveSetlist,
     unarchiveSetlist,

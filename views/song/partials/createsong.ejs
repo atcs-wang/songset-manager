@@ -1,0 +1,83 @@
+<%/*
+Requires:
+    promptSongCreation (boolean)
+
+    <link rel="stylesheet" href="/stylesheets/tagStyle.css">
+    <script src="/scripts/tagsInit.js"></script>
+    <script src="/scripts/keyAutocomplete.js"></script>
+*/%>
+
+<div class="fixed-action-btn">
+    <a class="tooltipped btn-floating btn-large waves-effect waves-light orange modal-trigger <%= promptSongCreation ? 'pulse' : '' %>" 
+    data-tooltip="New Song" data-position="top"
+    href="#createsong"><i class="material-icons">playlist_add</i></a>
+</div>
+
+<div class="modal modal-fixed-footer" id="createsong">
+
+    <div class="modal-content">
+
+        <form id="addSongForm" method="post">  
+            <input type="hidden" name="method" value="new-song">
+
+            <h4>Add a new song:</h4>
+                            
+            <div class="row">
+                <div class="input-field col s6">
+                    <input type="text" id="titleInput" name="title" class="validate" data-length="45" required>
+                    <label for="titleInput">Title:</label>
+                </div>
+                <div class="input-field col s6">
+                    <input type="text" id="artistInput" name="artist" class="validate" data-length="100">
+                    <label for="artistInput">Artist:</label>
+                </div>
+            </div>
+        
+            <div class="row">
+       
+                <div class="col l8 m12 s12">
+
+                    <div class="row">
+                        <div class="input-field col s6">
+                            <input type="text" id="keyInput" name="key" class="autocomplete key validate" data-length="30" >
+                            <label for="keyInput">(Typical) Key:</label>
+                        </div>
+                
+                        <div class="input-field col s6">
+                            <input type="text" id="tempoInput" name="tempo" class="validate" data-length="15" >
+                            <label for="tempoInput">Tempo:</label>
+
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="input-field col s12">
+                            <textarea class="materialize-textarea" id="notesInput" name="notes"></textarea>
+                            <label for="notesInput">Additional Notes:</label>
+                        </div>
+                    </div>
+                </div>
+            
+                
+                <div class="col l4 m12 s12">
+                    <blockquote>
+                        <div id="tagsInput" class="chips tags no-autoinit">
+                    </blockquote>
+                </div>
+            </div>
+
+        </form>                    
+
+        
+        
+    </div>
+
+    <div class="modal-footer">
+            <button class="btn waves-effect waves-light " type="submit" form="addSongForm">
+                <i class="material-icons right">send</i>
+                Add Song
+            </button>
+            <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
+    </div>
+
+</div>
