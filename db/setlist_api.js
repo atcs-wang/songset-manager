@@ -61,7 +61,7 @@ count(song.song_id) as song_count
 from setlist s
 left join setlist_song x on s.setlist_id = x.setlist_id
 left join song on x.song_id = song.song_id
-where s.band_id = ? and (s.date == NULL or s.date >= CURRENT_DATE()) 
+where s.band_id = ? and s.archived = 0 and (s.date is NULL or s.date >= CURRENT_DATE())
 group by s.setlist_id, s.name, date_pretty, date_yyyymmdd, s.descr, s.created_at, s.updated_at
 order by s.date asc
 `;

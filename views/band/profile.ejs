@@ -20,27 +20,30 @@
             <!-- Actual page content! -->
             <div class="container">
                 <h2><%=band.name%> </h2>
+                <div class="row">
 
                 <% if (band.member.role=='owner' ) { %>
 
-                    <a class="waves-effect waves-light btn modal-trigger orange" href="#manage"> 
-                        <i class="material-icons right">settings</i>Edit Band Info</a>
+                        <a class="waves-effect waves-light btn z-depth-0 modal-trigger orange col s6 m6 l3" href="#manage"> 
+                            <i class="material-icons left">settings</i>Edit</a>
 
 
-                    <a class="waves-effect waves-light btn modal-trigger orange darken-3" href="/band/<%=band.band_id%>/member/list"> 
-                        <i class="material-icons right">group_add</i>Manage Band Members</a>
+                        <a class="waves-effect waves-light btn z-depth-0 orange darken-3 col s6 m6 l3" href="/band/<%=band.band_id%>/member/list"> 
+                            <i class="material-icons left">group_add</i>Members</a>
 
                 <% } %>
 
                
-                <a class="waves-effect waves-light btn modal-trigger blue" href="/band/<%=band.band_id%>/song/all"> 
-                    <i class="material-icons right">library_music</i>See All Songs</a>
+                <a class="waves-effect waves-light btn z-depth-0 green col s6 m6 l3" href="/band/<%=band.band_id%>/setlist/all"> 
+                    <i class="material-icons left">queue_music</i>Setlists</a></li>
+                
+                <a class="waves-effect waves-light btn z-depth-0 blue col s6 m6 l3" href="/band/<%=band.band_id%>/song/all"> 
+                    <i class="material-icons left">library_music</i>Songs</a>
+                    
+                </div>
 
-                <a class="waves-effect waves-light btn modal-trigger grey" href="/band/<%=band.band_id%>/song/archive"> 
-                    <i class="material-icons right">archive</i>See Archived Songs</a>
-    
-                <a class="waves-effect waves-light btn modal-trigger green" href="/band/<%=band.band_id%>/setlist/all"> 
-                        <i class="material-icons left">queue_music</i> See All Setlists</a></li>
+                <h4>Upcoming Sets:</h4>
+                <%- include(viewDirRoot + '/setlist/partials/list', {allowEdit: false}) %>
     
                 <div id="manage" class="modal">
                     <div class="modal-content">

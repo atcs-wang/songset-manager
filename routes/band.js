@@ -2,7 +2,7 @@ const express = require('express');
 const { requiresUser, requiresUsername } = require('../middleware/user.js');
 const {loadBand, requiresBandMember, requiresBandOwner}  = require('../middleware/band.js');
 const bandApi = require('../db/band_api.js');
-
+const {getUpcomingSetlistsByBand} = require('../db/setlist_api.js')
 let bandRouter = express.Router();
 
 bandRouter.route( ['/','/list'])
@@ -25,8 +25,9 @@ bandRouter.route('/:band_id*').all( loadBand('band_id') );
 
 bandRouter.route('/:band_id/')
     // Show information about a band
-    .get(requiresBandMember, (req, res) => {
-        res.render("band/profile");
+    .get(requiresBandMember, async (req, res) => {
+        let [setlists] = await getUpcomingSetlistsByBand(req.band.band_id);
+        res.render("band/profile", {setlists});
     })
     .post(requiresBandOwner, async (req, res) => {
         if (req.body.method == "update") {
