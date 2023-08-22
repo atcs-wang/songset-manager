@@ -65,7 +65,7 @@ const newSongTemplate = `
     </div>
     <div class="collapsible-body">
         
-        Title: <a href="<%= song['song-link'] %>" target="_blank"
+        Title: <a href="<%= song['song-link'] %>" 
             class="tooltipped" data-tooltip="Edit song details" data-position="top">
             <%= song.title %>
         </a>
