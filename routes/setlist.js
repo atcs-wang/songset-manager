@@ -31,7 +31,6 @@ setlistRouter.route('/:setlist_id/')
         if (setlist) {
             let [songlist] = await songApi.getSongsByBand(req.band.band_id);
             setlist.songs = songs;
-            console.log(setlist);
             res.render("setlist/detail", {setlist, songlist});
         }
         else {
@@ -39,29 +38,21 @@ setlistRouter.route('/:setlist_id/')
         }
     })
     .post(requiresBandCoreMember, async (req, res) => {
-        if (req.body.method == "update") {             // update setlist details.
-            if (req.body.archive) {
-                if (req.body.archive == "archive") {
-                    await setlistApi.archiveSetlist(req.params.setlist_id, req.band.band_id);
-                }
-                else if (req.body.archive == "unarchive") {
-                    await setlistApi.unarchiveSetlist(req.params.setlist_id, req.band.band_id);
-                }
-                await setlistApi.updateSetlist(req.params.setlist_id, req.band.band_id, 
-                    req.body.name, req.body.date, req.body.descr, req.body.song_id, req.body.note);   
-                res.redirect('back');
+        if (req.body.method == "update-details") {             // update setlist details.
+            await setlistApi.updateSetlistDetails(req.params.setlist_id, req.band.band_id, 
+                req.body.name, req.body.date, req.body.descr);   
+            res.redirect('back');
 
-            } else { //this is an AJAX call; respond with JSON
-                try {
-                    await setlistApi.updateSetlist(req.params.setlist_id, req.band.band_id, 
-                        req.body.name, req.body.date, req.body.descr, req.body.song_id, req.body.note);    
-                    res.json({});
-                } catch (e) {
-                    res.json({error: e});
-                }
+        } else if (req.body.method == 'update-songs') { //this is an AJAX call; respond with JSON
+            try {
+                await setlistApi.updateSetlistSongs(req.params.setlist_id, req.band.band_id, 
+                    req.body.song_id, req.body.note);    
+                res.json({});
+            } catch (e) {
+                console.log(e);
+                res.json({error: e});
             }
-        }
-        else if (req.body.method == "archive") {
+        } else if (req.body.method == "archive") {
             await setlistApi.archiveSetlist(req.params.setlist_id, req.band.band_id);
             res.redirect('back');
         }

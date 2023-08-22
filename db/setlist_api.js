@@ -81,13 +81,46 @@ function createSetlist(user_id, band_id, name, date, descr) {
 
 
 
-const updateSetlistSQL = `update setlist 
+
+const updateSetlistDetailsSQL = `update setlist 
 set setlist.name = ?,
 date = ?,
 descr = ?,
 updated_at = CURRENT_TIMESTAMP
 where setlist_id = ? and band_id = ?`;
 
+// Updates the setlist details.
+async function updateSetlistDetails(setlist_id, band_id, name, date, descr){
+    return db.execute(updateSetlistDetailsSQL, [name, date  || null, descr, setlist_id, band_id]);
+}
+
+const updateSetlistUpdatedAtSQL = `update setlist set
+updated_at = CURRENT_TIMESTAMP
+where setlist_id = ? and band_id = ?`;
+
+// // Adds a song to the end of a setlist
+// const addSetlistSongSQL = `
+// insert into setlist_song 
+// (setlist_id, setlist_order, song_id)
+// select ?, COUNT(*), ? from setlist_song where setlist_id = ?
+// `
+// async function addSetlistSong(setlist_id, band_id, song_id){
+//     let connection = await db.getConnection();
+//     try {
+//         await connection.beginTransaction();    
+//         let results = await Promise.all([
+//             connection.execute(addSetlistSongSQL, [setlist_id, song_id, setlist_id]),
+//             connection.execute(updateSetlistUpdatedAtSQL, [setlist_id, band_id])
+//         ]);
+//         await connection.commit();
+//         return results;
+//     } catch (error) {
+//         await connection.rollback();
+//         throw error;
+//     } finally {
+//         connection.release();
+//     }
+// }
 
 const insertUpdateSetlistSongSQL = `insert into setlist_song 
 (setlist_id, setlist_order, song_id, note)
@@ -98,8 +131,14 @@ const deleteSetlistSongsSQL = `delete from setlist_song
 where setlist_id = ?
 and setlist_order >= ?
 `;
-// Updates the setlist details and list of songs.
-async function updateSetlist(setlist_id, band_id, name, date, descr, song_id_list, note_list){
+
+// Updates the list of songs, in event of updating notes, reordering, deleting, or adding an element.
+// It is worth noting that this is a "swiss army knife" update event - the entire list is given, and the entire list
+// is updated - replaced really. While this is somewhat "inefficient" compared to atomic changes that could be made - 
+// individual add, update, reorder, and delete operations - it is arguably safer, as the entire list, after operation, 
+// should match the state of the list as given, binding the view-model more tightly.
+// Thus, in the event of two users simultaneously making changes, simply the one who saved last will "win".  
+async function updateSetlistSongs(setlist_id, band_id, song_id_list, note_list){
     
     let connection = await db.getConnection();
     song_id_list = song_id_list == undefined ? [] : (song_id_list instanceof Array ? song_id_list : [song_id_list]);
@@ -108,23 +147,23 @@ async function updateSetlist(setlist_id, band_id, name, date, descr, song_id_lis
     try {
         
         await connection.beginTransaction();    
-        let queryPromises = song_id_list.map((song_id, i) => 
+        let insertUpdateSetlistSongsResults = await Promise.all(song_id_list.map((song_id, i) => 
                 connection.execute(insertUpdateSetlistSongSQL, [setlist_id, i, song_id, note_list[i]])
-            );
+            ));
+        let deleteSetlistSongsResults = await connection.execute(deleteSetlistSongsSQL, [setlist_id, insertUpdateSetlistSongsResults.length]);
+        let updateSetlistUpdatedAtResults = await connection.execute(updateSetlistUpdatedAtSQL, [setlist_id, band_id]);
         
-        queryPromises.push(connection.execute(updateSetlistSQL, [name, date  || null, descr, setlist_id, band_id]),
-        connection.execute(deleteSetlistSongsSQL, [setlist_id, queryPromises.length]));
-        
-        let results = await Promise.all(queryPromises);
         await connection.commit();
-        return results;
+        return {insertUpdateSetlistSongsResults,deleteSetlistSongsResults,updateSetlistUpdatedAtResults};
     } catch (error) {
+        await connection.rollback();
         throw error;
     } finally {
         connection.release();
     }
 
 }
+
 
 const archiveSetlistSQL = `update setlist 
 set archived = 1
@@ -184,7 +223,8 @@ module.exports = {
     getArchivedSetlistsByBand,
     getUpcomingSetlistsByBand,
     createSetlist,
-    updateSetlist,
+    updateSetlistDetails,
+    updateSetlistSongs,
     archiveSetlist,
     unarchiveSetlist,
     archiveSetlistsBeforeDate,
