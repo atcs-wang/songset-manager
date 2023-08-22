@@ -45,6 +45,14 @@
             <% } else { %>
                     <a class="btn-flat" href="/band/<%=band.band_id%>/setlist/archive"> 
                     View Archived Setlists</a>
+
+                    <a class="right btn-large waves-effect waves-light grey modal-trigger tooltipped" 
+                        data-tooltip="Archive Old Setlists" data-position="top"
+                        href="#archiveoldsetlists">
+                        <i class="material-icons">queue_music</i>
+                        <i class="material-icons">today</i>
+                        <i class="material-icons">archive</i>
+                    </a>
             <% } %>
              </h3>
             <% if (promptSetlistCreation) { %>
@@ -57,7 +65,34 @@
             <% } %>
 
         </div>
-                
+        <% if (!archive) { %>
+
+            <div class="modal" id="archiveoldsetlists">
+    
+                <div class="modal-content">
+    
+                    <form id="archiveSetlistsForm" method="post">  
+                            <div class="input-field">
+                                <input type="date" id="dateInput" name="date" class="validate" required>
+                                <label for="artistInput">Archive setlists before:</label>
+                            </div>
+                        <input type="hidden" name="method" value="archive">
+                        
+                        <blockquote>Setlists without dates will not be archived.</blockquote>
+                    </form>                    
+
+                    <div class="modal-footer">
+                        <button class="btn waves-effect waves-light " type="submit" form="archiveSetlistsForm">
+                            <i class="material-icons right">archive</i>
+                            Archive Old Setlists
+                        </button>
+                        <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
+                    </div>
+                    
+                </div>
+    
+            </div>            
+        <% } %>
     
         <%-include('./partials/list.ejs', {allowEdit: isCoreMember}) %>
 
@@ -74,7 +109,8 @@
     
                     <form id="addSetlistForm" method="post">  
                         <h4>Add a new setlist:</h4>
-                                        
+                        <input type="hidden" name="method" value="create">
+
                         <div class="row">
                             <div class="input-field col s6">
                                 <input type="text" id="nameInput" name="name" class="validate" data-length="45" required>

@@ -164,9 +164,11 @@ async function updateSetlistSongs(setlist_id, band_id, song_id_list, note_list){
 
 }
 
+// Do NOT update updated_at timestamp for archiving/unarchiving
 
 const archiveSetlistSQL = `update setlist 
-set archived = 1
+set archived = 1,
+updated_at = updated_at
 where setlist_id = ? and band_id = ?`;
 
 function archiveSetlist(setlist_id, band_id){
@@ -174,7 +176,8 @@ function archiveSetlist(setlist_id, band_id){
 }
 
 const unarchiveSetlistSQL = `update setlist 
-set archived = 0
+set archived = 0,
+updated_at = updated_at
 where setlist_id = ? and band_id = ?`;
 
 function unarchiveSetlist(setlist_id, band_id){
@@ -182,11 +185,13 @@ function unarchiveSetlist(setlist_id, band_id){
 }
 
 const archiveSetlistsBeforeDateSQL = `update setlist 
-set archived = 1
-where setlist_id = ? and band_id = ? and date < ? and date != NULL`;
+set archived = 1,
+updated_at = updated_at
+where band_id = ? and archived = 0 and date < ? and date is not NULL`;
 
-function archiveSetlistsBeforeDate(setlist_id, band_id, before_date){
-    return db.execute(archiveSetlistsBeforeDateSQL, [setlist_id, band_id, before_date]);
+function archiveSetlistsBeforeDate(band_id, before_date){
+    console.log(before_date);
+    return db.execute(archiveSetlistsBeforeDateSQL, [band_id, before_date]);
 }
 
 const deleteSetlistSQL = "delete from setlist where setlist_id = ? and band_id = ?";

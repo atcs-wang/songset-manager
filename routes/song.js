@@ -12,12 +12,16 @@ songRouter.route(['/','/all'])
         res.render("song/all", { songlist , archive : false});
     })
     .post(requiresBandCoreMember, async (req, res) => { // Handle creating a new song
-        let [{ insertId }] = await songApi.createSong(req.user.user_id, req.band.band_id, 
-                req.body.title, req.body.artist, req.body.key, 
-                req.body.tempo, req.body.tags, req.body.notes);
-        
-        // res.redirect(`./${insertId}`);
-        res.redirect('back');
+        if (req.body.method == 'create') { 
+            let [{ insertId }] = await songApi.createSong(req.user.user_id, req.band.band_id, 
+                    req.body.title, req.body.artist, req.body.key, 
+                    req.body.tempo, req.body.tags, req.body.notes);
+            
+            // res.redirect(`./${insertId}`);
+            res.redirect('back');
+        } else {
+            res.status(422).send("POST request missing acceptable method")
+        }
     });
 
 songRouter.route(['/','/archive'])
@@ -68,7 +72,7 @@ songRouter.route('/:song_id/')
             }
             else res.redirect(`/band/${req.band.band_id}/song/all`);
         } 
-         else {
+        else {
             res.status(422).send("POST request missing acceptable method")
         }
 

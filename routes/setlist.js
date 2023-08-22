@@ -11,11 +11,18 @@ setlistRouter.route(['/','/all'])
         res.render("setlist/all", { setlists , archive : false});    
         
     })
-    .post(requiresBandCoreMember, async (req, res) => { // Handle creating a new setlist
-        let [{ insertId }] = await setlistApi.createSetlist(req.user.user_id, req.band.band_id, 
-                req.body.name, req.body.date, req.body.descr);
-        
-        res.redirect(`./${insertId}`);
+    .post(requiresBandCoreMember, async (req, res) => { 
+        if (req.body.method == 'create') {  // Handle creating a new setlist
+            let [{ insertId }] = await setlistApi.createSetlist(req.user.user_id, req.band.band_id, 
+                    req.body.name, req.body.date, req.body.descr);
+            
+            res.redirect(`./${insertId}`);
+        } else if (req.body.method == "archive") {
+            await setlistApi.archiveSetlistsBeforeDate(req.band.band_id, req.body.date);
+            res.redirect('back');
+        }else {
+            res.status(422).send("POST request missing acceptable method")
+        }
     });
 
 setlistRouter.route(['/','/archive'])
@@ -52,7 +59,7 @@ setlistRouter.route('/:setlist_id/')
                 console.log(e);
                 res.json({error: e});
             }
-        } else if (req.body.method == 'new-song') { 
+        } else if (req.body.method == 'create') { 
             try {
                 let [{ insertId }] = await songApi.createSong(req.user.user_id, req.band.band_id, 
                     req.body.title, req.body.artist, req.body.key, 
