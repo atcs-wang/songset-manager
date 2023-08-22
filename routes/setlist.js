@@ -40,18 +40,26 @@ setlistRouter.route('/:setlist_id/')
     })
     .post(requiresBandCoreMember, async (req, res) => {
         if (req.body.method == "update") {             // update setlist details.
-
-            await setlistApi.updateSetlist(req.params.setlist_id, req.band.band_id, 
-                req.body.name, req.body.date, req.body.descr, req.body.song_id, req.body.note);
             if (req.body.archive) {
                 if (req.body.archive == "archive") {
                     await setlistApi.archiveSetlist(req.params.setlist_id, req.band.band_id);
                 }
                 else if (req.body.archive == "unarchive") {
                     await setlistApi.unarchiveSetlist(req.params.setlist_id, req.band.band_id);
-                }  
+                }
+                await setlistApi.updateSetlist(req.params.setlist_id, req.band.band_id, 
+                    req.body.name, req.body.date, req.body.descr, req.body.song_id, req.body.note);   
+                res.redirect('back');
+
+            } else { //this is an AJAX call; respond with JSON
+                try {
+                    await setlistApi.updateSetlist(req.params.setlist_id, req.band.band_id, 
+                        req.body.name, req.body.date, req.body.descr, req.body.song_id, req.body.note);    
+                    res.json({});
+                } catch (e) {
+                    res.json({error: e});
+                }
             }
-            res.redirect('back');
         }
         else if (req.body.method == "archive") {
             await setlistApi.archiveSetlist(req.params.setlist_id, req.band.band_id);

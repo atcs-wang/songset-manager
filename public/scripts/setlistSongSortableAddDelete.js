@@ -3,10 +3,36 @@
 // list.js, initializes List
 // songListInit.js, which initializes songList
 // ejs.js, which initializes ejs
-new Sortable(document.querySelector("#setlist-songs"), {
+
+const editSetlistForm = document.querySelector("#editSetlistForm");
+
+async function sendUpdatePost(){
+    const response = await fetch(window.location.href, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+          },
+        body: new URLSearchParams(new FormData(editSetlistForm))
+    });
+    const {error} = await response.json(); 
+    if (error) {
+        throw Error(error);
+    };
+}
+
+const setlistSongsList = document.querySelector("#setlist-songs")
+new Sortable(setlistSongsList, {
     handle: '.handle', // handle's class
     group: 'shared',
-    animation: 150
+    animation: 150,
+    onUpdate: async (event) => {
+        try{
+            await sendUpdatePost();
+        } catch(e){
+            M.toast({html: `ERROR: RE-ordering failed. Refresh page.`});
+            console.error(e);    
+        }
+    } //whenever resorted, send update to server.
 });
 
 const newSongTemplate = `
@@ -61,25 +87,37 @@ const newSongTemplate = `
 `
 
 document.querySelectorAll(".add-song").forEach((elm) => {
-    elm.addEventListener('click', () => {
-
-        let [song] = songList.get("song-id", elm.dataset.songId);
-        let html = ejs.render(newSongTemplate, {song: song._values})
-        document.querySelector("#setlist-songs").innerHTML += html;
-        M.Tooltip.init(document.querySelectorAll('.tooltipped'), {});
-        listenForSongDelete();
-        M.toast({html: `Added ${song._values.title}`});
+    elm.addEventListener('click', async () => {
+        try {
+            let [song] = songList.get("song-id", elm.dataset.songId);
+            let html = ejs.render(newSongTemplate, {song: song._values})
+            document.querySelector("#setlist-songs").innerHTML += html;
+            await sendUpdatePost();
+            M.Tooltip.init(document.querySelectorAll('.tooltipped'), {});
+            listenForSongDelete();
+            M.toast({html: `Added ${song._values.title}`});    
+        } catch(e) {
+            M.toast({html: `ERROR: Did not add ${song._values.title}. Refresh page.`});
+            console.error(e);        
+        }
     })
 });
 
 // (re-)set all song delete listeners
 function listenForSongDelete(){
     document.querySelectorAll(".remove-song").forEach((elm) => {
-        elm.onclick = () => {
-            elm.closest("li").remove();
-            M.toast({html: `Removed ${elm.dataset.title}`});    
+        elm.onclick = async () => {
+            try{
+                elm.closest("li").remove();
+                await sendUpdatePost();
+                M.toast({html: `Removed ${elm.dataset.title}`});    
+            } catch(e) {
+                M.toast({html: `ERROR: Did not add ${elm.dataset.title}. Refresh page.`});    
+                console.error(e);    
+            }
         };
     });
 }
 
 listenForSongDelete();
+
