@@ -2,7 +2,7 @@ const mysql = require('mysql2');
 const dotenv = require('dotenv');
 const fs = require('fs');
 
-dotenv.config();
+dotenv.config({path: 'production.env'});
 
 const dbConfig = {
     host: process.env.DB_HOST || "localhost",
@@ -19,7 +19,6 @@ const connection = mysql.createConnection(dbConfig);
 connection.query(fs.readFileSync(__dirname + "/scripts/db_create_user.sql", {encoding : "UTF-8"}));
 connection.query(fs.readFileSync(__dirname + "/scripts/db_create_band.sql", {encoding : "UTF-8"}));
 connection.query(fs.readFileSync(__dirname + "/scripts/db_create_song.sql", {encoding : "UTF-8"}));
-
-connection.query(fs.readFileSync(__dirname + "/scripts/db_create_mock_data.sql", {encoding : "UTF-8"}));
+connection.query(fs.readFileSync(__dirname + "/scripts/db_create_setlist.sql", {encoding : "UTF-8"}));
 
 connection.end();
