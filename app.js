@@ -20,7 +20,10 @@ app.set( "view engine", "ejs" );
 app.use(helmet({
     contentSecurityPolicy: {
       directives: {
-        "script-src": ["'self'", "cdnjs.cloudflare.com", "cdn.jsdelivr.net"],
+        "script-src": ["'self'", 
+        "cdnjs.cloudflare.com", 
+        "cdn.jsdelivr.net", 
+        "'unsafe-eval'"], //This is necessary to use ejs as a front-end library. Eventually, it should be patched out.
       },
     },
   }));

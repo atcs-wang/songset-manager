@@ -23,6 +23,7 @@ An inventory-style webapp (Node/Express/EJS/MySQL) for managing your bands' setl
 - (More) Client-Side-Rendering
 
 ### Small TODOs:
+- Patch out use of EJS on browser side
 - Refactor create setlist form into partial
 - Allow create setlist on Band profile page
 - Move song/set related heads/footers into partials
