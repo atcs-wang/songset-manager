@@ -8,14 +8,23 @@ const userRouter= require("./routes/user.js");
 const { loadUser, fakeLoadUser } = require('./middleware/user.js');
 const dotenv = require('dotenv');
 dotenv.config();
-const userApi = require("./db/user_api.js")
+const helmet = require("helmet");
+
 const app = express();
 const port = process.env.PORT || 3000;
 
 // Configure Express to use EJS
 app.set( "views",  path.join(__dirname , "views"));
 app.set( "view engine", "ejs" );
- 
+
+app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        "script-src": ["'self'", "cdnjs.cloudflare.com", "cdn.jsdelivr.net"],
+      },
+    },
+  }));
+
 // Configure Express to parse URL-encoded POST request bodies (forms)
 app.use( express.urlencoded({ extended: false }) );
 
