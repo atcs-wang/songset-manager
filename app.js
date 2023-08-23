@@ -1,5 +1,3 @@
-const DEBUG = true;
-
 //set up the server
 const express = require( "express" );
 const logger = require("morgan");
@@ -12,7 +10,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 const userApi = require("./db/user_api.js")
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Configure Express to use EJS
 app.set( "views",  path.join(__dirname , "views"));
@@ -21,10 +19,12 @@ app.set( "view engine", "ejs" );
 // Configure Express to parse URL-encoded POST request bodies (forms)
 app.use( express.urlencoded({ extended: false }) );
 
-app.post('*', (req, res, next) => {
-    if (DEBUG) console.log(`POST ${req.url} \n\t ${JSON.stringify(req.body)}`);
-    next();
-})
+if (process.env.NODE_ENV != 'production') {
+    app.post('*', (req, res, next) => {
+        console.log(`POST ${req.url} \n\t ${JSON.stringify(req.body)}`);
+        next();
+    })
+}
 
 // define middleware that logs all incoming requests
 app.use(logger("dev"));
