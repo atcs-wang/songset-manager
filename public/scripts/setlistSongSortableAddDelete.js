@@ -5,7 +5,7 @@
 // ejs.js, which initializes ejs
 
 const editSetlistSongForm = document.querySelector("#editSetlistSongForm");
-
+editSetlistSongForm.onsubmit = () => false;
 async function sendUpdateSongsPost(){
     const body = new URLSearchParams(new FormData(editSetlistSongForm));
     body.set("method", 'update-songs');
@@ -44,9 +44,9 @@ const newSongTemplate = `
     <div class="collapsible-header valign-wrapper">
     <% if (allowEdit) { %>                                
         <i class="material-icons handle tooltipped" 
-            data-tooltip="Drag to rearrange" data-position="left">music_note</i>
+            data-tooltip="Drag to rearrange" data-position="left">drag_handle</i>
         <% } else {%>
-            <i class="material-icons">music_note</i>
+            <i class="material-icons">drag_handle</i>
         <% } %>
         <div class="ch-content">
             <strong class="blue-text text-darken-3 tooltipped" data-tooltip="Click to expand details" data-position="top">
@@ -127,10 +127,6 @@ function listenForSongNoteUpdate(){
         // Prevent clicking the note from expanding the collapsible
         elm.onclick = (event) => {
             event.stopPropagation();
-        }
-        // Use a span class to resize the input to fit
-        elm.onkeyup = () => {
-            elm.parentElement.querySelector(".width-machine").innerHTML = elm.value;
         }
         // Send update post when input changed
         elm.onchange = async () => {
