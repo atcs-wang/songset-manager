@@ -10,14 +10,11 @@
 <% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
 
 <head>
-    <%- include('../partials/stdhead') %>
-
     <%- include(viewDirRoot + 'partials/stdhead', {title: `${song.title} : ${band.name} `}) %>
+
     <link rel="stylesheet" href="/stylesheets/tagStyle.css">
     <link rel="stylesheet" href="/stylesheets/listSortStyle.css">
     <script src="//cdnjs.cloudflare.com/ajax/libs/list.js/2.3.1/list.min.js"></script>
-
-
 </head>
 
 <body>
