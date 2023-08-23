@@ -1,6 +1,6 @@
 An inventory-style webapp (Node/Express/EJS/MySQL) for managing your bands' setlists.
 
-Features:
+## Features:
 - Auth0 powered login
 - Users can create and join bands, allowing collaboration with different roles (owner, core, readonly).
 - Each band maintains their own library of songs and setlists of those songs
@@ -10,15 +10,20 @@ Features:
 - Setlists can be searched/sorted by name, date, last updated, songs, etc.
 - Songs and setlists can be archived (and unarchived), maintaining complete records while reducing clutter for future setlists.
 
-Notable Libraries used:
+## Notable Libraries used:
 - [mysql2](https://www.npmjs.com/package/mysql2) 
 - [MaterializeCSS](https://materializecss.com/)
 - [EJS](https://ejs.co/)
 - [List.js](https://listjs.com/docs/)
 - [SortableJS](http://sortablejs.github.io/Sortable/)
 
-Some TODOs:
+### Big TODOs:
 - Server-side form validation
 - API and route testing
 - (More) Client-Side-Rendering
 
+### Small TODOs:
+- Refactor create setlist form into partial
+- Allow create setlist on Band profile page
+- Move song/set related heads/footers into partials
+- Add song page's list of sets to include performance notes of that song
