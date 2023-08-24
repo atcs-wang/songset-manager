@@ -25,49 +25,17 @@ DATE_FORMAT(MAX(setlist.date), "%Y-%m-%d") as last_played_yyyymmdd
 from song s
 left join setlist_song x on s.song_id = x.song_id
 left join setlist on setlist.setlist_id = x.setlist_id and setlist.date < CURRENT_TIMESTAMP
-where s.band_id = ? and s.archived = 0
+where s.band_id = ? and s.archived = ?
 group by song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at
 order by updated_at desc
 `;
 
 function getSongsByBand(band_id) {
-    return db.execute(getSongsByBandSQL, [band_id]);
+    return db.execute(getSongsByBandSQL, [band_id, 0]);
 }
-
-
-// Search all (unarchived) songs associated with a band 
-const searchSongsByBandSQL = `
-select song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at
-from song s
-where band_id = ? and archived = 0
-and (title like CONCAT("%", ?, "%") or artist like CONCAT("%", ?, "%") or tags like CONCAT("%", ?, "%"))
-`;
-
-function searchSongsByBand(band_id, query) {
-    return db.execute(searchSongsByBandSQL, [band_id, query, query, query]);
-}
-
-// Get all ARCHIVED songs associated with a band
-const getArchivedSongsByBandSQL = `
-select song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at
-from song s
-where band_id = ? and archived = 1
-`;
 
 function getArchivedSongsByBand(band_id) {
-    return db.execute(getArchivedSongsByBandSQL, [band_id]);
-}
-
-// Search all ARCHIVED songs associated with a band
-const searchArchivedSongsByBandSQL = `
-select song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at
-from song s
-where band_id = ? and archived = 1
-and (title like CONCAT("%", ?, "%") or artist like CONCAT("%", ?, "%") or tags like CONCAT("%", ?, "%"))
-`;
-
-function searchArchivedSongsByBand(band_id, query) {
-    return db.execute(searchArchivedSongsByBandSQL, [band_id, query, query, query]);
+    return db.execute(getSongsByBandSQL, [band_id, 1]);
 }
 
 // Create a new song, associated with a given band by the given user.
@@ -127,9 +95,7 @@ function copySongToBand(user_id, song_id, from_band_id, to_band_id) {
 module.exports = {
     getSong,
     getSongsByBand,
-    searchSongsByBand,
     getArchivedSongsByBand,
-    searchArchivedSongsByBand,
     createSong,
     updateSong,
     archiveSong,
