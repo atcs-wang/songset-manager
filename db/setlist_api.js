@@ -15,11 +15,17 @@ limit 1
 `;
 
 const getSetlistSongsSQL = `
-select x.setlist_order, x.song_id, x.note, s.title, s.artist, s.key, s.tempo, s.tags
-from setlist_song x 
-join song s on x.song_id = s.song_id
-where x.setlist_id = ? 
-order by x.setlist_order asc
+select ss.setlist_order, ss.song_id, ss.note, s.title, s.artist, s.key, s.tempo, s.tags,
+MAX(setlist.date) as last_played, 
+DATE_FORMAT(MAX(setlist.date), "%a, %b %D '%y") as last_played_pretty, 
+DATE_FORMAT(MAX(setlist.date), "%Y-%m-%d") as last_played_yyyymmdd 
+from setlist_song ss 
+join song s on ss.song_id = s.song_id
+left join setlist_song x on s.song_id = x.song_id
+left join setlist on setlist.setlist_id = x.setlist_id and setlist.date < CURRENT_TIMESTAMP
+where ss.setlist_id = ? 
+group by ss.setlist_order, ss.song_id, ss.note, s.title, s.artist, s.key, s.tempo, s.tags
+order by ss.setlist_order asc
 `;
 
 // Get a setlist's basic info, and list of songs
