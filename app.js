@@ -18,6 +18,9 @@ app.set( "views",  path.join(__dirname , "views"));
 app.set( "view engine", "ejs" );
 
 app.use(helmet({
+    referrerPolicy: {
+        policy: 'strict-origin-when-cross-origin'
+    },
     contentSecurityPolicy: {
       directives: {
         "script-src": ["'self'", 
