@@ -17,7 +17,6 @@ const flash = require('express-flash');
 const app = express();
 const port = process.env.PORT || 3000;
 
-var sessionStore = new session.MemoryStore;
 
 // Configure Express to use EJS
 app.set( "views",  path.join(__dirname , "views"));
@@ -39,17 +38,6 @@ app.use(helmet({
 
 // Configure Express to parse URL-encoded POST request bodies (forms)
 app.use( express.urlencoded({ extended: false }) );
-
-// Set up cookies/sessions and flash messages
-app.use(cookieParser(process.env.SESSION_SECRET || 'secret'));
-app.use(session({
-    cookie: { maxAge: 60000 },
-    store: sessionStore,
-    saveUninitialized: true,
-    resave: 'true',
-    secret: process.env.SESSION_SECRET || 'secret'
-}));
-app.use(flash());
 
 if (process.env.NODE_ENV != 'production') {
     app.post('*', (req, res, next) => {
@@ -81,6 +69,24 @@ app.use(auth(config));
 // and references database for user information (nickname, privilege)
 // If user does not yet exist in database, create the user in the database 
 app.use(loadUser);
+
+
+// Set up cookies/sessions and flash messages
+var sessionStore = new session.MemoryStore;
+app.use(cookieParser(process.env.SESSION_SECRET || 'secret'));
+app.use(session({
+    cookie: { maxAge: 60000 },
+    store: sessionStore,
+    saveUninitialized: true,
+    resave: 'true',
+    secret: process.env.SESSION_SECRET || 'secret'
+}));
+app.use(flash());
+// Apply flash messages for any GET request
+app.get('*', (req, res, next) => {
+    res.locals.flashMessages = req.flash();
+    next();
+})
 
 //DEBUG test
 // app.use(fakeLoadUser(process.env.MOCK_USER_ID));

@@ -1,6 +1,16 @@
+<!-- Flash messages -->
+
+<% if (flashMessages.info) for (let info of flashMessages.info) { %>
+    <div class="flash-info" hidden><%=info%></div>
+<% } %>
+
 <!-- Materialize JavaScript -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 
 <!-- Auto-initialize Materialize elements (Note - more specific initialization may be required for certain elements)-->
 <script src="/scripts/materializeAutoInit.js"></script>
+
 <script src="/scripts/confirmSubmit.js"></script>
+
+<script src="/scripts/flashMessageToast.js"></script>
+
