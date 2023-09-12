@@ -21,6 +21,7 @@ An inventory-style webapp (Node/Express/EJS/MySQL) for managing your bands' setl
 - Server-side form validation
 - API and route testing
 - (More) Client-Side-Rendering
+- Session-based notifications for confirmation of actions 
 
 ### Small TODOs:
 - Patch out use of EJS on browser side

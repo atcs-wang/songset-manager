@@ -10,8 +10,14 @@ const dotenv = require('dotenv');
 dotenv.config();
 const helmet = require("helmet");
 
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const flash = require('express-flash');
+
 const app = express();
 const port = process.env.PORT || 3000;
+
+var sessionStore = new session.MemoryStore;
 
 // Configure Express to use EJS
 app.set( "views",  path.join(__dirname , "views"));
@@ -33,6 +39,17 @@ app.use(helmet({
 
 // Configure Express to parse URL-encoded POST request bodies (forms)
 app.use( express.urlencoded({ extended: false }) );
+
+// Set up cookies/sessions and flash messages
+app.use(cookieParser(process.env.SESSION_SECRET || 'secret'));
+app.use(session({
+    cookie: { maxAge: 60000 },
+    store: sessionStore,
+    saveUninitialized: true,
+    resave: 'true',
+    secret: process.env.SESSION_SECRET || 'secret'
+}));
+app.use(flash());
 
 if (process.env.NODE_ENV != 'production') {
     app.post('*', (req, res, next) => {
