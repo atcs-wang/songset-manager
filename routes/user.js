@@ -60,12 +60,12 @@ userRouter.route('/:user_id')
         }
         else if (req.body.method == "delete") {
             let [results] = await userApi.deleteUser(req.params.user_id);
-            if (results.changedRows)
+            if (results.affectedRows)
                 req.flash('info', `Deleted '${req.params.user_id}'`)
             if (req.user.user_id == req.params.user_id)
                 res.redirect('/logout');
             else 
-                res.redirect('back');
+                res.redirect('/user/list');
         } else {
             res.status(422).send("POST request missing acceptable method")
         }
