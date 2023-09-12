@@ -39,7 +39,10 @@ userRouter.route('/:user_id')
             // update username.
             if (req.body.username) {
                 try {
-                    let results = await userApi.updateUsername(req.params.user_id, req.body.username);
+                    let [results] = await userApi.updateUsername(req.params.user_id, req.body.username);
+                    console.log(results)
+                    if (results.changedRows)
+                        req.flash('info', `Username updated to '${req.body.username}'`)
                 } catch (e) {
                     // next( new Error(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`))
                     res.status(422).send(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`);
@@ -48,13 +51,17 @@ userRouter.route('/:user_id')
             } 
             // update privilege. Only allowed by superusers
             if (req.body.privilege && req.user.privilege == 'Admin') {
-                let results = await userApi.updateUserPrivilege(req.params.user_id, req.body.privilege);
+                let [results] = await userApi.updateUserPrivilege(req.params.user_id, req.body.privilege);
+                if (results.changedRows)
+                    req.flash('info', `Privilege updated to '${req.body.privilege}'`)
             }
             res.redirect('back');
 
         }
         else if (req.body.method == "delete") {
-            await userApi.deleteUser(req.params.user_id);
+            let [results] = await userApi.deleteUser(req.params.user_id);
+            if (results.changedRows)
+                req.flash('info', `Deleted '${req.params.user_id}'`)
             if (req.user.user_id == req.params.user_id)
                 res.redirect('/logout');
             else 
