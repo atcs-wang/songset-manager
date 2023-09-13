@@ -45,8 +45,10 @@ userRouter.route('/:user_id')
                         req.flash('info', `Username updated to '${req.body.username}'`)
                 } catch (e) {
                     // next( new Error(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`))
-                    res.status(422).send(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`);
-                    return;
+                    // res.status(422).send(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`);
+                    // return;
+                    res.status(422);
+                    req.flash('error', `The username "${req.body.username}" is already taken.`)                    
                 }
             } 
             // update privilege. Only allowed by superusers
@@ -65,7 +67,7 @@ userRouter.route('/:user_id')
             if (req.user.user_id == req.params.user_id)
                 res.redirect('/logout');
             else 
-                res.redirect('/user/list');
+                res.redirect(req.baseUrl);
         } else {
             res.status(422).send("POST request missing acceptable method")
         }
