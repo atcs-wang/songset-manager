@@ -10,7 +10,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 const helmet = require("helmet");
 
-const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const flash = require('express-flash');
 
@@ -73,13 +72,12 @@ app.use(loadUser);
 
 // Set up cookies/sessions and flash messages
 var sessionStore = new session.MemoryStore;
-app.use(cookieParser(process.env.SESSION_SECRET || 'secret'));
 app.use(session({
     cookie: { maxAge: 60000 },
     store: sessionStore,
     saveUninitialized: true,
     resave: 'true',
-    secret: process.env.SESSION_SECRET || 'secret'
+    secret: process.env.SESSION_SECRET
 }));
 app.use(flash());
 // Apply flash messages for any GET request
