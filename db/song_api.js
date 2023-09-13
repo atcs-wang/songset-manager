@@ -5,6 +5,18 @@
 
 const db = require('./db_pool');
 
+// Get a song's title
+const getSongTitleSQL = `
+select title
+from song s
+where s.song_id = ? and s.band_id = ?
+limit 1
+`;
+
+function getSongTitle(song_id, band_id) {
+    return db.execute(getSongTitleSQL, [song_id, band_id]);
+}
+
 // Get a song's info
 const getSongSQL = `
 select song_id, title, artist, \`key\`, tempo, tags, notes, created_at, updated_at, archived 
@@ -93,6 +105,7 @@ function copySongToBand(user_id, song_id, from_band_id, to_band_id) {
 }
 
 module.exports = {
+    getSongTitle,
     getSong,
     getSongsByBand,
     getArchivedSongsByBand,
