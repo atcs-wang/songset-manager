@@ -26,7 +26,6 @@ userRouter.route('/:user_id')
     .get(async (req, res) => {
         let [privileges] = await userApi.getAllUserPrivileges();
         let [rows] = await userApi.getUser(req.params.user_id);
-        // res.send(rows);
         if (rows.length == 1){
             res.render("user/profile", {profile : rows[0], privileges: privileges});
         }
@@ -39,9 +38,9 @@ userRouter.route('/:user_id')
             // update username.
             if (req.body.username) {
                 try {
-                    let [results] = await userApi.updateUsername(req.params.user_id, req.body.username);
+                    let [{changedRows}] = await userApi.updateUsername(req.params.user_id, req.body.username);
                     console.log(results)
-                    if (results.changedRows)
+                    if (changedRows)
                         req.flash('info', `Username updated to '${req.body.username}'`)
                 } catch (e) {
                     // next( new Error(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`))
@@ -53,8 +52,8 @@ userRouter.route('/:user_id')
             } 
             // update privilege. Only allowed by superusers
             if (req.body.privilege && req.user.privilege == 'Admin') {
-                let [results] = await userApi.updateUserPrivilege(req.params.user_id, req.body.privilege);
-                if (results.changedRows)
+                let [{changedRows}] = await userApi.updateUserPrivilege(req.params.user_id, req.body.privilege);
+                if (changedRows)
                     req.flash('info', `Privilege updated to '${req.body.privilege}'`)
             }
             res.redirect('back');
