@@ -30,3 +30,6 @@ Currently hosted at [songsets.up.railway.app/](https://songset-manager-productio
 - Allow create setlist on Band profile page
 - Move song/set related heads/footers into partials
 - Add song page's list of sets to include performance notes of that song
+- Error handling (nicer error pages)
+- Update user management list to be more like the other lists
+- Refactor route handlers into routes/controllers?
