@@ -5,6 +5,17 @@
 
 const db = require('./db_pool');
 
+// Get a setlist's name only
+const getSetlistNameSQL = `
+select s.name
+from setlist s 
+where s.setlist_id = ? and s.band_id = ?
+limit 1
+`;
+function getSetlistName(setlist_id, band_id) {
+    return db.execute(getSetlistNameSQL, [setlist_id, band_id]);
+}
+
 const getSetlistSQL = `
 select setlist_id, s.name, DATE_FORMAT(date, "%W, %M %D %Y") as date_pretty, 
 DATE_FORMAT(date, "%Y-%m-%d") as date_yyyymmdd, descr, archived, 
@@ -196,7 +207,6 @@ updated_at = updated_at
 where band_id = ? and archived = 0 and date < ? and date is not NULL`;
 
 function archiveSetlistsBeforeDate(band_id, before_date){
-    console.log(before_date);
     return db.execute(archiveSetlistsBeforeDateSQL, [band_id, before_date]);
 }
 
@@ -229,6 +239,7 @@ function getSetlistsBySong(song_id, band_id) {
 }
 
 module.exports = {
+    getSetlistName,
     getSetlist,
     getSetlistsByBand,
     getArchivedSetlistsByBand,

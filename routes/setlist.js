@@ -16,9 +16,10 @@ setlistRouter.route(['/','/all'])
             let [{ insertId }] = await setlistApi.createSetlist(req.user.user_id, req.band.band_id, 
                     req.body.name, req.body.date, req.body.descr);
             
-            res.redirect(`./${insertId}`);
+            res.redirect(req.baseUrl + `/${insertId}`);
         } else if (req.body.method == "archive") {
-            await setlistApi.archiveSetlistsBeforeDate(req.band.band_id, req.body.date);
+            let [{changedRows}] = await setlistApi.archiveSetlistsBeforeDate(req.band.band_id, req.body.date);
+            req.flash("info", `Archived ${changedRows} sets`)
             res.redirect('back');
         }else {
             res.status(422).send("POST request missing acceptable method")
@@ -41,13 +42,23 @@ setlistRouter.route('/:setlist_id/')
             res.render("setlist/detail", {setlist, songlist});
         }
         else {
-            res.status(404).send("No such setlist exists for this band. It may have been deleted or never created.");
+            req.flash('error', "No such setlist exists for this band. It may be deleted.")
+            res.status(404).redirect(req.baseUrl);
         }
     })
     .post(requiresBandCoreMember, async (req, res) => {
+        let [[{name}]] = await setlistApi.getSetlistName(req.params.setlist_id, req.band.band_id);
+
         if (req.body.method == "update-details") {             // update setlist details.
-            await setlistApi.updateSetlistDetails(req.params.setlist_id, req.band.band_id, 
-                req.body.name, req.body.date, req.body.descr);   
+            try {
+                let [{changedRows}] = await setlistApi.updateSetlistDetails(req.params.setlist_id, req.band.band_id, 
+                    req.body.name, req.body.date, req.body.descr);   
+                if (changedRows){
+                    req.flash('info', `Updated '${req.body.name}' details`);
+                } 
+            } catch (e) {
+                req.flash('error', `Failed to update '${name}' details`);
+            }
             res.redirect('back');
 
         } else if (req.body.method == 'update-songs') { //this is an AJAX call; respond with JSON
@@ -56,7 +67,6 @@ setlistRouter.route('/:setlist_id/')
                     req.body.song_id, req.body.note);    
                 res.json({});
             } catch (e) {
-                console.log(e);
                 res.json({error: e});
             }
         } else if (req.body.method == 'create') { 
@@ -64,29 +74,38 @@ setlistRouter.route('/:setlist_id/')
                 let [{ insertId }] = await songApi.createSong(req.user.user_id, req.band.band_id, 
                     req.body.title, req.body.artist, req.body.key, 
                     req.body.tempo, req.body.tags, req.body.notes);
-            
+
                 await setlistApi.addSetlistSong(req.params.setlist_id, req.band.band_id, 
-                    insertId, null);    
-                res.redirect('back');
+                    insertId, null); 
+
+                req.flash('info', `Added '${req.body.title}'`);   
             } catch (e) {
-                console.log(e);
-                res.json({error: e});
+                res.status(500);
+                req.flash('error', `Failed to add '${req.body.title}' to '${name}'.`);
             }
+            res.redirect('back');
         }
         else if (req.body.method == "archive") {
-            await setlistApi.archiveSetlist(req.params.setlist_id, req.band.band_id);
+            let [{changedRows}] = await setlistApi.archiveSetlist(req.params.setlist_id, req.band.band_id);
+            if (changedRows)
+                req.flash('info', `Archived '${name}'`);
             res.redirect('back');
         }
         else if (req.body.method == "unarchive") {
-            await setlistApi.unarchiveSetlist(req.params.setlist_id, req.band.band_id);
+            let [{changedRows}] = await setlistApi.unarchiveSetlist(req.params.setlist_id, req.band.band_id);
+            if (changedRows)
+                req.flash('info', `Unarchived '${name}'`);
             res.redirect('back');
         } 
         else if (req.body.method == "delete") {
-            await setlistApi.deleteSetlist(req.params.setlist_id, req.band.band_id);
+            let [{changedRows}] = await setlistApi.deleteSetlist(req.params.setlist_id, req.band.band_id);
+            if (changedRows)
+                req.flash('info', `Deleted '${name}'`);
+
             if (req.body.redirect == 'archive') {
-                res.redirect(`/band/${req.band.band_id}/setlist/archive`);
+                res.redirect(req.baseUrl + `/archive`);
             }
-            else res.redirect(`/band/${req.band.band_id}/setlist/all`);
+            else res.redirect(req.baseUrl + `/all`);
         } 
         else {
             res.status(422).send("POST request missing acceptable method")

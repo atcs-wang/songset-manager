@@ -3,6 +3,7 @@
 // list.js, initializes List
 // songListInit.js, which initializes songList
 // ejs.js, which initializes ejs
+// flashMessageToast.js, which initializes flashInfo and flashError functions
 
 const editSetlistSongForm = document.querySelector("#editSetlistSongForm");
 editSetlistSongForm.onsubmit = () => false;
@@ -29,10 +30,10 @@ new Sortable(setlistSongsList, {
         try{
             await sendUpdateSongsPost();
             // I think this is too much!
-            // M.toast({html: `Re-ordered ${event.item.dataset.title}`});
+            // flashInfo(`Re-ordered ${event.item.dataset.title}`);
         } catch(e){
             console.error(e);    
-            M.toast({html: `ERROR: Re-ordering failed. Refresh page.`});
+            flashInfo(`Failed to re-order songs. Refresh page.`);
         }
     } //whenever resorted, send update to server.
 });
@@ -95,10 +96,10 @@ document.querySelectorAll(".add-song").forEach((elm) => {
             M.Tooltip.init(document.querySelectorAll('.tooltipped'), {});
             listenForSongDelete();
             listenForSongNoteUpdate();
-            M.toast({html: `Added ${song._values.title}`});    
+            flashInfo(`Added '${song._values.title}'`);    
         } catch(e) {
             console.error(e);    
-            M.toast({html: `ERROR: Adding ${song._values.title}. Refresh page.`});
+            flashInfo(`Failed to add '${song._values.title}'. Refresh page.`);
             setlistSongsList.removeChild(setlistSongsList.lastChild);
         }
     })
@@ -112,10 +113,10 @@ function listenForSongDelete(){
             try{
                 li.remove();
                 await sendUpdateSongsPost();
-                M.toast({html: `Removed ${li.dataset.title}`});
+                flashInfo(`Removed '${li.dataset.title}'`);
             } catch(e) {
                 console.error(e);    
-                M.toast({html: `ERROR: Did not remove ${li.dataset.title}. Refresh page.`});    
+                flashInfo(`Failed to remove '${li.dataset.title}'. Refresh page.`);    
             }
         };
     });
@@ -133,10 +134,10 @@ function listenForSongNoteUpdate(){
             let li = elm.closest("li");
             try{
                 await sendUpdateSongsPost();
-                M.toast({html: `Updated Note for ${li.dataset.title}`});    
+                flashInfo(`Updated note for '${li.dataset.title}'`);    
             } catch(e) {
                 console.error(e);    
-                M.toast({html: `ERROR: Did not update note for ${li.dataset.title}. Refresh page.`});    
+                flashInfo(`Failed to update note for '${li.dataset.title}'. Refresh page.`);    
             }
         };
     });

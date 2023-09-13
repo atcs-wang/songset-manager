@@ -1,14 +1,17 @@
+function flashInfo(content){
+    return M.toast({html: content,
+        displayLength: 4000});
+}
+function flashError(content){
+    return M.toast({html: content, 
+        classes: "red-text pulse",
+        displayLength: 6000})
+}
 document.querySelectorAll(".flash-info").forEach(
-    (elm) => {
-        M.toast({html: elm.innerHTML,
-            displayLength: 4000})
-    }
+    (elm) => flashInfo(elm.innerHTML)
 )
 
 document.querySelectorAll(".flash-error").forEach(
-    (elm) => {
-        M.toast({html: elm.innerHTML, 
-            classes: "red-text pulse",
-            displayLength: 6000})
-    }
+    (elm) => flashError(elm.innerHTML)
 )
+
