@@ -126,12 +126,14 @@ memberRouter.route("/:nickname")
                         }
                     } catch (e) {
                         if (e.code == 'ER_DUP_ENTRY') {
-                            res.status(422)
+                            res.status(422);
                             req.flash('error', `There's already a member with username '${req.body.username}'`);
                         }
                         else if (e.code.startsWith('ER_NO_REFERENCED_ROW')){
+                            res.status(422);
                             req.flash('error', `No user with username '${req.body.username}'`);
                         } else {
+                            // res.status(500);
                             req.flash('error', `Username was not updated to '${req.body.username}'`);
                         }
                     } 
@@ -144,6 +146,7 @@ memberRouter.route("/:nickname")
                             req.flash('info', `Role updated to '${req.body.role}'`)
                         }
                     } catch (e) {
+                        // req.status(500);
                         req.flash('error', `Role was not updated to '${req.body.role}'`);
                     } 
                 }
@@ -159,10 +162,11 @@ memberRouter.route("/:nickname")
                     }
                 } catch (e) {
                     if (e.code == 'ER_DUP_ENTRY') {
-                        res.status(422)
+                        res.status(422);
                         req.flash('error', `There's already a member with nickname '${req.body.nickname}'`);
                     }
                     else {
+                        // req.status(500);
                         req.flash('error', `Nickname was not updated to '${req.body.nickname}'`);
                     }
                 } 
@@ -170,20 +174,18 @@ memberRouter.route("/:nickname")
             res.redirect(`back`); 
         }
         else if (req.body.method == "delete") {
-            // TODO handle various kinds of errors.
-
             //Disallow deleting oneself from the band.
             if (req.band.member.nickname == req.params.nickname) {
                 req.flash('error', "You can't delete your own membership from the band!");
-                return res.status(422).redirect('back')
+                return res.redirect(422, 'back')
             }
             [{ affectedRows }] = await bandApi.deleteBandMember(req.params.nickname, req.band.band_id);
             if (affectedRows == 1) {
                 req.flash('info', `Removed '${req.params.nickname}' from band`);
                 return res.redirect(req.baseUrl);
                 // return res.redirect(`/band/${req.band.band_id}/member/list`);
-            }            
-            res.redirect(`back`); 
+            }
+            res.redirect(422, `back`); 
 
         }  else {
             res.status(422).send("POST request missing acceptable method")
