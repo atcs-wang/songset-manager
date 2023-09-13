@@ -41,7 +41,6 @@ const createBandMemberSQL = `insert into band_member
 (nickname, band_id, role) values (?, ?, ?)`
 
 function createBandMember(nickname, band_id, role ) {
-    console.log([nickname, band_id, role])
     return db.execute(createBandMemberSQL, [nickname, band_id, role])
 }
 
@@ -51,8 +50,7 @@ const addBandMemberByUsernameSQL = `insert into band_member
 select ?, ?, ?, user_id from user where username = ?`
 
 function createBandMemberWithUsername(nickname, band_id, role, username ) {
-    console.log([username, band_id, role])
-    return db.execute(addBandMemberByUsernameSQL, [nickname, band_id, role, username])
+    return db.execute(addBandMemberByUsernameSQL, [nickname || username, band_id, role, username])
 }
 
 //Get info about a band member
@@ -103,27 +101,29 @@ function getAllBandMembersByBand(band_id) {
     return db.execute(getAllBandMembersByBandSQL, [band_id]);
 }
 
-//Update member in band with new role, member, and/or user
-updateBandMemberSQL = `update band_member
-set role = ?,
-nickname = ?,
-user_id = if( ? != "", 
-    (select case
-        when exists(select 1 from user where username = ?)
-        then (select user_id from user where username = ?)
-        else ?
-        end
-    ),
-null)where band_id = ?
-and nickname = ?
-`
-function updateBandMember(nickname, band_id, role, new_nickname, username) {
-    return db.execute(updateBandMemberSQL, [role, new_nickname, username, username, username, username, band_id, nickname])
-}
+// Removed from API to require individual updates to each 
+// //Update member in band with new role, member, and/or user
+// // If new_nickname is blank, keep old nickname
+// updateBandMemberSQL = `update band_member
+// set role = ?,
+// nickname = ?,
+// user_id = if( ? != "", 
+//     (select case
+//         when exists(select 1 from user where username = ?)
+//         then (select user_id from user where username = ?)
+//         else ?
+//         end
+//     ),
+// null)where band_id = ?
+// and nickname = ?
+// `
+// function updateBandMember(nickname, band_id, role, new_nickname, username) {
+//     return db.execute(updateBandMemberSQL, [role, new_nickname || nickname, username, username, username, username, band_id, nickname])
+// }
 
 
 //Update member in band with new role
-const updateBandMemberRoleSQL = `update band_member
+const updateBandMemberRoleSQL = `update band_member 
 set role = ?
 where band_id = ?
 and nickname = ?
@@ -134,13 +134,14 @@ function updateBandMemberRole(nickname, band_id, role ) {
 
 
 //Update member in band with new nickname
+// If new_nickname is blank, keep old nickname
 const updateBandMemberNicknameSQL = `update band_member
 set nickname = ?
 where band_id = ?
 and nickname = ?
 `
 function updateBandMemberNickname(nickname, band_id, new_nickname ) {
-    return db.execute(updateBandMemberNicknameSQL, [new_nickname, band_id, nickname])
+    return db.execute(updateBandMemberNicknameSQL, [new_nickname || nickname, band_id, nickname])
 }
 
 //Update member in band to be associated with a (different) user
@@ -188,7 +189,7 @@ module.exports = {
     getBandMemberByUser,
     getAllBandsByUser,
     getAllBandMembersByBand,
-    updateBandMember,
+    // updateBandMember,
     updateBandMemberRole,
     updateBandMemberNickname,
     updateBandMemberUser,
