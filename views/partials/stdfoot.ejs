@@ -1,7 +1,11 @@
 <!-- Flash messages -->
 
-<% if (flashMessages.info) for (let info of flashMessages.info) { %>
-    <div class="flash-info" hidden><%=info%></div>
+<% if (flashMessages.info) for (let msg of flashMessages.info) { %>
+    <div class="flash-info" hidden><%=msg%></div>
+<% } %>
+
+<% if (flashMessages.error) for (let msg of flashMessages.error) { %>
+    <div class="flash-error" hidden><%=msg%></div>
 <% } %>
 
 <!-- Materialize JavaScript -->
