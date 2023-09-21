@@ -22,13 +22,20 @@
         <form id="editUserForm" method="post">  
             <input type="hidden" name="method" value="update">
 
-            <h2>User Info / Settings:</h2>
+            <h3>User Settings:</h3>
         
+            <% if (!profile.username) {%>
+                <blockquote>You must pick a unique username.</blockquote>
+            <% } %>
+
             <div class="row">
-                <div class="input-field col s12">
-                    <input type="text" id="useridInput" name="user_id" value="<%=profile.user_id%>" disabled >
-                    <label for="useridInput">User Id:</label>
-                </div>
+                <% if (user.privilege == "Admin") { %>
+
+                    <div class="input-field col s12">
+                        <input type="text" id="useridInput" name="user_id" value="<%=profile.user_id%>" disabled >
+                        <label for="useridInput">User Id:</label>
+                    </div>
+                <% } %>
             </div>
         
             <div class="row">
@@ -41,20 +48,24 @@
             <div class="row">
                 <div class="input-field col s12">
         
-                    <% if (privileges) { %>
-                        <select id="privilegeInput" name="privilege" size="4" <% if (user.privilege != "Admin")  { %> disabled <% } %> >
-                            <% for (const p of privileges) { %>
-                                <option value=<%=p.privilege %>
-                                    <% if (p.privilege == profile.privilege) { %> selected <% } %>
-                                    ><%= p.privilege %></option>
-                            <% } %>
-                        </select>
-                    <% } else { %>
-                        <input type="text" id="privilegeInput" name="privilege" class="validate" data-length="32"
-                        value="<%=profile.privilege%>" <% if (user.privilege != "Admin")  { %> disabled <% } %>>
-                    <% } %>
+                    <% if (user.privilege == "Admin") { %>
+
+                        <% if (privileges) { %>
+                            <select id="privilegeInput" name="privilege" size="4" <% if (user.privilege != "Admin")  { %> disabled <% } %> >
+                                <% for (const p of privileges) { %>
+                                    <option value=<%=p.privilege %>
+                                        <% if (p.privilege == profile.privilege) { %> selected <% } %>
+                                        ><%= p.privilege %></option>
+                                <% } %>
+                            </select>
+                        <% } else { %>
+                            <input type="text" id="privilegeInput" name="privilege" class="validate" data-length="32"
+                            value="<%=profile.privilege%>" <% if (user.privilege != "Admin")  { %> disabled <% } %>>
+                        <% } %>
+                        <label for="privilegeInput">Privilege:</label>
                     
-                    <label for="privilegeInput">Privilege:</label>
+                    <% } %>
+
                 </div> 
             </div>
         </form>
