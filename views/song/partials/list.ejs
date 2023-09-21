@@ -80,7 +80,7 @@ Requires:
 
             <td>
                 <% if (archive) { %>
-                <form class="right confirm-submit" method="post" display="inline"
+                <form class="right" method="post" display="inline"
                     action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
                     data-confirm-msg='Confirm that you want to UN-archive the song "<%=song.title%>":'
                 >
@@ -111,7 +111,7 @@ Requires:
                     </button>
                 </form>
                 <% } else { %>
-                    <form class="right confirm-submit" method="post" display="inline"
+                    <form class="right" method="post" display="inline"
                         action="/band/<%=band.band_id%>/song/<%=song.song_id%>"
                         data-confirm-msg='Confirm that you want to archive the song "<%=song.title%>":'
                     >

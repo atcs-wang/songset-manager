@@ -53,7 +53,7 @@ Requires:
                 <% if (allowEdit) { %>
 
                     <% if (archive) { %>
-                    <form class="right confirm-submit" method="post" display="inline"
+                    <form class="right" method="post" display="inline"
                         action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>"
                         data-confirm-msg='Confirm that you want to UN-archive the setlist "<%=setlist.name%>":'
                     >
@@ -84,7 +84,7 @@ Requires:
                         </button>
                     </form>
                     <% } else { %>
-                        <form class="right confirm-submit" method="post" display="inline"
+                        <form class="right" method="post" display="inline"
                             action="/band/<%=band.band_id%>/setlist/<%=setlist.setlist_id%>"
                             data-confirm-msg='Confirm that you want to archive the setlist "<%=setlist.name%>":'
                         >
