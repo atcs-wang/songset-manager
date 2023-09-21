@@ -26,9 +26,9 @@ Requires:
     </div>
     <div class="row">
         <button class="btn-flat sort waves-light waves-effect" data-sort="name">Sort by Name</button>
-        <button class="btn-flat sort waves-light waves-effect" data-sort="date-yyyymmdd" data-default-order="desc">Sort by Date</button>
-        <button class="btn-flat sort waves-light waves-effect" data-sort="updated-at-yyyymmdd" data-default-order="desc">Sort by Last Updated</button>
-        <ul class="pagination paginationTop right"></ul>
+        <button class="btn-flat sort waves-light waves-effect" data-sort="date-yyyymmdd">Sort by Date</button>
+        <button class="btn-flat sort waves-light waves-effect" data-sort="updated-at" data-default-order="desc">Sort by Last Updated</button>
+        <ul class="pagination paginationTop right hide-on-med-and-down"></ul>
     </div>
 
     <ul class="collapsible expandable popout list tooltipped" data-position="top" data-tooltip="Click row to preview setlist; click set icon or name to edit setlist.">
@@ -119,6 +119,18 @@ Requires:
         </li>
 
     </ul>
-    <ul class="pagination paginationBottom right"></ul>
-
+    <div class="row">
+        <div class="col s3">
+                <label>#/page</label>
+                <select class="pagination-select browser-default">
+                    <option>10</option>
+                    <option>20</option>
+                    <option>50</option>
+                    <option>100</option>
+                </select>
+            </div>
+        <div class="col s9">
+            <ul class="pagination paginationBottom  right"></ul>
+        </div>
+    </div>
 </div>

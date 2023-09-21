@@ -15,12 +15,19 @@ var options = {
     pagination: [{
         name: "paginationTop",
         paginationClass: "paginationTop",
+        innerWindow: 1,
         outerWindow: 1
       }, {
         paginationClass: "paginationBottom",
-        innerWindow: 3,
-        outerWindow: 2
+        innerWindow: 1,
+        outerWindow: 1
       }]
 };
 
 var setlistList = new List('setlists', options);
+
+
+document.querySelector(".pagination-select").addEventListener("change", (e) =>{
+  setlistList.page = e.target.value
+  setlistList.update();
+})

@@ -19,20 +19,10 @@ Requires:
 <div id="songlist">
                  
     <div class="row">
-        <div class="input-field col s10">
+        <div class="input-field">
           <i class="material-icons prefix">search</i>
           <input id="searchBar" type="text" class="search">
           <label for="searchBar">Search (Title, Tags, etc...) </label>
-        </div>
-        
-        <div class="input-field col s2">
-            <select class="pagination-select ">
-                <option>10</option>
-                <option>20</option>
-                <option>50</option>
-                <option>100</option>
-            </select>
-            <label>#/page</label>
         </div>
     </div>
     <div class="row">
@@ -41,9 +31,9 @@ Requires:
             <button class="btn-flat sort waves-light waves-effect" data-sort="key">Sort by Key</button>
             <button class="btn-flat sort waves-light waves-effect" data-sort="tempo">Sort by Tempo</button>
             <button class="btn-flat sort waves-light waves-effect" data-sort="last-played-yyyymmdd">Sort by Last Played</button>
+            <ul class="pagination paginationTop right hide-on-med-and-down"></ul>
 
     </div>
-    <ul class="pagination paginationTop left"></ul>
 
 <table>
     <thead>
@@ -149,5 +139,18 @@ Requires:
         <% } %>
     </tbody>
 </table>
-<ul class="pagination paginationBottom left"></ul>
+<div class="row">
+    <div class="col s3">
+            <label>#/page</label>
+            <select class="pagination-select browser-default">
+                <option>10</option>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+        </div>
+    <div class="col s9">
+        <ul class="pagination paginationBottom  right"></ul>
+    </div>
+</div>
 </div>

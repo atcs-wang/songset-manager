@@ -17,17 +17,18 @@ var options = {
     pagination: [{
         name: "paginationTop",
         paginationClass: "paginationTop",
+        innerWindow: 1,
         outerWindow: 1
       }, {
         paginationClass: "paginationBottom",
-        innerWindow: 3,
-        outerWindow: 2
+        innerWindow: 1,
+        outerWindow: 1
       }]
 };
 
 var songList = new List('songlist', options);
 
 document.querySelector(".pagination-select").addEventListener("change", (e) =>{
-  songList.page = event.target.value
+  songList.page = e.target.value
   songList.update();
 })

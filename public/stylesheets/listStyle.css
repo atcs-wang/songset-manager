@@ -1,0 +1,10 @@
+#songlist .row, 
+#setlists .row {
+    margin-bottom: 0;
+}
+
+#songlist .pagination li:only-child, 
+#setlists .pagination li:only-child
+{
+    display: none;
+}
