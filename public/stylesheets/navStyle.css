@@ -1,0 +1,13 @@
+nav.top-nav , nav.top-nav .nav-wrapper i, nav.top-nav a.sidenav-trigger, nav.top-nav a.sidenav-trigger i {
+    line-height: 48px;
+    height: 48px;
+}
+
+nav.breadcrumb-nav , nav.breadcrumb-nav .nav-wrapper i, nav.breadcrumb-nav a.sidenav-trigger, nav.breadcrumb-nav a.sidenav-trigger i {
+    line-height: 36px;
+    height: 36px;
+}
+
+nav.breadcrumb-nav {
+    background-color: #ee6e72c6;
+}

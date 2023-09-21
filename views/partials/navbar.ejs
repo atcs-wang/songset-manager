@@ -5,43 +5,55 @@
 
 <!-- Nav bar -->
 <header>
-    <nav>
+    <nav class="top-nav">
         <div class="nav-wrapper">
-            <% if (locals.breadcrumbs) { %>
-                <% for ( bc of breadcrumbs) { %>
-                    <a href="<%=bc.href%>" class="breadcrumb"><%=bc.text%></a>
-                <% } %>
-            <% } else { %>
-                <a href="/" class="brand-logo"> <i class="material-icons left">queue_music</i> SongSets</a>
-            <% }  %>
-            
             <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-
+            <a href="/" class="brand-logo">SongSets</a>
+    
             <ul id="desktop-nav" class="right hide-on-med-and-down">
                
                 <% if (locals.user) { %>
-                    <li><a href="/band/list"><i class="material-icons left">group</i> Your Bands </a> </li>
-                    <li><a href="/user/<%=user.user_id%>"><i class="material-icons left">account_circle</i> <%=user?.username || "New User (Click to set name)" %></a> </li>
+                    <% if (locals.band) { %>
+                        <li><a href="/band/<%=band.band_id%>/setlist/all"><i class="material-icons left">queue_music</i> Sets</a></li>
+                        <li><a href="/band/<%=band.band_id%>/song/all"><i class="material-icons left">library_music</i> Songs</a></li>
+                    <% } %>
+                    <li><a href="/band/list"><i class="material-icons left">account_circle</i><%=user.username%></a> </li>
                     <% if (user.privilege == "Admin") { %>
                         <li><a href="/user/list"><i class="material-icons left">view_list</i>  Manage Users</a></li>
                     <% } %>
-                        
-                    <li><a href="/logout" class="btn red">Logout</a></li>                        
+                    <li><a href="/logout" class="btn-small red">Log out</a></li>                        
                 <% } else { %>
-                    <li><a href="/login" class="btn blue">Login</a></li>
+                    <li><a href="/login" class="btn-small blue">Log in</a></li>
                 <% } %>
             </ul>
         </div>
     </nav>
+    <% if (locals.breadcrumbs) { %>
+    <nav class="breadcrumb-nav">
+        <div class="nav-wrapper">
+            <div class="col s12 truncate" >
+                <a class="breadcrumb"></a>
+                <% for ( bc of breadcrumbs) { %>
+                    <a <% if (bc.href) { %> href="<%=bc.href%>" <%}%> class="breadcrumb">
+                        <%=bc.text%>
+                    </a>
+                <% } %>
+            </div>
+        </div>
+    </nav>
+    <% }  %>    
 
 <ul id="mobile-nav" class="sidenav">
 
     <% if (user) { %>
-            <li><a href="/band/list"><i class="material-icons left">group</i> Your Bands </a> </li>
-            <li><a href="/user/<%=user.user_id%>"><i class="material-icons left">account_circle</i> <%=user?.username || "New User (Click to set name)" %></a> </li>
-            <% if (user.privilege == "Admin") { %>
-                <li><a href="/user/list"><i class="material-icons left">view_list</i> Manage Users</a></li>
-            <% } %>
+        <% if (locals.band) { %>
+            <li><a href="/band/<%=band.band_id%>/setlist/all"><i class="material-icons left">queue_music</i> Sets</a></li>
+            <li><a href="/band/<%=band.band_id%>/song/all"><i class="material-icons left">library_music</i> Songs</a></li>
+        <% } %>
+        <li><a href="/band/list"><i class="material-icons left">account_circle</i><%=user.username%></a> </li>
+        <% if (user.privilege == "Admin") { %>
+            <li><a href="/user/list"><i class="material-icons left">view_list</i> Manage Users</a></li>
+        <% } %>
             <li><a href="/logout" class="btn red">Logout</a></li>        
         <% } else { %>
             <li><a href="/login" class="btn blue">Login</a></li>
