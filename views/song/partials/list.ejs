@@ -19,20 +19,31 @@ Requires:
 <div id="songlist">
                  
     <div class="row">
-        <div class="input-field">
+        <div class="input-field col s10">
           <i class="material-icons prefix">search</i>
           <input id="searchBar" type="text" class="search">
-          <label for="searchBar">Search by Title, Artist, Tags, Key, Tempo, or Recent Set</label>
+          <label for="searchBar">Search (Title, Tags, etc...) </label>
+        </div>
+        
+        <div class="input-field col s2">
+            <select class="pagination-select ">
+                <option>10</option>
+                <option>20</option>
+                <option>50</option>
+                <option>100</option>
+            </select>
+            <label>#/page</label>
         </div>
     </div>
     <div class="row">
-        <button class="btn-flat sort waves-light waves-effect" data-sort="title">Sort by Title</button>
-        <button class="btn-flat sort waves-light waves-effect" data-sort="artist">Sort by Artist</button>
-        <button class="btn-flat sort waves-light waves-effect" data-sort="key">Sort by Key</button>
-        <button class="btn-flat sort waves-light waves-effect" data-sort="tempo">Sort by Tempo</button>
-        <button class="btn-flat sort waves-light waves-effect" data-sort="last-played-yyyymmdd">Sort by Last Played</button>
-        <ul class="pagination paginationTop right"></ul>
+            <button class="btn-flat sort waves-light waves-effect" data-sort="title">Sort by Title</button>
+            <button class="btn-flat sort waves-light waves-effect" data-sort="artist">Sort by Artist</button>
+            <button class="btn-flat sort waves-light waves-effect" data-sort="key">Sort by Key</button>
+            <button class="btn-flat sort waves-light waves-effect" data-sort="tempo">Sort by Tempo</button>
+            <button class="btn-flat sort waves-light waves-effect" data-sort="last-played-yyyymmdd">Sort by Last Played</button>
+
     </div>
+    <ul class="pagination paginationTop left"></ul>
 
 <table>
     <thead>
@@ -138,6 +149,5 @@ Requires:
         <% } %>
     </tbody>
 </table>
-<ul class="pagination paginationBottom right"></ul>
-
+<ul class="pagination paginationBottom left"></ul>
 </div>

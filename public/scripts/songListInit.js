@@ -26,3 +26,8 @@ var options = {
 };
 
 var songList = new List('songlist', options);
+
+document.querySelector(".pagination-select").addEventListener("change", (e) =>{
+  songList.page = event.target.value
+  songList.update();
+})
