@@ -80,7 +80,8 @@ function getBandMemberByUser(user_id, band_id){
 
 // Get all bands that a user has a role in (and those roles)
 const getAllBandsByUserSQL = `
-select b.band_id, b.name, b.created_at, m.role
+select b.band_id, b.name, m.role,
+DATE_FORMAT(m.created_at, "%b '%y") as member_since_pretty
 from band b
 join band_member m on b.band_id = m.band_id 
 where m.user_id = ?
@@ -91,7 +92,8 @@ function getAllBandsByUser(user_id) {
 
 // Get all members associated with a band and their users/roles
 const getAllBandMembersByBandSQL = `
-select m.nickname, m.user_id, u.username, m.role, m.created_at  
+select m.nickname, m.user_id, u.username, m.role, 
+DATE_FORMAT(m.created_at, "%b '%y") as member_since_pretty  
 from band_member m
 left join user u on u.user_id = m.user_id
 where m.band_id = ? 

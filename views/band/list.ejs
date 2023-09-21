@@ -14,34 +14,35 @@
 
         <!-- Actual page content! -->
         <div class="container">
-            <h2>Your Bands:</h2>
+            <h2>Welcome, <%=user.username%>!
+                <a class="waves-effect waves-light btn grey" href="/user/<%=user.user_id%>"> 
+                    <i class="material-icons left">settings</i>Change Username</a>    
+            </h2>
+            
+
+            <h3>Your Bands:</h3>
+
 
             <div class="section" id="bandlist">
                     <blockquote>
-                        <% if (!locals.user.username) { %>
-                            Before you can create or join any bands, you need to set a username first. </br>
-                            Click on the <i class="material-icons">account_circle</i> above to do so. </br>
-                        <% } else { %>
 
-                            <% if (bandlist.length == 0) { %>
+                        <% if (bandlist.length == 0) { %>
 
-                                Looks like you're not part of any bands (yet). 
-                                Click the <i class="material-icons">add_circle</i> in the bottom right to 
-                                create a band. </br>
-
-                            <% } %>
-
-                            If you want to join an existing band, tell an <strong>owner</strong> of the band to add you using your username "<strong><%=user.username%></strong>"  
+                            Looks like you're not part of any bands (yet). 
+                            Click the <i class="material-icons">add_circle</i> in the bottom right to 
+                            create a band. </br>
 
                         <% } %>
-                        
+
+                        If you want to join a band, tell the band's <strong>owner</strong> to add your username "<strong><%=user.username%></strong>"  
+                    
                     </blockquote>
 
                 <table >
                     <thead>
                         <tr>
                             <th>Band</th>
-                            <th>Created On</th>
+                            <th>Member Since</th>
                             <th>Your Role</th>
                             <th ></th>
                         </tr>
@@ -55,7 +56,7 @@
                                         <%= band.name %>
                                     </a></td>
                                 <td>
-                                    <%= band.created_at %>
+                                    <%= band.member_since_pretty%>
                                 </td>
                                 <td>
                                     <%= band.role%>
