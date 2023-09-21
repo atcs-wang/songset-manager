@@ -16,12 +16,12 @@
 <body>
 
     <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : [{href: `/band/${band.band_id}/`, text: band.name}, 
-                                                      {href: `/band/${band.band_id}/member/list`, text: 'Members'},
-                                                      {href: `/band/${band.band_id}/member/${member.nickname}`, text: member.nickname}]}) %>
+                                                    {href: `/band/${band.band_id}/member/list`, text: 'Members'},
+                                                    {text: member.nickname}]}) %>
 
         <!-- Actual page content! -->
         <div class="container">
-            <h2>Edit "<%=member.nickname%>":</h2>
+            <h3>Edit "<%=member.nickname%>":</h3>
             <% if (member.user_id == user.user_id) { %> 
                 <blockquote>It seems you're editing your own membership! <br> You can change your nickname, 
                     but you can't remove yourself, change your username to someone else's, or change your role. <br> 

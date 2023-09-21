@@ -12,20 +12,20 @@
 
     <body>
 
-        <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : [{href: `/band/${band.band_id}/`, text: band.name}]}) %>
+        <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : [{text: band.name}]}) %>
 
 
 
 
             <!-- Actual page content! -->
             <div class="container">
-                <h2><%=band.name%> </h2>
+                <h3><%=band.name%> </h3>
                 <div class="row">
 
                 <% if (band.member.role=='owner' ) { %>
 
                         <a class="waves-effect waves-light btn z-depth-0 modal-trigger orange col s6 m6 l3" href="#manage"> 
-                            <i class="material-icons left">settings</i>Edit</a>
+                            <i class="material-icons left">settings</i>Change Name</a>
 
 
                         <a class="waves-effect waves-light btn z-depth-0 orange darken-3 col s6 m6 l3" href="/band/<%=band.band_id%>/member/list"> 
@@ -35,10 +35,10 @@
 
                
                 <a class="waves-effect waves-light btn z-depth-0 green col s6 m6 l3" href="/band/<%=band.band_id%>/setlist/all"> 
-                    <i class="material-icons left">queue_music</i>Setlists</a></li>
+                    <i class="material-icons left">queue_music</i>All Setlists</a></li>
                 
                 <a class="waves-effect waves-light btn z-depth-0 blue col s6 m6 l3" href="/band/<%=band.band_id%>/song/all"> 
-                    <i class="material-icons left">library_music</i>Songs</a>
+                    <i class="material-icons left">library_music</i>All Songs</a>
                     
                 </div>
 

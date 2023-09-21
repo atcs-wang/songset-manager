@@ -24,10 +24,10 @@
             archive ? 
                 [{href: `/band/${band.band_id}/`, text: band.name}, 
                     {href: `/band/${band.band_id}/song/all`, text: "Songs"},
-                    {href: `/band/${band.band_id}/song/archive`, text: "Archive"}]
+                    {text: "Archive"}]
                 :
                 [{href: `/band/${band.band_id}/`, text: band.name}, 
-                    {href: `/band/${band.band_id}/song/all`, text: "Songs"}]
+                    {text: "Songs"}]
         }) %>
 
 

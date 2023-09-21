@@ -34,11 +34,11 @@
             [{href: `/band/${band.band_id}/`, text: band.name}, 
                 {href: `/band/${band.band_id}/setlist/all`, text: "Setlists"},
                 {href: `/band/${band.band_id}/setlist/archive`, text: "Archive"},
-                {href:  `/band/${band.band_id}/setlist/${setlist.setlist_id}`, text: setlist.name }]
+                {text: setlist.name }]
             :
             [{href: `/band/${band.band_id}/`, text: band.name}, 
                 {href: `/band/${band.band_id}/setlist/all`, text: "Setlists"},
-                {href:  `/band/${band.band_id}/setlist/${setlist.setlist_id}`, text: setlist.name }]
+                {text: setlist.name }]
     }) %>
 
     <ul class="tabs tabs-fixed-width">

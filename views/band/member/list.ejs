@@ -14,14 +14,14 @@
 <body>
 
     <%- include(viewDirRoot + 'partials/navbar', {breadcrumbs : [{href: `/band/${band.band_id}/`, text: band.name}, 
-                                                      {href: `/band/${band.band_id}/member/list`, text: 'Members'}]}) %>
+                                                      {text: 'Members'}]}) %>
 
     <!-- Actual page content! -->
     <div class="container">
         
-        <h2>
+        <h3>
             <%=band.name%>: Members
-        </h2>
+        </h3>
 
             <% if (band?.member.role=='owner' ) { %>
                 <blockquote>
@@ -108,7 +108,7 @@
             </div>
             <div id="createmember" class="modal">
                 <div class="modal-content">
-                    <h2>Add a new band member:</h2>
+                    <h3>Add a new band member:</h3>
                     <form id="createMemberForm" method="post">
                         <input type="hidden" name="method" value="create">
 
