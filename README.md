@@ -25,8 +25,7 @@ Currently hosted at [songsets.up.railway.app/](https://songset-manager-productio
 
 ### Small TODOs:
 - Patch out use of EJS on browser side
-- Move song/set related heads/footers into partials
 - Add song page's list of sets to include performance notes of that song
-- Error handling (nicer error pages)
+- Better HTTP error codes + nicer looking 404 pages (natural redirects?)
 - Update user management list to be more like the other lists
 - Refactor route handlers into routes/controllers?
