@@ -5,7 +5,6 @@
 %>
 <% var viewDirRoot = '../'; %>
 <% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
-<% var promptSongCreation = !archive && (songlist.length == 0); %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,22 +46,23 @@
                 </h3>
             
 
-                <% if (promptSongCreation) { %>
+                <% if (songlist.length == 0) { %>
                     <blockquote >
-                        Looks like your band doesn't have any songs (yet). 
-                        Click the <i class="material-icons">add_circle</i> in the bottom right to 
-                        create a song. </br>
+                        Looks like your band doesn't have any <% if (archive) { %> archived <% } %> songs (yet).
                     </blockquote>
+
+                <% } else { %>
+
+                    <%-include(viewDirRoot + 'song/partials/list.ejs', {allowEdit: isCoreMember, addToSetlist: false}) %>
 
                 <% } %>
 
         </div>
             
-            <%-include(viewDirRoot + 'song/partials/list.ejs', {allowEdit: isCoreMember, addToSetlist: false}) %>
 
             <% if (!archive && isCoreMember) { %>
 
-                <%-include('./partials/createsong.ejs', {promptSongCreation}) %>
+                <%-include('./partials/createsong.ejs', {promptSongCreation : songlist.length == 0}) %>
 
             <% } %>
         </div>

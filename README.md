@@ -22,12 +22,9 @@ Currently hosted at [songsets.up.railway.app/](https://songset-manager-productio
 - Server-side form validation
 - API and route testing
 - (More) Client-Side-Rendering
-- Session-based notifications for confirmation of actions 
 
 ### Small TODOs:
 - Patch out use of EJS on browser side
-- Refactor create setlist form into partial
-- Allow create setlist on Band profile page
 - Move song/set related heads/footers into partials
 - Add song page's list of sets to include performance notes of that song
 - Error handling (nicer error pages)

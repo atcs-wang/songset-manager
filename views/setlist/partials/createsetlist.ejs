@@ -1,0 +1,60 @@
+<%/*
+Requires:
+    promptSetlistCreation (boolean)
+    band
+*/%>
+
+<div class="fixed-action-btn">
+    <a id="addSetlistButton" class="btn-floating btn-large waves-effect waves-light orange modal-trigger <% if (promptSetlistCreation) { %> pulse <%}%>" 
+    href="#createsetlist"><i class="material-icons">add</i></a>
+</div>
+
+<% if (promptSetlistCreation) { %>
+    <div class="tap-target no-autoinit" data-target="addSetlistButton">
+        <div class="tap-target-content white-text">
+          <h5>Add setlist</h5>
+          <p>Click to create a new setlist, which can then have songs added to them.</p>
+        </div>
+    </div>
+<% } %>
+
+
+<div class="modal" id="createsetlist">
+
+    <div class="modal-content">
+
+        <form id="addSetlistForm" method="post" action="/band/<%=band.band_id%>/setlist">  
+            <h4>Add a new setlist:</h4>
+            <input type="hidden" name="method" value="create">
+
+            <div class="row">
+                <div class="input-field col s6">
+                    <input type="text" id="nameInput" name="name" class="validate" data-length="45" required>
+                    <label for="nameInput">Name:</label>
+                </div>
+                <div class="input-field col s6">
+                    <input type="date" id="dateInput" name="date" class="validate">
+                    <label for="artistInput">Date:</label>
+                </div>
+            </div>
+        
+            <div class="row">
+               <div class="input-field col s12">
+                            <textarea class="materialize-textarea" id="descrInput" name="descr"></textarea>
+                            <label for="descrInput">Description:</label>
+                </div>
+            </div>
+            
+        </form>                    
+
+        <div class="modal-footer">
+            <button class="btn waves-effect waves-light " type="submit" form="addSetlistForm">
+                <i class="material-icons right">send</i>
+                Create New Setlist
+            </button>
+            <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
+        </div>
+        
+    </div>
+
+</div>

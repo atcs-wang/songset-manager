@@ -1,12 +1,10 @@
 <%# Must pass in:
 {   setlists: [{name, date, descr}]
-    search: string,
     archive: boolean,
 }
 %>
 <% var viewDirRoot = '../'; %>
 <% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
-<% var promptSetlistCreation = !archive && (setlists.length == 0) && !locals?.search; %>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,14 +45,6 @@
                     </a>
             <% } %>
              </h3>
-            <% if (promptSetlistCreation) { %>
-                <blockquote >
-                    Looks like your band doesn't have any setlists (yet). 
-                    Click the <i class="material-icons">add_circle</i> in the bottom right to 
-                    create a setlist. </br>
-                </blockquote>
-
-            <% } %>
 
         </div>
         <% if (!archive) { %>
@@ -86,56 +76,24 @@
             </div>            
         <% } %>
     
-        <%-include('./partials/list.ejs', {allowEdit: isCoreMember}) %>
 
-            <% if (!archive && isCoreMember) { %>
+        <% if (setlists.length == 0) { %>
 
-            <div class="fixed-action-btn">
-                <a class="btn-floating btn-large waves-effect waves-light orange modal-trigger <%= promptSetlistCreation ? 'pulse' : '' %>" 
-                href="#createsetlist"><i class="material-icons">add</i></a>
-            </div>
+            <blockquote >
+                Looks like your band doesn't have any <% if (archive) { %> archived <% } %> setlists (yet).
+            </blockquote>
 
-            <div class="modal" id="createsetlist">
-    
-                <div class="modal-content">
-    
-                    <form id="addSetlistForm" method="post">  
-                        <h4>Add a new setlist:</h4>
-                        <input type="hidden" name="method" value="create">
+        <% } else { %>
 
-                        <div class="row">
-                            <div class="input-field col s6">
-                                <input type="text" id="nameInput" name="name" class="validate" data-length="45" required>
-                                <label for="nameInput">Name:</label>
-                            </div>
-                            <div class="input-field col s6">
-                                <input type="date" id="dateInput" name="date" class="validate">
-                                <label for="artistInput">Date:</label>
-                            </div>
-                        </div>
-                    
-                        <div class="row">
-                           <div class="input-field col s12">
-                                        <textarea class="materialize-textarea" id="descrInput" name="descr"></textarea>
-                                        <label for="descrInput">Description:</label>
-                            </div>
-                        </div>
-                        
-                    </form>                    
+            <%-include('./partials/list.ejs', {allowEdit: isCoreMember}) %>
 
-                    <div class="modal-footer">
-                        <button class="btn waves-effect waves-light " type="submit" form="addSetlistForm">
-                            <i class="material-icons right">send</i>
-                            Create New Setlist
-                        </button>
-                        <button class="modal-close waves-effect waves-green btn-flat" >Never Mind</button>
-                    </div>
-                    
-                </div>
-    
-            </div>
+        <% } %>
 
-            <% } %>
+        <% if (!archive && isCoreMember) { %>
+
+            <%-include('./partials/createsetlist.ejs', {promptSetlistCreation: setlists.length == 0}) %>
+
+        <% } %>
         </div>
 
         <%- include(viewDirRoot + 'partials/stdfoot') %>

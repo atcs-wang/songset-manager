@@ -1,17 +1,27 @@
 <%/*
 Requires:
     promptSongCreation (boolean)
-
+    addToSetlist (boolean, not yet used)
     
     
     <script src="/scripts/keyAutocomplete.js"></script>
 */%>
 
 <div class="fixed-action-btn">
-    <a class="tooltipped btn-floating btn-large waves-effect waves-light orange modal-trigger <%= promptSongCreation ? 'pulse' : '' %>" 
+    <a id="addSongButton" class="tooltipped btn-floating btn-large waves-effect waves-light orange modal-trigger <%= promptSongCreation ? 'pulse' : '' %>" 
     data-tooltip="New Song" data-position="top"
     href="#createsong"><i class="material-icons">playlist_add</i></a>
 </div>
+
+<% if (promptSongCreation) { %>
+    <div class="tap-target no-autoinit" data-target="addSongButton">
+        <div class="tap-target-content white-text">
+          <h5>Add song</h5>
+          <p>Click to add a song to your library, which can then be used in your setlists.</p>
+        </div>
+    </div>
+<% } %>
+
 
 <div class="modal modal-fixed-footer" id="createsong">
 

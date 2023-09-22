@@ -20,20 +20,8 @@
     <div class="container">
         
         <h3>
-            <%=band.name%>: Members
+            <%=band.name%>
         </h3>
-
-            <% if (band?.member.role=='owner' ) { %>
-                <blockquote>
-                    Click the <i class="material-icons tiny">group_add</i> in the bottom right to 
-                    add more members to your band. 
-                    
-                    To associate band members with actual users, you'll need to know that user's <strong>username</strong></br>
-                </blockquote>
-
-            <% } %>
-
-            
 
         <div class="section" id="memberlist">
             <table >
@@ -103,12 +91,22 @@
         <% if (band?.member.role=='owner' ) { %>
 
             <div class="fixed-action-btn">
-                <a class="btn-floating btn-large waves-effect waves-light orange modal-trigger <%= memberlist.length < 2 ? 'pulse' : '' %>"
+                <a id="addMemberButton" class="btn btn-floating btn-large waves-effect waves-light orange modal-trigger <%= if (memberlist.length < 2) { %> pulse <%}%>"
                     href="#createmember"><i class="material-icons">group_add</i></a>
             </div>
+            <% if (memberlist.length < 2) {%>
+                <div class="tap-target no-autoinit" data-target="addMemberButton">
+                    <div class="tap-target-content white-text">
+                      <h5>Add member</h5>
+                      <p>To add users, you'll need to know that user's <strong>username</strong>. But you can still create 
+                        placeholder members and add their username later.</br>
+                      </p>
+                    </div>
+                </div>
+            <% } %>
             <div id="createmember" class="modal">
                 <div class="modal-content">
-                    <h3>Add a new band member:</h3>
+                    <h3>Add new member:</h3>
                     <form id="createMemberForm" method="post">
                         <input type="hidden" name="method" value="create">
 
@@ -148,6 +146,7 @@
                     <a href="#!" class="modal-close waves-effect waves-green btn-flat">Close</a>
                 </div>
             </div>
+
         <% } %>
 
 

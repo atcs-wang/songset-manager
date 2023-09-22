@@ -1,5 +1,6 @@
-<%# Must pass in: - band: [{band_id, name}] - sets: [{}]%>
+<%# Must pass in: - band: [{band_id, name}] - setlists: [{}]%>
 <% var viewDirRoot = '../'; %>
+<% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
 
     <!DOCTYPE html>
     <html lang="en">
@@ -43,8 +44,27 @@
                 </div>
 
                 <h4>Upcoming Sets:</h4>
-                <%- include(viewDirRoot + '/setlist/partials/list', {allowEdit: false}) %>
-    
+
+                        
+
+                <% if (setlists.length == 0) { %>
+
+                    <blockquote >
+                        Looks like your band doesn't have any upcoming setlists (yet).
+                    </blockquote>
+
+                <% } else { %>
+
+                    <%-include(viewDirRoot + '/setlist/partials/list', {allowEdit: false}) %>
+
+                <% } %>
+
+                <% if (isCoreMember) { %>
+
+                    <%-include(viewDirRoot + '/setlist/partials/createsetlist.ejs', {promptSetlistCreation: setlists.length == 0}) %>
+
+                <% } %>
+
                 <div id="manage" class="modal">
                     <div class="modal-content">
 
