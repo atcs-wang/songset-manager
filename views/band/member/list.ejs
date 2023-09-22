@@ -91,14 +91,14 @@
         <% if (band?.member.role=='owner' ) { %>
 
             <div class="fixed-action-btn">
-                <a id="addMemberButton" class="btn btn-floating btn-large waves-effect waves-light orange modal-trigger <%= if (memberlist.length < 2) { %> pulse <%}%>"
+                <a id="addMemberButton" class="btn btn-floating btn-large waves-effect waves-light orange modal-trigger <% if (memberlist.length < 2) { %> pulse <%}%>"
                     href="#createmember"><i class="material-icons">group_add</i></a>
             </div>
             <% if (memberlist.length < 2) {%>
                 <div class="tap-target no-autoinit" data-target="addMemberButton">
                     <div class="tap-target-content white-text">
                       <h5>Add member</h5>
-                      <p>To add users, you'll need to know that user's <strong>username</strong>. But you can still create 
+                      <p>To add other users, you'll need to know their <strong>username</strong>. But you can also create 
                         placeholder members and add their username later.</br>
                       </p>
                     </div>
@@ -127,7 +127,7 @@
                             <select id="roleInput" name="role" size="6" required>
                                     <% for (const r of rolelist) { %>
                                         <option value=<%=r.role %> selected>"<%= r.role %>" : <%= r.descr %></option>
-                                        <% } %>
+                                    <% } %>
                             </select>
 
                             <label for="roleInput">Band Role: (can be changed later)</label>
