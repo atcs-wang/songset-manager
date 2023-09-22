@@ -10,7 +10,7 @@
 <html lang="en">
 <% var viewDirRoot = '../'; %>
 <% var isCoreMember = (band.member.role=='owner' || band.member.role=='core' ); %>
-<% var promptSongAddition = isCoreMember && !setlist.archived && (setlist.songs.length == 0); %>
+<% var promptSongCreation = isCoreMember && !setlist.archived && songlist.length == 0; %>
 <% var allowEdit = isCoreMember && !setlist.archived %>
 
 <head>
@@ -41,13 +41,11 @@
                 {text: setlist.name }]
     }) %>
 
+    <% if (allowEdit)  { %>
     <ul class="tabs tabs-fixed-width">
         <li class="tab col s6 m6"><a href="#setlist">View / Edit Setlist</a></li>
-        <li class="tab col s6 m6 <% if (!allowEdit) { %> disabled <%}%>"><a href="#songlistContainer">Add Songs</a></li>
+        <li class="tab col s6 m6"><a <% if (setlist.songs == 0) { %> class="active" <%}%> href="#songlistContainer">Add Songs</a></li>
     </ul>
-
-    <!-- Actual page content! -->
-
 
     <form id="deleteSetlistForm" class="confirm-submit right" method="post" display="hidden"
         data-confirm-msg='Confirm that you want to delete this setlist by retyping "<%=setlist.name%>":'
@@ -63,6 +61,8 @@
         <input type="hidden" name="redirect" value="archive">
         <% } %>
     </form>
+
+    <% } %>
 
     <div class="container">
         
@@ -182,7 +182,7 @@
                                 <i class="material-icons handle tooltipped" 
                                     data-tooltip="Drag to rearrange" data-position="left">drag_handle</i>
                                 <% } else {%>
-                                    <i class="material-icons">drag_handle</i>
+                                    <i class="material-icons">music_note</i>
                                 <% } %>
                                 <div class="ch-content">
                                     <strong class="blue-text text-darken-3 tooltipped" data-tooltip="Click to expand details" data-position="top">
@@ -202,7 +202,7 @@
                             <div class="collapsible-body">
                                 
                                 Title: <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>" 
-                                    class="tooltipped" data-tooltip="Edit song details" data-position="top">
+                                    class="tooltipped" data-tooltip="<%= allowEdit ? 'Edit' : 'View' %> song details" data-position="top">
                                     <%= song.title %>
                                 </a>
                                 <br>Artist: <strong><%= song.artist%></strong>
@@ -229,12 +229,16 @@
         <% if (allowEdit) { %>
 
             <div id="songlistContainer">
+                <% if (songlist.length == 0) { %>
+                    <blockquote >
+                        Looks like your band doesn't have any songs (yet).
+                    </blockquote>
+                <% } else { %>
                     <%-include(viewDirRoot + 'song/partials/list.ejs', {allowEdit: false, addToSetlist: true}) %>
-                    <%-include(viewDirRoot + 'song//partials/createsong.ejs', {promptSongCreation : songlist.length == 0}) %>
+                <% } %>
+                <%-include(viewDirRoot + 'song//partials/createsong.ejs', {promptSongCreation}) %>
             </div>
         <% } %>
-
-        
 
     </div>
     

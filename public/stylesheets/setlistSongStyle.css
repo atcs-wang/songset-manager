@@ -1,15 +1,12 @@
-li#empty-message {
+#setlist-songs li#empty-message {
     display: none;
 }
-li#empty-message:only-child {
+#setlist-songs li#empty-message:only-child {
     display: inline;
 }
 
-li {
 
-}
-
-input[type='text'].song-note {
+#setlist-songs input[type='text'].song-note {
     display: inline;
     margin: 0; 
     padding: 0;
@@ -19,11 +16,14 @@ input[type='text'].song-note {
     width: 100%;
 }
 
-input[type='text'].song-note:placeholder {
+#setlist-songs input[type='text'].song-note:placeholder {
     width: 10%;
 }
 
-.ch-content {
+#setlist-songs .ch-content {
     width: 100%;
 }
 
+#setlist-songs {
+    padding-left: 0;
+}

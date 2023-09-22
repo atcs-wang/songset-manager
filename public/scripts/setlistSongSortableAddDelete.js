@@ -6,7 +6,9 @@
 // flashMessageToast.js, which initializes flashInfo and flashError functions
 
 const editSetlistSongForm = document.querySelector("#editSetlistSongForm");
-editSetlistSongForm.onsubmit = () => false;
+if (editSetlistSongForm) {
+    editSetlistSongForm.onsubmit = () => false;
+}
 async function sendUpdateSongsPost(){
     const body = new URLSearchParams(new FormData(editSetlistSongForm));
     body.set("method", 'update-songs');
@@ -21,22 +23,26 @@ async function sendUpdateSongsPost(){
     }
 }
 
+
 const setlistSongsList = document.querySelector("#setlist-songs")
-new Sortable(setlistSongsList, {
-    handle: '.handle', // handle's class
-    group: 'shared',
-    animation: 150,
-    onUpdate: async (event) => {
-        try{
-            await sendUpdateSongsPost();
-            // I think this is too much!
-            // flashInfo(`Re-ordered ${event.item.dataset.title}`);
-        } catch(e){
-            console.error(e);    
-            flashInfo(`Failed to re-order songs. Refresh page.`);
-        }
-    } //whenever resorted, send update to server.
-});
+if (setlistSongsList) {
+    new Sortable(setlistSongsList, {
+        handle: '.handle', // handle's class
+        group: 'shared',
+        animation: 150,
+        onUpdate: async (event) => {
+            try{
+                await sendUpdateSongsPost();
+                // I think this is too much!
+                // flashInfo(`Re-ordered ${event.item.dataset.title}`);
+            } catch(e){
+                console.error(e);    
+                flashInfo(`Failed to re-order songs. Refresh page.`);
+            }
+        } //whenever resorted, send update to server.
+    });
+}
+
 
 const newSongTemplate = `
 <li data-title="<%= song.title %>" data-song-id="<%= song['song-id'] %>">
