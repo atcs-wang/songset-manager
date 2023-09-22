@@ -27,7 +27,7 @@ var options = {
 var setlistList = new List('setlists', options);
 
 
-document.querySelector(".pagination-select").addEventListener("change", (e) =>{
+document.querySelectorAll(".pagination-select").forEach((elm) => elm.addEventListener("change", (e) =>{
   setlistList.page = e.target.value
   setlistList.update();
-})
+}));

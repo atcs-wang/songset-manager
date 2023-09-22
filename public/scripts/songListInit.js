@@ -28,7 +28,7 @@ var options = {
 
 var songList = new List('songlist', options);
 
-document.querySelector(".pagination-select").addEventListener("change", (e) =>{
+document.querySelectorAll(".pagination-select").forEach((elm) => elm.addEventListener("change", (e) =>{
   songList.page = e.target.value
   songList.update();
-})
+}));
