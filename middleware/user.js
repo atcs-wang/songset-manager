@@ -38,28 +38,34 @@ function fakeLoadUser(user_id) {
 }
 
 function requiresUser(req, res, next) {
-    if (req.user) {
-        next();
+    if (!req.user) {
+        req.flash('error', `User must be logged in`)
+        res.status(403).redirect('/');        
     } else {
-        res.status(403).send("User must be logged in")
+        next();
     }
 }
 
 function requiresUsername(req, res, next) {
-    if (req.user?.username) {
-        next();
+    if (!req.user) {
+        req.flash('error', `User must be logged in`)
+        res.status(403).redirect('/');        
+    }
+    if (!req.user?.username) {
+        req.flash('error', `User must have a username. Please set one.`)
+        res.status(403).redirect('/user');        
     } else {
-        res.status(403).send("User must have a username. Please set one in your profile/settings.")
+        next();
     }
 }
 
 function requiresSuperUser(req, res, next) {
-    if (req.user.privilege == 'Admin') {
-        next();
+    if (req.user.privilege !== 'Admin') {
+        req.flash('error', `User lacks sufficient privileges.`)
+        res.status(403).redirect('/');
     } else {
-        res.status(403).send("User lacks sufficient privileges")
+        next();
     }
-    // next(new Error("User lacks sufficient privileges"));
 }
 
 module.exports = { loadUser, fakeLoadUser, requiresUser, requiresUsername, requiresSuperUser}

@@ -6,7 +6,7 @@ const {getUpcomingSetlistsByBand} = require('../db/setlist_api.js')
 let bandRouter = express.Router();
 
 bandRouter.route( ['/','/list'])
-    .get(requiresUser, async (req, res) => { //Show all bands for the user
+    .get(requiresUsername, async (req, res) => { //Show all bands for the user
         let [bandlist] = await bandApi.getAllBandsByUser(req.user.user_id);
         res.render("band/list", { bandlist });
     })

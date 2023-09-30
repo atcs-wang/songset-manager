@@ -1,11 +1,19 @@
 const express = require('express');
 const userApi = require('../db/user_api');
-const { requiresSuperUser } = require('../middleware/user');
+const { requiresUser, requiresSuperUser } = require('../middleware/user');
 let userRouter = express.Router();
 
+userRouter.all('/', requiresUser, (req, res, next) => {
+    if (req.user.privilege === 'Admin') {
+        return res.redirect(req.baseUrl + "/list");
+    } else {
+        res.redirect(req.baseUrl + "/" + req.user.user_id);
+    }
+})
+
 // View list of all users. This is restricted to admin superusers.
-userRouter.get( ['/', '/list'], requiresSuperUser, async (req, res) => {
-    let [rows, fields] = await userApi.getUsersSearch(req.query.search);
+userRouter.get( '/list', requiresSuperUser, async (req, res) => {
+    let [rows] = await userApi.getUsersSearch(req.query.search);
     res.render("user/list", {profilelist : rows, searchquery : req.query.search});
 });
 
@@ -17,8 +25,8 @@ userRouter.all(`/:user_id*`, (req, res, next) => {
         next();
     }
     else {
-        res.status(403).send("User lacks sufficient privileges")
-        // next(new Error("User lacks sufficient privileges"));
+        req.flash('error', `User lacks sufficient privileges.`)
+        res.status(403).redirect('/');
     }
 })
 
@@ -35,36 +43,41 @@ userRouter.route('/:user_id')
     })
     .post(async (req, res, next) => {
         if (req.body.method == "update") {
-            // update username.
-            if (req.body.username) {
-                try {
-                    let [{changedRows}] = await userApi.updateUsername(req.params.user_id, req.body.username);
-                    console.log(results)
-                    if (changedRows)
-                        req.flash('info', `Username updated to '${req.body.username}'`)
-                } catch (e) {
-                    // next( new Error(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`))
-                    // res.status(422).send(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`);
-                    // return;
-                    res.status(422);
-                    req.flash('error', `The username "${req.body.username}" is already taken.`)                    
-                }
-            } 
             // update privilege. Only allowed by superusers
             if (req.body.privilege && req.user.privilege == 'Admin') {
                 let [{changedRows}] = await userApi.updateUserPrivilege(req.params.user_id, req.body.privilege);
                 if (changedRows)
                     req.flash('info', `Privilege updated to '${req.body.privilege}'`)
             }
-            res.redirect('back');
+            
+            // update username.
+            if (req.body.username) {
+                try {
+                    let [{changedRows}] = await userApi.updateUsername(req.params.user_id, req.body.username);
+                    if (changedRows)
+                        req.flash('info', `Username updated to '${req.body.username}'`)
+                    res.redirect('/');
+                } catch (e) {
+                    // next( new Error(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`))
+                    // res.status(422).send(`Whoops! The username "${req.body.username}" is already taken. Please go back and try a different username.`);
+                    // return;
+                    res.status(422);
+                    req.flash('error', `The username "${req.body.username}" is already taken.`)                    
+                    res.redirect('back');
+
+                }
+            } else {
+                res.redirect('back');
+            }
 
         }
         else if (req.body.method == "delete") {
+            // TODO needs a fix.
             let [results] = await userApi.deleteUser(req.params.user_id);
             if (results.affectedRows)
                 req.flash('info', `Deleted '${req.params.user_id}'`)
             if (req.user.user_id == req.params.user_id)
-                res.redirect('/logout');
+                res.status(401).redirect('/logout');
             else 
                 res.redirect(req.baseUrl);
         } else {
