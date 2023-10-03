@@ -69,6 +69,9 @@ app.use(auth(config));
 // If user does not yet exist in database, create the user in the database 
 app.use(loadUser);
 
+//DEBUG test
+// app.use(fakeLoadUser(process.env.MOCK_USER_ID));
+
 
 // Set up cookies/sessions and flash messages
 var sessionStore = new session.MemoryStore;
@@ -86,8 +89,6 @@ app.get('*', (req, res, next) => {
     next();
 })
 
-//DEBUG test
-// app.use(fakeLoadUser(process.env.MOCK_USER_ID));
 
 // define a route for the default home page
 app.get( "/", ( req, res ) => {
