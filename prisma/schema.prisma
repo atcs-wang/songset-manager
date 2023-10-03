@@ -1,0 +1,129 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Band {
+  bandId    Int          @id @default(autoincrement()) @map("band_id")
+  creatorId String?      @map("creator_id") @db.VarChar(255)
+  createdAt DateTime     @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime     @default(now()) @map("updated_at") @db.Timestamp(0)
+  name      String?      @db.VarChar(45)
+  creator   User?        @relation(fields: [creatorId], references: [userId], map: "fk_band_creator_id")
+  members   BandMember[]
+  setlists  Setlist[]
+  songs     Song[]
+
+  @@index([creatorId], map: "creator_id_idx")
+  @@map("band")
+}
+
+model BandMember {
+  bandId    Int       @map("band_id")
+  nickname  String    @db.VarChar(45)
+  userId    String?   @map("user_id") @db.VarChar(255)
+  role      String?   @db.VarChar(10)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamp(0)
+  band      Band      @relation(fields: [bandId], references: [bandId], onDelete: Cascade, map: "fk_bm_band_id")
+  bandRole  BandRole? @relation(fields: [role], references: [role], map: "fk_bm_role")
+  user      User?     @relation(fields: [userId], references: [userId], map: "fk_bm_user_id")
+
+  @@id([bandId, nickname])
+  @@unique([bandId, userId], map: "uniq_band_user")
+  @@index([bandId], map: "band_id_idx")
+  @@index([role], map: "role_idx")
+  @@index([userId], map: "user_id_idx")
+  @@map("band_member")
+}
+
+model BandRole {
+  role        String       @id @db.VarChar(10)
+  descr       String       @db.VarChar(100)
+  bandMembers BandMember[]
+
+  @@map("band_role")
+}
+
+model Setlist {
+  setlistId Int           @id @default(autoincrement()) @map("setlist_id")
+  name      String?       @db.VarChar(45)
+  creatorId String?       @map("creator_id") @db.VarChar(255)
+  createdAt DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt DateTime      @default(now()) @map("updated_at") @db.Timestamp(0)
+  bandId    Int           @map("band_id")
+  archived  Int           @default(0) @db.TinyInt
+  date      DateTime?     @db.Date
+  descr     String?       @db.VarChar(100)
+  band      Band          @relation(fields: [bandId], references: [bandId], onDelete: Cascade, map: "fk_setlist_band_id")
+  creator   User?         @relation(fields: [creatorId], references: [userId], map: "fk_setlist_creator_id")
+  songsIn   SetlistSong[]
+
+  @@index([bandId], map: "band_id_idx")
+  @@index([creatorId], map: "creator_id_idx")
+  @@index([date], map: "date_idx")
+  @@map("setlist")
+}
+
+model SetlistSong {
+  setlistId Int     @map("setlist_id")
+  order     Int     @map("setlist_order")
+  songId    Int     @map("song_id")
+  note      String? @db.VarChar(100)
+  setlist   Setlist @relation(fields: [setlistId], references: [setlistId], onDelete: Cascade, map: "fk_setlist_song_setlist_id")
+  song      Song    @relation(fields: [songId], references: [songId], onDelete: Cascade, map: "fk_setlist_song_song_id")
+
+  @@id([setlistId, order])
+  @@index([setlistId], map: "setlist_id_idx")
+  @@index([songId], map: "song_id_idx")
+  @@map("setlist_song")
+}
+
+model Song {
+  songId     Int           @id @default(autoincrement()) @map("song_id")
+  title      String        @db.VarChar(45)
+  artist     String?       @db.VarChar(100)
+  key        String?       @db.VarChar(30)
+  tempo      String?       @db.VarChar(15)
+  tags       String?       @db.VarChar(100)
+  notes      String?       @db.VarChar(255)
+  createdAt  DateTime      @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt  DateTime      @default(now()) @map("updated_at") @db.Timestamp(0)
+  creatorId  String?       @map("creator_id") @db.VarChar(255)
+  bandId     Int           @map("band_id")
+  archived   Boolean       @default(false)
+  setlistsIn SetlistSong[]
+  band       Band          @relation(fields: [bandId], references: [bandId], onDelete: Cascade, map: "fk_song_band_id")
+  creator    User?         @relation(fields: [creatorId], references: [userId], map: "fk_song_creator_id")
+
+  @@index([bandId], map: "band_id_idx")
+  @@index([creatorId], map: "creator_id_idx")
+  @@map("song")
+}
+
+model User {
+  userId        String         @id @map("user_id") @db.VarChar(255)
+  createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamp(0)
+  updatedAt     DateTime       @default(now()) @map("updated_at") @db.Timestamp(0)
+  username      String?        @unique(map: "nickname") @db.VarChar(45)
+  privilege     String?        @default("User") @db.VarChar(10)
+  createdBands  Band[]
+  membership    BandMember[]
+  setlist       Setlist[]
+  song          Song[]
+  userPrivilege UserPrivilege? @relation(fields: [privilege], references: [privilege], onDelete: Restrict, map: "fk_user_privilege")
+
+  @@index([privilege], map: "privilege_idx")
+  @@map("user")
+}
+
+model UserPrivilege {
+  privilege String @id @db.VarChar(10)
+  user      User[]
+
+  @@map("user_privilege")
+}
