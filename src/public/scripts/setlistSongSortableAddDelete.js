@@ -92,24 +92,26 @@ const newSongTemplate = `
 </li>
 `
 
-document.querySelectorAll(".add-song").forEach((elm) => {
-    elm.addEventListener('click', async () => {
-        let [song] = songList.get("song-id", elm.dataset.songId);
-        let html = ejs.render(newSongTemplate, {song: song._values, allowEdit: true})
-        setlistSongsList.innerHTML += html;
-        try {
-            await sendUpdateSongsPost();
-            M.Tooltip.init(document.querySelectorAll('.tooltipped'), {});
-            listenForSongDelete();
-            listenForSongNoteUpdate();
-            flashInfo(`Added '${song._values.title}'`);    
-        } catch(e) {
-            console.error(e);    
-            flashInfo(`Failed to add '${song._values.title}'. Refresh page.`);
-            setlistSongsList.removeChild(setlistSongsList.lastChild);
+function listenForSongAdd(){
+    document.querySelectorAll(".add-song").forEach((elm) => {
+        elm.onclick = async () => {
+            let [song] = songList.get("song-id", elm.dataset.songId);
+            let html = ejs.render(newSongTemplate, {song: song._values, allowEdit: true})
+            setlistSongsList.innerHTML += html;
+            try {
+                await sendUpdateSongsPost();
+                M.Tooltip.init(document.querySelectorAll('.tooltipped'), {});
+                listenForSongDelete();
+                listenForSongNoteUpdate();
+                flashInfo(`Added '${song._values.title}'`);    
+            } catch(e) {
+                console.error(e);    
+                flashInfo(`Failed to add '${song._values.title}'. Refresh page.`);
+                setlistSongsList.removeChild(setlistSongsList.lastChild);
+            }
         }
-    })
-});
+    });
+};
 
 // (re-)set all song delete listeners
 function listenForSongDelete(){
@@ -152,3 +154,7 @@ function listenForSongNoteUpdate(){
 listenForSongDelete();
 listenForSongNoteUpdate();
 
+if (songList){
+    listenForSongAdd();
+    songList.on("updated", listenForSongAdd);
+}
