@@ -21,11 +21,13 @@ Currently hosted at [songsets.up.railway.app/](https://songset-manager-productio
 ### Big TODOs:
 - Server-side form validation
 - API and route testing
-- (More) Client-Side-Rendering
+- (More) Client-Side-Rendering (React/NextJS)?
+- Utilize ORM (Prisma)
+    - pub/sub for concurrent (collaborative) set/song editing
 
 ### Small TODOs:
-- Patch out use of EJS on browser side
-- Add song page's list of sets to include performance notes of that song
+- Patch out use of EJS on browser side (may require proper CSR framework)
+- Add song page's list of sets to include performance notes of that song (again, more CSR work)
 - Better HTTP error codes + nicer looking 404 pages (natural redirects?)
 - Update user management list to be more like the other lists
 - Refactor route handlers into routes/controllers?
