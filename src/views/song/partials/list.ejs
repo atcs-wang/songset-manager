@@ -59,7 +59,7 @@ Requires:
         <% for (song of songlist) { %>
         <tr class="song_id" data-song-id="<%= song.song_id %>">
             <td>
-                <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>" class="title tooltipped"
+                <a href="/band/<%= band.band_id %>/song/<%= song.song_id %>" class="title song-link tooltipped"
                     class="title tooltipped" data-tooltip="Edit song details" data-position="top">
                     <%= song.title %> 
                 </a>
