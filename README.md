@@ -1,5 +1,5 @@
 An inventory-style webapp (Node/Express/EJS/MySQL) for managing your bands' setlists.
-Currently hosted at [songsets.up.railway.app/](songsets.up.railway.app/).
+Currently hosted at [songsets.up.railway.app/](https://songsets.up.railway.app/).
 
 ## Features:
 - Auth0 powered login
