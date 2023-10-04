@@ -26,7 +26,7 @@ model BandMember {
   bandId    Int       @map("band_id")
   nickname  String    @db.VarChar(45)
   userId    String?   @map("user_id") @db.VarChar(255)
-  role      String?   @db.VarChar(10)
+  role      BandRoleType @default(readonly)
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt DateTime  @default(now()) @map("updated_at") @db.Timestamp(0)
   band      Band      @relation(fields: [bandId], references: [bandId], onDelete: Cascade, map: "fk_bm_band_id")
@@ -41,8 +41,14 @@ model BandMember {
   @@map("band_member")
 }
 
+enum BandRoleType {
+  core
+  owner
+  readonly
+}
+
 model BandRole {
-  role        String       @id @db.VarChar(10)
+  role        BandRoleType       @id 
   descr       String       @db.VarChar(100)
   bandMembers BandMember[]
 
@@ -110,7 +116,7 @@ model User {
   createdAt     DateTime       @default(now()) @map("created_at") @db.Timestamp(0)
   updatedAt     DateTime       @default(now()) @map("updated_at") @db.Timestamp(0)
   username      String?        @unique(map: "nickname") @db.VarChar(45)
-  privilege     String?        @default("User") @db.VarChar(10)
+  privilege     UserPrivilegeType        @default(User)
   createdBands  Band[]
   membership    BandMember[]
   setlist       Setlist[]
@@ -121,8 +127,14 @@ model User {
   @@map("user")
 }
 
+
+enum UserPrivilegeType {
+  Admin
+  User
+}
+
 model UserPrivilege {
-  privilege String @id @db.VarChar(10)
+  privilege UserPrivilegeType @id
   user      User[]
 
   @@map("user_privilege")
