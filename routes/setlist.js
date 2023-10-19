@@ -13,17 +13,31 @@ setlistRouter.route(['/','/all'])
     })
     .post(requiresBandCoreMember, async (req, res) => { 
         if (req.body.method == 'create') {  // Handle creating a new setlist
-            let [{ insertId }] = await setlistApi.createSetlist(req.user.user_id, req.band.band_id, 
-                    req.body.name, req.body.date, req.body.descr);
-            
-            res.redirect(req.baseUrl + `/${insertId}`);
+            try {
+
+                let [{ insertId }] = await setlistApi.createSetlist(req.user.user_id, req.band.band_id, 
+                        req.body.name, req.body.date, req.body.descr);
+                
+                res.redirect(req.baseUrl + `/${insertId}`);
+            } catch (e) {
+                req.flash('error', `Failed to create new setlist.`);
+                console.error(e);
+                res.redirect('back');
+            }
         } else if (req.body.method == "archive") {
-            let [{changedRows}] = await setlistApi.archiveSetlistsBeforeDate(req.band.band_id, req.body.date);
-            req.flash("info", `Archived ${changedRows} sets`)
-            res.redirect('back');
-        }else {
+            try {
+                let [{changedRows}] = await setlistApi.archiveSetlistsBeforeDate(req.band.band_id, req.body.date);
+                req.flash("info", `Archived ${changedRows} sets`);
+                console.error(e);
+                res.redirect('back');
+            } catch (e) {
+                req.flash('error', `Failed to archive setlists.`);
+                res.redirect('back');
+            }
+        } else {
             res.status(422).send("POST request missing acceptable method")
         }
+
     });
 
 setlistRouter.route(['/','/archive'])

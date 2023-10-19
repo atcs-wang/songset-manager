@@ -29,7 +29,7 @@ Requires:
 
             <div class="row">
                 <div class="input-field col s6">
-                    <input type="text" id="nameInput" name="name" class="validate" data-length="45" required>
+                    <input type="text" id="nameInput" name="name" class="validate" data-length="45" maxlength="45" required>
                     <label for="nameInput">Name:</label>
                 </div>
                 <div class="input-field col s6">
@@ -40,8 +40,9 @@ Requires:
         
             <div class="row">
                <div class="input-field col s12">
-                            <textarea class="materialize-textarea" id="descrInput" name="descr"></textarea>
-                            <label for="descrInput">Description:</label>
+                    <input type="text" id="descrInput" name="descr" class="validate" data-length="100" maxlength="100" required>
+
+                    <label for="descrInput">Description:</label>
                 </div>
             </div>
             

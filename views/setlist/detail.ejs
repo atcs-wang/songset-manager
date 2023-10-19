@@ -80,7 +80,7 @@
 
                         <div class="row">
                             <div class="input-field col s6">
-                                <input type="text" id="nameInput" name="name" class="validate" data-length="45" required form="editSetlistDetailsForm"
+                                <input type="text" id="nameInput" name="name" class="validate" data-length="45" maxlength="45" required form="editSetlistDetailsForm"
                                 value="<%=setlist.name%>">
                                 <label for="nameInput">Name:</label>
                             </div>
@@ -93,8 +93,10 @@
                     
                         <div class="row">
                         <div class="input-field col s12">
-                                        <textarea class="materialize-textarea" id="descrInput" name="descr" form="editSetlistDetailsForm"><%=setlist.descr%></textarea>
-                                        <label for="descrInput">Description:</label>
+                            <input type="text" id="descrInput" name="descr" class="validate" data-length="100" maxlength="100" required form="editSetlistDetailsForm"
+                                value="<%=setlist.descr%>">
+
+                            <label for="descrInput">Description:</label>
                             </div>
                         </div>
                     </form>
