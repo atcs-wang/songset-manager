@@ -34,11 +34,11 @@ Requires:
                             
             <div class="row">
                 <div class="input-field col s6">
-                    <input type="text" id="titleInput" name="title" class="validate" data-length="45" required>
+                    <input type="text" id="titleInput" name="title" class="validate" data-length="45" maxlength="45" required>
                     <label for="titleInput">Title:</label>
                 </div>
                 <div class="input-field col s6">
-                    <input type="text" id="artistInput" name="artist" class="validate" data-length="100">
+                    <input type="text" id="artistInput" name="artist" class="validate" data-length="100" maxlength="100">
                     <label for="artistInput">Artist:</label>
                 </div>
             </div>
@@ -49,12 +49,12 @@ Requires:
 
                     <div class="row">
                         <div class="input-field col s6">
-                            <input type="text" id="keyInput" name="key" class="autocomplete key validate" data-length="30" >
+                            <input type="text" id="keyInput" name="key" class="autocomplete key validate" data-length="30" maxlength="30">
                             <label for="keyInput">(Typical) Key:</label>
                         </div>
                 
                         <div class="input-field col s6">
-                            <input type="text" id="tempoInput" name="tempo" class="validate" data-length="15" >
+                            <input type="text" id="tempoInput" name="tempo" class="validate" data-length="15" maxlength="15">
                             <label for="tempoInput">Tempo:</label>
 
                         </div>
@@ -62,7 +62,7 @@ Requires:
                     </div>
                     <div class="row">
                         <div class="input-field col s12">
-                            <textarea class="materialize-textarea" id="notesInput" name="notes"></textarea>
+                            <textarea class="materialize-textarea" id="notesInput" name="notes" data-length="255" maxlength="255"></textarea>
                             <label for="notesInput">Additional Notes:</label>
                         </div>
                     </div>

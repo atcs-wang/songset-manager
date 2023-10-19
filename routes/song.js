@@ -51,27 +51,31 @@ songRouter.route('/:song_id/')
         let [[{title}]] = await songApi.getSongTitle(req.params.song_id, req.band.band_id);
 
         if (req.body.method == "update") {             // update song details.
-            let [{changedRows}] = await songApi.updateSong(req.params.song_id, req.band.band_id, 
-                req.body.title, req.body.artist, req.body.key, 
-                req.body.tempo, req.body.tags, req.body.notes);
-            if (changedRows){
-                title = req.body.title;
-                req.flash('info', `Updated '${title}'`);
-            }
-            
-            if (req.body.archive) {
-                if (req.body.archive == "archive") {
-                    let [{changedRows}] = await songApi.archiveSong(req.params.song_id, req.band.band_id);
-                    if (changedRows)
-                        req.flash('info', `Archived '${title}'`);
-    
+            try {
+                let [{changedRows}] = await songApi.updateSong(req.params.song_id, req.band.band_id, 
+                    req.body.title, req.body.artist, req.body.key, 
+                    req.body.tempo, req.body.tags, req.body.notes);
+                if (changedRows){
+                    title = req.body.title;
+                    req.flash('info', `Updated '${title}'`);
                 }
-                else if (req.body.archive == "unarchive") {
-                    let [{changedRows}] = await songApi.unarchiveSong(req.params.song_id, req.band.band_id);
-                    if (changedRows)
-                        req.flash('info', `Unarchived '${title}'`);
+                
+                if (req.body.archive) {
+                    if (req.body.archive == "archive") {
+                        let [{changedRows}] = await songApi.archiveSong(req.params.song_id, req.band.band_id);
+                        if (changedRows)
+                            req.flash('info', `Archived '${title}'`);
+        
+                    }
+                    else if (req.body.archive == "unarchive") {
+                        let [{changedRows}] = await songApi.unarchiveSong(req.params.song_id, req.band.band_id);
+                        if (changedRows)
+                            req.flash('info', `Unarchived '${title}'`);
 
-                } 
+                    } 
+                }
+            } catch (e) {
+                req.flash('error', `Failed to update '${title}'`);
             }
             res.redirect('back');
         }

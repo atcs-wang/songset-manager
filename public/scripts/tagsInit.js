@@ -41,7 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 let tagsInstance = M.Chips.getInstance(tagsElm);
                 let tagsData = tagsInstance.chipsData.map(e => e.tag);
                 let tagsString = tagsData.join(",");
-
+                if (tagsString.length > 100){
+                    flashError("Too many tags!");
+                    event.preventDefault();
+                    return false;
+                }
                 let hiddenInput = document.createElement("input");
                 hiddenInput.setAttribute("type", "hidden");
                 hiddenInput.setAttribute("name", "tags");
